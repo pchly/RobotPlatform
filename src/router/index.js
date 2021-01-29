@@ -1,34 +1,64 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Msg from '@/components/Msg.vue'
-import ElementUiTest from '@/components/ElementUiTest'
+
 
 Vue.use(VueRouter)
 
 const routes = [
-      // {
-      // path: '/',
-      // component: Home
-      // },
       {
         path:'/',
         //路由转接redirect
-        redirect: '/msg'
+        redirect: '/home'
       },
-      //消息通知,测试WebSocket
+      //home页面
       {
-        path:'/msg',
-        name:'msg',
-        component:Msg,
+        path:'/home',
+        name:'home',
+        component:() => import("../components/Home.vue"),
         props:true
       },
-      //ElementUi测试
+      //基础控制
       {
-        path:'/elementui/:total',
-        name:'elementui',
-        component:ElementUiTest,
+        path:'/basicControl',
+        name:'basicControl',
+        component:() => import("../components/BasicControl.vue"),
+        props:true
+      },
+      //blockly
+      {
+        path:'/blockly',
+        name:'blockly',
+        component:() => import("../components/Blockly.vue"),
+        props:true
+      },
+      //python
+      {
+        path:'/python',
+        name:'python',
+        component:() => import("../components/Python.vue"),
+        props:true
+      },
+      //vision
+      {
+        path:'/vision',
+        name:'vision',
+        component:() => import("../components/Vision.vue"),
+        props:true
+      },
+      //消息测试,WebSocket
+      {
+        path:'/webSocketTest',
+        name:'webSocketTest',
+        component:() => import("../components/WebSocketTest.vue"),
         props:true
       }
+      // //ElementUi测试
+      // {
+      //   path:'/elementui/:total',
+      //   name:'elementui',
+      //   component:ElementUiTest,
+      //   props:true
+      // }
 ];
 
 const router = new VueRouter({

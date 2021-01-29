@@ -1,8 +1,10 @@
 <template>
   <div id="app">
      <tab>
-      <tab-item selected @on-item-click="onWebSocketClick">Websocket测试</tab-item>
-      <tab-item @on-item-click="onElementUiClick">elementUi测试</tab-item>
+       <tab-item v-for="(item,index) in headers" :key=index
+       :selected="$route.path=='/'+item.name"
+       @on-item-click="routeTo">{{item.desc}}</tab-item>
+
     </tab>
     <!-- 主界面的路由视图 -->
     <router-view></router-view>
@@ -31,8 +33,7 @@ export default {
   computed:{ 
     //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
     ...mapGetters(['moreMenus']),   
-    ...mapState(['topics','loginedMoreMenus','unLoginedMoreMenus',
-    'isLogined']),
+    ...mapState(['headers']),
     
 
   },
@@ -54,19 +55,9 @@ export default {
   methods: {
     //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
     ...mapMutations(['mutationLogin','mutationLoginName','mutationAccessToken']),
-   //路由替换
-      // this.$router.replace('/');
-   
-    // handleClickMoreMenus(menukey,menuitem){
-      //路由跳转
-    //   this.$router.push('/'+menukey);
-    //    //点击弹出菜单发送测试消息，通过WEBSOCKET
-    // }
-    onWebSocketClick(){
-      this.$router.push('/msg');
-    },
-    onElementUiClick(){
-      this.$router.push('/elementui/20');
+  
+    routeTo(index){
+      this.$router.push('/'+this.headers[index].name);
     }
   }
  

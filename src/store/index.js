@@ -8,6 +8,15 @@ Vue.use(Vuex);
 const store=new Vuex.Store({
         //状态数据
         state:{
+          headers:[
+            {name:'home',desc:'主页'},
+            {name:'basicControl',desc:'基础控制'},
+            {name:'blockly',desc:'blockly拖拽式编程'},
+            {name:'python',desc:'python脚本编程'},
+            {name:'vision',desc:'视觉控制'},
+            {name:'webSocketTest',desc:'通信测试'},
+            {name:'reserve',desc:'预留'}
+          ]
           // 示例数据
             // topics:[
             //     {name:'all',desc:'全部'},
