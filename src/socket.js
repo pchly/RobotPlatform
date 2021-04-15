@@ -21,6 +21,7 @@ export default {
     this.ws.onerror = error => {
       onError && onError(error);
     };
+    //关闭
     this.ws.onclose = closeevent => {
       onClose&&onClose(closeevent);
       this.ws = null;

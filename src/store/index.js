@@ -15,6 +15,7 @@ const store=new Vuex.Store({
             {name:'python',desc:'python脚本编程'},
             {name:'vision',desc:'视觉控制'},
             {name:'webSocketTest',desc:'通信测试'},
+            {name:'setting',desc:'设置'},
             {name:'reserve',desc:'预留'}
           ]
           // 示例数据

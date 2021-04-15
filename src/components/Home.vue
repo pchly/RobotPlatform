@@ -2,15 +2,15 @@
     <div>
         <div class="wrap">
             <header>
-                <img src="../assets/logo.png" alt="图标">
-                <nav>
+                <img src="../assets/home-zw.png" style="width:100%" alt="图标">
+                <!-- <nav>
                     <ul>
                         <li>基础控制</li>
                         <li>blocly</li>
                         <li>python</li>
                         <li>视觉</li>
                     </ul>
-                </nav>
+                </nav> -->
             </header>
         </div>
         <!-- div.wrap--end -->
@@ -24,8 +24,8 @@ export default {
 </script>
 
 <style lang="">
-    .wrap{
+    /* .wrap{
         width: 900px;
         margin: 0 auto;
-    }
+    } */
 </style>

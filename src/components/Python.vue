@@ -1,6 +1,8 @@
 <template>
     <div>
-        this is Python.
+        <div>this is Python.</div>
+        
+       <img style="width:100%" src="../assets/python-zw.png" alt="">
     </div>
 </template>
 

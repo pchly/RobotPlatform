@@ -51,6 +51,20 @@ const routes = [
         name:'webSocketTest',
         component:() => import("../components/WebSocketTest.vue"),
         props:true
+      },
+      //设置页面
+      {
+        path:'/setting',
+        name:'setting',
+        component:() => import("../components/setting.vue"),
+        props:true
+      },
+      //预留页面
+      {
+        path:'/reserve',
+        name:'reserve',
+        component:() => import("../components/reserve.vue"),
+        props:true
       }
       // //ElementUi测试
       // {

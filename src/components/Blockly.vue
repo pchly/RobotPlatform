@@ -1,6 +1,7 @@
 <template>
     <div>
-        this is Blockly.
+        <div>this is Blockly.</div>
+        <img  src="../assets/blockly-zw.png" style="width:100%" alt="">
     </div>
 </template>
 

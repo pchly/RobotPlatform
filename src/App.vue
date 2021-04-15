@@ -58,6 +58,7 @@ export default {
   
     routeTo(index){
       this.$router.push('/'+this.headers[index].name);
+      console.log(this.headers[index].name);
     }
   }
  

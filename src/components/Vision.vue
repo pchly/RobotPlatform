@@ -1,6 +1,7 @@
 <template>
     <div>
-        this is vision.
+       <div> this is vision.</div>
+       <img src="../assets/vision.png" alt="">
     </div>
 </template>
 <script>
