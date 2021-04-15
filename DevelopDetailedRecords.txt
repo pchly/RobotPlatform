@@ -6,4 +6,4 @@
 2021-04-15 PCH
 01.把每个页面插入了众维界面的图片
 02.通过修改config目录下的index.js文件的配置信息，解决了build生成的index.html文件，直接双击打开的页面空白的问题，
-in PCH branch
+in PCH branch test diff
