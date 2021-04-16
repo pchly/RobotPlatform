@@ -1,7 +1,9 @@
 <template>
     <div>
-        this is message page.
-        <hr>
+       <el-button-group>
+         <el-button @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
+       </el-button-group>
+        <hr />
         <span>
             <div  class="ipAndPortInput" style="margin-top: 15px;">
                 <el-input  placeholder="请输入ip地址" v-model="ip" class="input-with-select">
@@ -32,9 +34,9 @@
          <hr>
          <el-input rows="4" class="receivedInput" type="textarea" v-model="receivedMessage" placeholder="接收到的消息"></el-input>
         </span>
-        
+
     </div>
-    
+
 
 </template>
 
@@ -63,7 +65,7 @@ export default {
              WSocket.send("close");
             }else{
                  //WebSocket自定义的初始化函数
-       WSocket.init({ip:this.ip,port:this.port},
+                    WSocket.init({ip:this.ip,port:this.port},
                 //服务器连接成功的生命周期函数
                     openevent=>{
                         //openevent为回调参数，里面包含各种连接信息
@@ -79,9 +81,9 @@ export default {
                         {
                             this.receivedMessage+=message;
                         }else{
-                            this.receivedMessage+="\n"+message;     
+                            this.receivedMessage+="\n"+message;
                         }
-                    
+
                     console.log("enter reciver msg :");
                     console.log(message);
                     console.log('have reciver msg');
@@ -113,13 +115,16 @@ export default {
                  });
 
             }
-       
+
         },
         //在某一个事件触发时调用sebd发送消息
         sendMsg(){
             //发送消息的函数
              WSocket.send(this.sendMessage);
-        }
+        },
+        backToHome(){
+        this.$router.push('/home');
+      }
     }
 }
 </script>
@@ -127,7 +132,7 @@ export default {
     /* .buttonAboutServe{
         height:30px;
         text-align: center;
-       
+
     } */
    .ipAndPortInput{
        width: 200px;

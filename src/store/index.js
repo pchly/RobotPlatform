@@ -8,8 +8,9 @@ Vue.use(Vuex);
 const store=new Vuex.Store({
         //状态数据
         state:{
+          //主页对应的功能页面跳转按钮的文字
           headers:[
-            {name:'home',desc:'主页'},
+            // {name:'home',desc:'主页'},
             {name:'basicControl',desc:'基础控制'},
             {name:'blockly',desc:'blockly拖拽式编程'},
             {name:'python',desc:'python脚本编程'},
@@ -17,7 +18,19 @@ const store=new Vuex.Store({
             {name:'webSocketTest',desc:'通信测试'},
             {name:'setting',desc:'设置'},
             {name:'reserve',desc:'预留'}
-          ]
+          ],
+          //主页连接服务器的相关参数
+          serverAndLinkInfo:{
+            ip:'',//服务器ip地址
+            port:'8888',//服务器端口号
+            linkButtonType:'success',//连接服务器按钮的类型：danger和success对应红色和绿色
+            linkButtonText:'连接服务器',//连接服务器按钮的文本
+            haveEverLink:false//是否已经连接服务器的标志位
+          },
+          positionOfAxis:{
+            XAxis:'123',
+            YAxis:'456'
+          }
           // 示例数据
             // topics:[
             //     {name:'all',desc:'全部'},
@@ -48,9 +61,9 @@ const store=new Vuex.Store({
             //     if(state.isLogined==true){
             //       return state.loginedMoreMenus;
             //     }
-                
+
             //     return state.unLoginedMoreMenus;
-                
+
             //   },
             //   getTopicDescByType:function(state){
             //     return function(tab){
