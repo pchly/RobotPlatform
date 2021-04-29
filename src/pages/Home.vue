@@ -23,15 +23,6 @@
                         </el-select>
                         <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
                     </el-input>
-                    <el-input  placeholder="交互通信端口号" v-model="serverAndLinkInfo.port" class="input-with-select">
-                        <el-select v-model="serverAndLinkInfo.port" slot="prepend" placeholder="请选择">
-                        <el-option label="12345" value="12345"></el-option>
-                        </el-select>
-                        <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
-                    </el-input>
-                  </div>
-                  <div class="IPInput">
-                    
                   </div>
                   <el-button  class="linkButton" @click="linkToServer"
                   :type=serverAndLinkInfo.linkButtonType>{{serverAndLinkInfo.linkButtonText}}</el-button>
@@ -48,143 +39,153 @@
 </template>
 
 <script>
-  //引入WebSocke
-  import WSocket from '../socket.js';
-  //按照map的方法使用vuex的state数据
-  import {mapState,mapGetters,mapMutations} from 'vuex';
-  export default {
-    name:'home',
-    data:function(){
-      return{
-        sendMessage:'',
-        receivedMessage:'',
-        autoUpdateMessage:''
-      }
-    },
-    computed:{
-      //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
-      //引入了headers页面跳转按钮文本数据、serverAndLinkInfo连接服务器相关参数、positionOfAxis各个轴的位置数据
-      ...mapState(['headers','serverAndLinkInfo','positionOfAxis']),
-    },
-    methods: {
-      //页面跳转函数
-      routeTo(index){
-        this.$router.push('/'+this.headers[index].name);
-      },
-      //连接到服务器函数，进行webSocket的实例初始化
-      linkToServer()
-      {
-        if(this.serverAndLinkInfo.linkButtonText=="断开连接")
-        {
-          //如果是断开连接，则直接发送close关闭服务器
-          // WSocket.send("close");
-          //如果是断开连接，则直接关闭客户端的ws
-          WSocket.close();
-          // autoUpdateWSocket.close();
-        }
-        else
-        {
-          //WebSocket自定义的初始化函数
-          WSocket.init(
-            {ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port,portAuto:30002},
-            
-            //服务器连接成功的生命周期函数
-            openevent=>{
-              //openevent为回调参数，里面包含各种连接信息
-              // console.log(openevent);
-              console.log('opened');
-              this.serverAndLinkInfo.linkButtonType="danger";
-              this.serverAndLinkInfo.linkButtonText='断开连接';
-              this.serverAndLinkInfo.haveEverLink=true;
-            },
+//引入WebSocke
+import WSocket from '../socket.js';
+//按照map的方法使用vuex的state数据
+import {mapState,mapGetters,mapMutations} from 'vuex';
+// 创建存储图像文本数据的变量
+let imgTextData='';
 
-            //接收到消息的回调函数，消息的具体内容在message中
-            message=>{
-              //此处代码有问题，条件语句括号内为赋值操作
-              // if(message="{have received}"){
-              //   this.positionOfAxis.XAxis='100.0',
-              //   this.positionOfAxis.YAxis='200.3'
-              // }
-              // if(this.receivedMessage=='')
-              // {
-              //     this.receivedMessage+=message;
-              // }else{
-              //     this.receivedMessage+="\n"+message;
-              // }
-
-              //添加数据解析的代码
-
-              console.log("enter reciver msg :");
-              console.log(message);
-              console.log('have reciver the above msg');
-            },
-
-            //出现错误的回调函数，具体错误信息在error参数里
-            error=>{
-              console.log(error);
-              console.log('have error');
-              this.$alert('服务器连接失败', '错误信息', {
-                      confirmButtonText: '确定',
-                      callback: () => {
-                          this.serverAndLinkInfo.linkButtonType="success";
-                              }
-                  });
-            },
-
-            //断开连接的回调函数，具体信息在closeevent中
-            closeevent=>{
-              console.log(closeevent);
-              console.log('closed');
-              if(this.serverAndLinkInfo.haveEverLink){
-                  this.$alert('断开连接', '信息提示', {
-                      confirmButtonText: '确定',
-                      callback: () => {
-                          this.serverAndLinkInfo.linkButtonText='连接服务器';
-                          this.serverAndLinkInfo.linkButtonType="success"
-                      }
-                  });
-              }
-            },
-
-            //自动上报数据ws的事件函数
-            //服务器连接成功的生命周期函数
-            openevent=>{
-              //openevent为回调参数，里面包含各种连接信息
-              console.log('自动上报数据ws连接成功');
-            },
-
-            //接收到消息的回调函数，消息的具体内容在message中
-            message=>{
-              //接收到的数据传递给全局变量，供其他页面使用
-              // this.data.autoUpdateMessage=message;
-              console.log("自动上报的数据：");
-              console.log(message);
-              console.log('have reciver the above msg');
-            },
-
-            //出现错误的回调函数，具体错误信息在error参数里
-            error=>{
-              console.log(error);
-              console.log('自动上报数据WS出现错误');
-            },
-
-            //断开连接的回调函数，具体信息在closeevent中
-            closeevent=>{
-              console.log(closeevent);
-              console.log('自动上报数据WS已关闭');
-            }
-          );//webSocket初始化init函数的右括号
-        }//else的结束括号
-      }//linkToServer点击槽函数的结束括号
-
-       // ,
-       // //在某一个事件触发时调用sebd发送消息
-       // sendMsg(){
-       //     //发送消息的函数
-       //      WSocket.send(this.sendMessage);
-       // }
+export default {
+  name:'home',
+  data:function(){
+    return{
+      sendMessage:'',
+      receivedMessage:''
     }
+  },
+  computed:{
+    //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
+    //引入了headers页面跳转按钮文本数据、serverAndLinkInfo连接服务器相关参数、positionOfAxis各个轴的位置数据
+    // 徐冰洁添加autoUpdateMessage服务器自动上报数据
+    ...mapState(['headers','serverAndLinkInfo','positionOfAxis','autoUpdateMessage']),
+  },
+  methods: {
+    //页面跳转函数
+    routeTo(index){
+      this.$router.push('/'+this.headers[index].name);
+    },
+    //连接到服务器函数，进行webSocket的实例初始化
+    linkToServer()
+    {
+      if(this.serverAndLinkInfo.linkButtonText=="断开连接")
+      {
+        //如果是断开连接，则直接发送close关闭服务器
+        // WSocket.send("close");
+        //如果是断开连接，则直接关闭客户端的ws
+        WSocket.close();
+        // autoUpdateWSocket.close();
+      }
+      else
+      {
+        //WebSocket自定义的初始化函数
+        WSocket.init(
+          // {ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port,portAuto:30002},
+          {ip:this.serverAndLinkInfo.ip,port:502,portAuto:30002},
+          
+          //交互通信ws的事件函数
+          //服务器连接成功的生命周期函数
+          openevent=>{
+            //openevent为回调参数，里面包含各种连接信息
+            // console.log(openevent);
+            console.log('opened');
+            this.serverAndLinkInfo.linkButtonType="danger";
+            this.serverAndLinkInfo.linkButtonText='断开连接';
+            this.serverAndLinkInfo.haveEverLink=true;
+          },
+          //接收到消息的回调函数，消息的具体内容在message中
+          message=>{
+            //此处代码有问题，条件语句括号内为赋值操作
+            // if(message="{have received}"){
+            //   this.positionOfAxis.XAxis='100.0',
+            //   this.positionOfAxis.YAxis='200.3'
+            // }
+            // if(this.receivedMessage=='')
+            // {
+            //     this.receivedMessage+=message;
+            // }else{
+            //     this.receivedMessage+="\n"+message;
+            // }
+
+            //添加数据解析的代码
+
+            console.log("enter reciver msg :");
+            console.log(message);
+            console.log('have reciver the above msg');
+          },
+          //出现错误的回调函数，具体错误信息在error参数里
+          error=>{
+            console.log(error);
+            console.log('have error');
+            this.$alert('服务器连接失败', '错误信息', {
+                    confirmButtonText: '确定',
+                    callback: () => {
+                        this.serverAndLinkInfo.linkButtonType="success";
+                            }
+                });
+          },
+          //断开连接的回调函数，具体信息在closeevent中
+          closeevent=>{
+            console.log(closeevent);
+            console.log('closed');
+            if(this.serverAndLinkInfo.haveEverLink){
+                this.$alert('断开连接', '信息提示', {
+                    confirmButtonText: '确定',
+                    callback: () => {
+                        this.serverAndLinkInfo.linkButtonText='连接服务器';
+                        this.serverAndLinkInfo.linkButtonType="success"
+                    }
+                });
+            }
+          },
+
+          //自动上报数据ws的事件函数
+          //服务器连接成功的生命周期函数
+          openevent=>{
+            //openevent为回调参数，里面包含各种连接信息
+            console.log('自动上报数据ws连接成功');
+          },
+          //接收到消息的回调函数，消息的具体内容在message中
+          message=>{
+            // 解析二进制数据需要通过FileReader读取数据
+            let imgReader = new FileReader();
+            // FileReader读取数据后将数据传出
+            imgReader.onload = function(event){
+              imgTextData = imgReader.result;//内容就在这里
+            };
+            // 以文本方式读取二进制数据
+            imgReader.readAsText(message.slice(243,message.length),'utf8');
+            //接收到的数据传递给全局变量，供其他页面使用
+            // this.autoUpdateMessage.data=message;
+            // 解析图像数据
+            this.autoUpdateMessage.imgData='data:image/jpg;base64,'+ imgTextData;
+            // console.log("自动上报的数据：");
+            // console.log(this.autoUpdateMessage.data);
+            // console.log("自动上报的图像数据：");
+            // console.log(this.autoUpdateMessage.imgData);
+          },
+          //出现错误的回调函数，具体错误信息在error参数里
+          error=>{
+            console.log(error);
+            console.log('自动上报数据WS出现错误');
+          },
+          //断开连接的回调函数，具体信息在closeevent中
+          closeevent=>{
+            console.log(closeevent);
+            console.log('自动上报数据WS已关闭');
+          }
+        );//webSocket初始化init函数的右括号
+      }//else的结束括号
+    }//linkToServer点击槽函数的结束括号
+
+      // ,
+      // //在某一个事件触发时调用sebd发送消息
+      // sendMsg(){
+      //     //发送消息的函数
+      //      WSocket.send(this.sendMessage);
+      // }
   }
+}
 </script>
 
 <style>

@@ -23,6 +23,7 @@ const store=new Vuex.Store({
           serverAndLinkInfo:{
             ip:'',//服务器ip地址
             port:'',//服务器交互通信端口号
+            portAuto:'',//服务器自动上报数据端口号
             linkButtonType:'success',//连接服务器按钮的类型：danger和success对应红色和绿色
             linkButtonText:'连接服务器',//连接服务器按钮的文本
             haveEverLink:false//是否已经连接服务器的标志位
@@ -30,6 +31,10 @@ const store=new Vuex.Store({
           positionOfAxis:{
             XAxis:'123',
             YAxis:'456'
+          },
+          autoUpdateMessage:{
+            data:'',
+            imgData:''
           }
           // 示例数据
             // topics:[
