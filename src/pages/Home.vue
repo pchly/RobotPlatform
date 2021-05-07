@@ -24,7 +24,8 @@
                     </el-input>
                   </div>
                    <el-button  class="linkButton" @click="linkToServer"
-                   :type=serverAndLinkInfo.linkButtonType>{{serverAndLinkInfo.linkButtonText}}</el-button>
+                   :type=serverAndLinkInfo.linkButtonType>{{serverAndLinkInfo.linkButtonText}}
+                   </el-button>
                   <!-- <img src="../assets/zw-robot-img.png" style="width:1000px" alt="图标"> -->
                 </el-main>
                 <!-- 底部区域 -->
@@ -56,6 +57,8 @@ export default {
       ...mapState(['headers','serverAndLinkInfo','positionOfAxis']),
     },
     methods: {
+      //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
+      ...mapMutations(['mutationPositionOfXAxis']),
       //页面跳转函数
       routeTo(index){
         this.$router.push('/'+this.headers[index].name);
@@ -80,8 +83,8 @@ export default {
                    //接收到消息的回调函数，消息的具体内容在message中
                    message=>{
                      if(message="{have received}"){
-                      this.positionOfAxis.XAxis='100.0',
-                      this.positionOfAxis.YAxis='200.3'
+                      this.mutationPositionOfXAxis(120);
+                      // this.positionOfAxis.YAxis='200.3'
                      }
                        if(this.receivedMessage=='')
                        {

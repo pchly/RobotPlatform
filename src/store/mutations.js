@@ -1,4 +1,7 @@
 const mutations={
+  mutationPositionOfXAxis:function(state,payload){
+    state.positionOfAxis.XAxis=payload;
+  }
     // 用法示例
     // mutationIsShowMoreMenus:function(state,payload){
     //     //state表示当前的状态数据
