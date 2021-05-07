@@ -1,6 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+//引入bootstrap的样式文件
+import './assets/bootstrap.css'
+//全局引入bootstrap的图标字体
+import '../node_modules/bootstrap-icons/font/bootstrap-icons.css'
 import FastClick from 'fastclick'
 //引入路由
 import router from './router/index.js'
