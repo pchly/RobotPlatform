@@ -1,97 +1,97 @@
 <template>
-  <div>
-    <!-- 顶部内容开始 -->
-    <div class="container-fluid">
-      <div class="row mt-4 border-bottom align-items-end pb-2">
-        <div class="col-6 text-left">
-          <img class="img-fluid" style="height: 40px;" src="../assets/Link-img/logo.png" />
-        </div>
-        <div class="col-6 text-right ">
-          <div class="row">
-            <div class="col-3 offset-6 text-right">
-               <span class="font-weight-bolder" style="font-size: 16px;">设置</span>
+  <div class="rootContain border">
+        <!-- 顶部内容开始 -->
+        <div class="container-fluid " style="height: 10%;">
+          <div class="row mt-4 border-bottom align-items-end pb-2 " >
+            <div class="col-6 text-left">
+              <img class="img-fluid" style="height: 40px;" src="../assets/Link-img/logo.png" />
             </div>
-            <div class="col-3 text-center">
-              <el-dropdown @command="handleCommand">
-                <span class="el-dropdown-link font-weight-bolder" style="font-size: 16px;">
-                  帮助<i class="el-icon-caret-bottom el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="a">版本信息</el-dropdown-item>
-                  <el-dropdown-item command="b">语言设置</el-dropdown-item>
-                  <el-dropdown-item command="c">待定..</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+            <div class="col-6 text-right ">
+              <div class="row">
+                <div class="col-3 offset-6 text-right">
+                   <span class="font-weight-bolder" style="font-size: 16px;">设置</span>
+                </div>
+                <div class="col-3 text-center">
+                  <el-dropdown @command="handleCommand">
+                    <span class="el-dropdown-link font-weight-bolder" style="font-size: 16px;">
+                      帮助<i class="el-icon-caret-bottom el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item command="a">版本信息</el-dropdown-item>
+                      <el-dropdown-item command="b">语言设置</el-dropdown-item>
+                      <el-dropdown-item command="c">待定..</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="container"><!-- 中间部分的主内容开始 -->
-      <!-- 连接步骤的部分 -->
-      <div class="row  align-items-center"><!-- 连接部分的开始div -->
-          <!-- 第一步 -->
-          <div class="col-3 " :class="isOneStep">
-            <figure class="figure" id="1" @click="clickedStepCb">
-              <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid rounded-circle" alt="1">
-              <figcaption class="figure-caption text-center font-weight-bolder">1.开机</figcaption>
-            </figure>
-          </div>
-          <!-- 第一部和第二部之间的箭头 -->
-          <div class="col-1  text-center" >
-           <i v-if="currentStep==1" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-           <i v-else-if="currentStep==2" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-           <i v-else="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-          </div>
-          <!-- 第二步 -->
-          <div class="col-3 " :class="isTwoStep">
-            <figure class="figure" id="2" @click="clickedStepCb">
-              <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid  rounded-circle" alt="2">
-              <figcaption class="figure-caption text-center font-weight-bolder">2.连接网线</figcaption>
-            </figure>
-          </div>
-          <!-- 第二步与第一步之间的箭头 -->
-          <div class="col-1  text-center">
-            <i v-if="currentStep==1" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-            <i v-else-if="currentStep==2" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-            <i v-else="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-          </div>
-          <!-- 第三步 -->
-          <div class="col-3 " :class="isThreeStep">
-            <figure class="figure" id="3" @click="clickedStepCb">
-              <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid rounded-circle " alt="3">
-              <figcaption class="figure-caption text-center font-weight-bolder">3.输入IP地址</figcaption>
-            </figure>
-          </div>
-      </div><!-- 连接部分的结束div -->
-      <div class="row" style="margin-top: 8rem;"><!-- 输入IP部分的开始 -->
-        <div class="col-4 offset-3  pr-0" >
-            <el-input  placeholder="请输入ip地址" v-model="serverAndLinkInfo.ip">
-                <el-select v-model="serverAndLinkInfo.ip" slot="prepend" placeholder="请选择">
-                <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                <el-option label="本地ip" value="127.0.0.1"></el-option>
-                </el-select>
-            </el-input>
-        </div>
-        <div class="col-2  pl-0">
-          <el-button  class="linkButton" @click="linkToServer"
-          :type="serverAndLinkInfo.linkButtonType">{{serverAndLinkInfo.linkButtonText}}
-          </el-button>
-        </div>
-      </div><!-- 输入ip部分的结束 -->
-    </div><!-- 中间部分的主内容结束 -->
-    <div class="container-fluid  mb-0 mt-5"><!-- 底端的内容 -->
-        <div class="row justify-content-between align-items-center">
-          <div class="col-6 text-left">
-            <i title="进入主页"class="bi bi-box-arrow-in-right pr-1 py-0 " style="font-size: 1.6rem; color: cornflowerblue;"
-            @click="openHomePage"></i>
-            <i class="bi bi-grip-vertical" style="font-size: 1.6rem; color: cornflowerblue;"></i>
-            <i title="联系我们" class="footEmail bi bi-envelope pl-1 py-0 " style="font-size: 1.6rem; color: cornflowerblue;"></i>
+        <div class="container  " style="height: 80%;max-width: 1200px;"><!-- 中间部分的主内容开始 -->
+          <!-- 连接步骤的部分 -->
+          <div class="row align-items-center  " style="height: 70%;" ><!-- 连接部分的开始div -->
+              <!-- 第一步 -->
+              <div class="col-3 " :class="isOneStep">
+                <figure class="figure" id="1" @click="clickedStepCb">
+                  <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid rounded-circle" alt="1">
+                  <figcaption class="figure-caption text-center font-weight-bolder">1.开机</figcaption>
+                </figure>
+              </div>
+              <!-- 第一部和第二部之间的箭头 -->
+              <div class="col-1  text-center" >
+               <i v-if="currentStep==1" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+               <i v-else-if="currentStep==2" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+               <i v-else="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+              </div>
+              <!-- 第二步 -->
+              <div class="col-3 " :class="isTwoStep">
+                <figure class="figure" id="2" @click="clickedStepCb">
+                  <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid  rounded-circle" alt="2">
+                  <figcaption class="figure-caption text-center font-weight-bolder">2.连接网线</figcaption>
+                </figure>
+              </div>
+              <!-- 第二步与第一步之间的箭头 -->
+              <div class="col-1  text-center">
+                <i v-if="currentStep==1" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+                <i v-else-if="currentStep==2" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+                <i v-else="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+              </div>
+              <!-- 第三步 -->
+              <div class="col-3 " :class="isThreeStep">
+                <figure class="figure" id="3" @click="clickedStepCb">
+                  <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid rounded-circle " alt="3">
+                  <figcaption class="figure-caption text-center font-weight-bolder">3.输入IP地址</figcaption>
+                </figure>
+              </div>
+          </div><!-- 连接部分的结束div -->
+          <div class="row align-items-center" style=" height: 30%;"><!-- 输入IP部分的开始 -->
+            <div class="col-4 offset-3  pr-0" >
+                <el-input  placeholder="请输入ip地址" v-model="serverAndLinkInfo.ip">
+                    <el-select v-model="serverAndLinkInfo.ip" slot="prepend" placeholder="请选择">
+                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                    <el-option label="本地ip" value="127.0.0.1"></el-option>
+                    </el-select>
+                </el-input>
+            </div>
+            <div class="col-2  pl-0">
+              <el-button  class="linkButton" @click="linkToServer"
+              :type="serverAndLinkInfo.linkButtonType">{{serverAndLinkInfo.linkButtonText}}
+              </el-button>
+            </div>
+          </div><!-- 输入ip部分的结束 -->
+        </div><!-- 中间部分的主内容结束 -->
+        <div class="container-fluid pb-0 " style="height: 10%;"><!-- 底端的内容 -->
+            <div class="row justify-content-between align-items-end ">
+              <div class="col-6 text-left">
+                <i title="进入主页"class="bi bi-box-arrow-in-right pr-1 py-0 " style="font-size: 1.6rem; color: cornflowerblue;"
+                @click="openHomePage"></i>
+                <i class="bi bi-grip-vertical" style="font-size: 1.6rem; color: cornflowerblue;"></i>
+                <i title="联系我们" class="footEmail bi bi-envelope pl-1 py-0 " style="font-size: 1.6rem; color: cornflowerblue;"></i>
 
-          </div>
-          <div class="col-6  text-right" style="color:#7B7B84; font-size: 15px;">版本v1.0.0</div>
-        </div>
-    </div>
+              </div>
+              <div class="col-6  text-right" style="color:#7B7B84; font-size: 15px;">版本v1.0.0</div>
+            </div>
+        </div><!-- 底部内容结束 -->
   </div><!-- 最外层div结束 -->
 </template>
 
@@ -215,5 +215,20 @@
   }
 </script>
 <style>
-
+.rootContain{
+  height: 720px;
+}
+/* 媒体查询功能 */
+/* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
+@media only screen and (min-height:480px) and (max-height:900px){
+.rootContain{
+	  height: 720px;
+	}
+}
+/* 高度最小像素901像素 即高度大于900时*/
+@media only screen and (min-height:901px) {
+	.rootContain{
+	  height: 940px;
+	}
+}
 </style>
