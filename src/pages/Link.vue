@@ -66,8 +66,8 @@
           </div><!-- 连接部分的结束div -->
           <div class="row align-items-center" style=" height: 30%;"><!-- 输入IP部分的开始 -->
             <div class="col-4 offset-3  pr-0" >
-                <el-input  placeholder="请输入ip地址" v-model="serverAndLinkInfo.ip">
-                    <el-select v-model="serverAndLinkInfo.ip" slot="prepend" placeholder="请选择">
+                <el-input  placeholder="请输入ip地址" v-model="modeServerIp">
+                    <el-select v-model="modeServerIp" slot="prepend" placeholder="请选择">
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                     <el-option label="本地ip" value="127.0.0.1"></el-option>
                     </el-select>
@@ -114,6 +114,15 @@
      //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
      //引入了headers页面跳转按钮文本数据、serverAndLinkInfo连接服务器相关参数、positionOfAxis各个轴的位置数据
      ...mapState(['serverAndLinkInfo','positionOfAxis']),
+     // v-mode双向绑定VUEX中的数据的正确方法
+     modeServerIp:{
+       get(){
+         return this.serverAndLinkInfo.ip
+       },
+       set(value){
+          this.mutationServerIp(value)
+       }
+     },
      isOneStep:function(){
          return{
            'col-4': this.clickedStep==1
@@ -132,13 +141,12 @@
    },
    methods:{
      //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
-     ...mapMutations(['mutationPositionOfXAxis']),
+     ...mapMutations(['mutationServerIp','mutationPositionOfXAxis']),
      clickedStepCb(event){
        this.clickedStep=event.target.alt;
        this.currentStep=this.clickedStep;
-       console.log(this.clickedStep);
-       console.log(this.currentStep);
      },
+     // 点击link页面右上角的菜单项的槽函数
      handleCommand(command) {
        this.$message('click on item ' + command);
       },
@@ -165,7 +173,7 @@
                         },
                         //接收到消息的回调函数，消息的具体内容在message中
                         message=>{
-                          if(message="{have received}"){
+                          if(message=="{have received}"){
                            this.mutationPositionOfXAxis(120);
                            // this.positionOfAxis.YAxis='200.3'
                           }
@@ -245,7 +253,6 @@
       },//linkToServer点击槽函数的结束括号
 
       openHomePage(){
-        console.log(123);
         this.$router.push('/home');
       }
    }
