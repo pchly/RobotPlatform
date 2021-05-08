@@ -1,6 +1,9 @@
 const mutations={
   mutationPositionOfXAxis:function(state,payload){
     state.positionOfAxis.XAxis=payload;
+  },
+  mutationServerIp:function(state,payload){
+    state.serverAndLinkInfo.ip=payload;
   }
     // 用法示例
     // mutationIsShowMoreMenus:function(state,payload){
