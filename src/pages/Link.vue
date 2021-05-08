@@ -145,62 +145,100 @@
      //连接到服务器函数，进行webSocket的实例初始化
      linkToServer(){
           if(this.serverAndLinkInfo.linkButtonText=="断开连接"){
-               //如果是断开连接，则直接发送close关闭服务器
+           //如果是断开连接，则直接发送close关闭服务器
            WSocket.send("close");
+           //如果是断开连接，则直接关闭客户端的ws
+           WSocket.close();
           }else{
                //WebSocket自定义的初始化函数
-                 WSocket.init({ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port},
-              //服务器连接成功的生命周期函数
-                  openevent=>{
-                  //openevent为回调参数，里面包含各种连接信息
-                  // console.log(openevent);
-                  console.log('opened');
-                  this.serverAndLinkInfo.linkButtonType="danger";
-                  this.serverAndLinkInfo.linkButtonText='断开连接';
-                  this.serverAndLinkInfo.haveEverLink=true;
-                   this.$router.push('/home');
-                  },
-                  //接收到消息的回调函数，消息的具体内容在message中
-                  message=>{
-                    if(message="{have received}"){
-                     this.mutationPositionOfXAxis(120);
-                     // this.positionOfAxis.YAxis='200.3'
-                    }
-                      if(this.receivedMessage=='')
-                      {
-                          this.receivedMessage+=message;
-                      }else{
-                          this.receivedMessage+="\n"+message;
-                      }
-
-                  console.log("enter reciver msg :");
-                  console.log(message);
-                  console.log('have reciver the above msg');
-                  },
-                  //出现错误的回调函数，具体错误信息在error参数里
-                  error=>{
-                  console.log(error);
-                  console.log('have error');
-                  this.$alert('服务器连接失败', '错误信息', {
-                          confirmButtonText: '确定',
-                          callback: () => {
-                              this.serverAndLinkInfo.linkButtonType="success";
-                                  }
-                      });
-                  },
-                  //断开连接的回调函数，具体信息在closeevent中
-                  closeevent=>{
-                  console.log(closeevent);
-                  console.log('closed');
-                  if(this.serverAndLinkInfo.haveEverLink){
-                      this.$alert('服务器关闭', '信息提示', {
-                          confirmButtonText: '确定',
-                          callback: () => {
-                              this.serverAndLinkInfo.linkButtonText='连接服务器';
-                              this.serverAndLinkInfo.linkButtonType="success"
+                 WSocket.init({ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port,portAuto:this.serverAndLinkInfo.portAuto},
+              //交互通信ws的事件函数
+                    //服务器连接成功的生命周期函数
+                        openevent=>{
+                        //openevent为回调参数，里面包含各种连接信息
+                        // console.log(openevent);
+                        console.log('opened');
+                        this.serverAndLinkInfo.linkButtonType="danger";
+                        this.serverAndLinkInfo.linkButtonText='断开连接';
+                        this.serverAndLinkInfo.haveEverLink=true;
+                         this.$router.push('/home');
+                        },
+                        //接收到消息的回调函数，消息的具体内容在message中
+                        message=>{
+                          if(message="{have received}"){
+                           this.mutationPositionOfXAxis(120);
+                           // this.positionOfAxis.YAxis='200.3'
                           }
-                      });
-                  }
+                            if(this.receivedMessage=='')
+                            {
+                                this.receivedMessage+=message;
+                            }else{
+                                this.receivedMessage+="\n"+message;
+                            }
+
+                        console.log("enter reciver msg :");
+                        console.log(message);
+                        console.log('have reciver the above msg');
+                        },
+                        //出现错误的回调函数，具体错误信息在error参数里
+                        error=>{
+                        console.log(error);
+                        console.log('have error');
+                        this.$alert('服务器连接失败', '错误信息', {
+                                confirmButtonText: '确定',
+                                callback: () => {
+                                    this.serverAndLinkInfo.linkButtonType="success";
+                                        }
+                            });
+                        },
+                        //断开连接的回调函数，具体信息在closeevent中
+                        closeevent=>{
+                        console.log(closeevent);
+                        console.log('closed');
+                        if(this.serverAndLinkInfo.haveEverLink){
+                            this.$alert('服务器关闭', '信息提示', {
+                                confirmButtonText: '确定',
+                                callback: () => {
+                                    this.serverAndLinkInfo.linkButtonText='连接服务器';
+                                    this.serverAndLinkInfo.linkButtonType="success"
+                                }
+                            });
+                        }
+                  //自动上报数据ws的事件函数
+                        //服务器连接成功的生命周期函数
+                        openevent=>{
+                          //openevent为回调参数，里面包含各种连接信息
+                          console.log('自动上报数据ws连接成功');
+                        },
+                        //接收到消息的回调函数，消息的具体内容在message中
+                        message=>{
+                          // 解析二进制数据需要通过FileReader读取数据
+                          let imgReader = new FileReader();
+                          // FileReader读取数据后将数据传出
+                          imgReader.onload = function(event){
+                            imgTextData = imgReader.result;//内容就在这里
+                          };
+                          // 以文本方式读取二进制数据
+                          imgReader.readAsText(message.slice(243,message.length),'utf8');
+                          //接收到的数据传递给全局变量，供其他页面使用
+                          // this.autoUpdateMessage.data=message;
+                          // 解析图像数据
+                          this.autoUpdateMessage.imgData='data:image/jpg;base64,'+ imgTextData;
+                          // console.log("自动上报的数据：");
+                          // console.log(this.autoUpdateMessage.data);
+                          // console.log("自动上报的图像数据：");
+                          // console.log(this.autoUpdateMessage.imgData);
+                        },
+                        //出现错误的回调函数，具体错误信息在error参数里
+                        error=>{
+                          console.log(error);
+                          console.log('自动上报数据WS出现错误');
+                        },
+                        //断开连接的回调函数，具体信息在closeevent中
+                        closeevent=>{
+                          console.log(closeevent);
+                          console.log('自动上报数据WS已关闭');
+                        }
                });//webSocket初始化init函数的右括号
 
           }//else的结束括号
