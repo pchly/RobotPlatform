@@ -32,9 +32,12 @@ const store=new Vuex.Store({
             XAxis:'123',
             YAxis:'456'
           },
+          // 自动上报的数据
           autoUpdateMessage:{
-            data:'',
-            imgData:''
+            // 机器人状态初始化为全零数组
+            robotStateData:new Uint8Array(243).fill(0),
+            // 图像数据初始化为相机图片
+            imgData:require('../assets/vision.png')
           }
           // 示例数据
             // topics:[
