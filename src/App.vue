@@ -19,6 +19,8 @@ import {mapState,mapGetters,mapMutations} from 'vuex';
 //网上的有个开源的  ’回到顶部‘  的组件
 import vmBackTop from 'vue-multiple-back-top';
 
+
+
 export default {
   name: 'app',
   //当按需引入vux组件时，需要在components里面注册
