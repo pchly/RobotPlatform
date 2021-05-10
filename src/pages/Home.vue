@@ -45,6 +45,8 @@ import WSocket from '../socket.js';
 import {mapState,mapGetters,mapMutations} from 'vuex';
 // 创建存储图像文本数据的变量
 let imgTextData='';
+// 创建存储机器人状态数据的变量
+let robotStateData='';
 
 export default {
   name:'home',
@@ -149,20 +151,25 @@ export default {
           message=>{
             // 解析二进制数据需要通过FileReader读取数据
             let imgReader = new FileReader();
+            let robotStateReader = new FileReader();
             // FileReader读取数据后将数据传出
             imgReader.onload = function(event){
-              imgTextData = imgReader.result;//内容就在这里
+              // 多层嵌套无法识别this变量，图像数据传递给中间变量
+              imgTextData = imgReader.result;
             };
-            // 以文本方式读取二进制数据
+            robotStateReader.onload = function(event){
+              // 将ArrayBuffer对象解析为8位无符号整型数组
+              robotStateData = new Uint8Array(robotStateReader.result);
+            };
+            // 以文本方式读取图像的二进制数据，按照utf-8解码得到base64编码的字符串
             imgReader.readAsText(message.slice(243,message.length),'utf8');
+            // 读取机器人状态的二进制数据，保存为ArrayBuffer对象
+            robotStateReader.readAsArrayBuffer(message.slice(0,243));
             //接收到的数据传递给全局变量，供其他页面使用
-            // this.autoUpdateMessage.data=message;
-            // 解析图像数据
-            this.autoUpdateMessage.imgData='data:image/jpg;base64,'+ imgTextData;
+            this.autoUpdateMessage.robotStateData = robotStateData;
+            this.autoUpdateMessage.imgData = imgTextData;
             // console.log("自动上报的数据：");
-            // console.log(this.autoUpdateMessage.data);
-            // console.log("自动上报的图像数据：");
-            // console.log(this.autoUpdateMessage.imgData);
+            // console.log(this.autoUpdateMessage.robotStateData);
           },
           //出现错误的回调函数，具体错误信息在error参数里
           error=>{
@@ -173,6 +180,9 @@ export default {
           closeevent=>{
             console.log(closeevent);
             console.log('自动上报数据WS已关闭');
+            // 通信断开重新初始化全局变量
+            this.autoUpdateMessage.robotStateData = new Uint8Array(243).fill(0);
+            this.autoUpdateMessage.imgData = require("../assets/vision.png");
           }
         );//webSocket初始化init函数的右括号
       }//else的结束括号

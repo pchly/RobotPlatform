@@ -2,10 +2,10 @@
     <div>
        <el-button-group>
          <el-button @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
+         <p>相机状态：{{autoUpdateMessage.robotStateData[241]}}</p>
        </el-button-group>
         <hr />
-       <!-- <img src="../assets/vision.png" alt=""> -->
-       <img class="videoImg"  width="640"  height="480" :src="autoUpdateMessage.imgData" alt="">
+       <img class="videoImg"  width="640"  height="480" :src=autoUpdateMessage.imgData alt="">
     </div>
 </template>
 <script>
