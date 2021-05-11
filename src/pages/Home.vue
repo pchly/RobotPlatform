@@ -3,7 +3,7 @@
         <div class="wrap">
           <el-container>
             <!-- 头部 -->
-            <el-header>EZCobot</el-header>
+            <el-header> <i @click="routeToLinkPage" class="el-icon-sort" style="float: left;line-height: 60px;color: white;"></i>EZCobot</el-header>
             <el-container>
               <!-- 侧边 -->
               <el-aside width="200px">
@@ -67,6 +67,10 @@ export default {
     routeTo(index){
       this.$router.push('/'+this.headers[index].name);
     },
+    routeToLinkPage(){
+      console.log("1233")
+      this.$router.push('/link');
+    },
     //连接到服务器函数，进行webSocket的实例初始化
     linkToServer()
     {
@@ -84,7 +88,7 @@ export default {
         WSocket.init(
           // {ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port,portAuto:30002},
           {ip:this.serverAndLinkInfo.ip,port:502,portAuto:30002},
-          
+
           //交互通信ws的事件函数
           //服务器连接成功的生命周期函数
           openevent=>{
