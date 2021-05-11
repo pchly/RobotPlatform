@@ -22,7 +22,8 @@ const store=new Vuex.Store({
           //主页连接服务器的相关参数
           serverAndLinkInfo:{
             ip:'',//服务器ip地址
-            port:'',//服务器交互通信端口号
+            port:'8888',//服务器交互通信端口号
+            portAuto:'8889',//服务器自动上报数据端口号
             linkButtonType:'success',//连接服务器按钮的类型：danger和success对应红色和绿色
             linkButtonText:'连接服务器',//连接服务器按钮的文本
             haveEverLink:false//是否已经连接服务器的标志位
@@ -30,6 +31,13 @@ const store=new Vuex.Store({
           positionOfAxis:{
             XAxis:'123',
             YAxis:'456'
+          },
+          // 自动上报的数据
+          autoUpdateMessage:{
+            // 机器人状态初始化为全零数组
+            robotStateData:new Uint8Array(243).fill(0),
+            // 图像数据初始化为相机图片
+            imgData:require('../assets/vision.png')
           }
           // 示例数据
             // topics:[

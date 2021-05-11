@@ -8,7 +8,14 @@ const routes = [
       {
         path:'/',
         //路由转接redirect
-        redirect: '/home'
+        redirect: '/link'
+      },
+      //link页面
+      {
+        path:'/link',
+        name:'link',
+        component:() => import("../pages/Link.vue"),
+        props:true
       },
       //home页面
       {
