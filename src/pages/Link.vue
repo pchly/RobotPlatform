@@ -174,8 +174,7 @@
                         //接收到消息的回调函数，消息的具体内容在message中
                         message=>{
                           if(message=="{have received}"){
-                           this.mutationPositionOfXAxis(120);
-                           // this.positionOfAxis.YAxis='200.3'
+                           // this.mutationPositionOfXAxis(120);
                           }
                             if(this.receivedMessage=='')
                             {
@@ -272,7 +271,7 @@
 /* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
 @media only screen and (min-height:480px) and (max-height:900px){
 .rootContain{
-	  height: 720px;
+	  height: 780px;
 	}
 }
 /* 高度最小像素901像素 即高度大于900时*/

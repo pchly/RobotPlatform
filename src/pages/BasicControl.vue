@@ -15,6 +15,8 @@
 <script>
   //引入WebSocke
   import WSocket from '../socket.js';
+  //引入机器人运动控制函数库文件
+  import RBC from '../robotControl.js'
   //按照map的方法使用vuex的state数据
   import {mapState,mapGetters,mapMutations} from 'vuex';
   export default {
@@ -37,7 +39,9 @@
       //基础控制页面发送数据的函数
       sendSocketMsgInBasicControl(){
             //发送消息的函数
-            WSocket.send("this.sendMessage");
+            // WSocket.send("this.sendMessage");
+            //执行运动控制函数
+            RBC.xMove('200');
       }
     }
   }
