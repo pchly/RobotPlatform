@@ -22,7 +22,7 @@ module.exports = {
 
   proxyTable: {
     '/jupyter': {
-          target: 'http://192.168.1.116:8888', // 接口地址
+          target: 'http://10.21.222.59:8888', // 接口地址
           changeOrigin: true, // 是否跨域
           pathRewrite: { // 转发
           '^/jupyter': ''},
