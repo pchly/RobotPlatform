@@ -32,6 +32,16 @@ const store=new Vuex.Store({
             XAxis:'123',
             YAxis:'456'
           },
+          firstRender:false,
+          positionOfAxisInSimulate:{
+            "oneAxis":'0.0',
+            "twoAxis":'0.0',
+            "threeAxis":'0.0',
+            "fourAxis":'0.0',
+            "fiveAxis":'0.0',
+            "sixAxis":'0.0',
+            "senveAxis":'0.0'
+          },
           // 自动上报的数据
           autoUpdateMessage:{
             // 机器人状态初始化为全零数组
