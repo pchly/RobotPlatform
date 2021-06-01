@@ -1,7 +1,7 @@
 <template>
   <div class="rootContain border">
         <!-- 顶部内容开始 -->
-        <div class="container-fluid " style="height: 10%;">
+        <div class="container-fluid" style="height: 10%;">
           <div class="row mt-4 border-bottom align-items-end pb-2 " >
             <div class="col-6 text-left">
               <img class="img-fluid" style="height: 40px;" src="../assets/Link-img/logo.png" />
@@ -33,7 +33,7 @@
               <!-- 第一步 -->
               <div class="col-3 " :class="isOneStep">
                 <figure class="figure" id="1" @click="clickedStepCb">
-                  <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid rounded-circle" alt="1">
+                  <img src="../assets/Link-img/link_01.gif" class="figure-img img-fluid " alt="1">
                   <figcaption class="figure-caption text-center font-weight-bolder">1.开机</figcaption>
                 </figure>
               </div>
@@ -46,7 +46,7 @@
               <!-- 第二步 -->
               <div class="col-3 " :class="isTwoStep">
                 <figure class="figure" id="2" @click="clickedStepCb">
-                  <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid  rounded-circle" alt="2">
+                  <img src="../assets/Link-img/link_02.gif" class="figure-img img-fluid  " alt="2">
                   <figcaption class="figure-caption text-center font-weight-bolder">2.连接网线</figcaption>
                 </figure>
               </div>
@@ -59,7 +59,7 @@
               <!-- 第三步 -->
               <div class="col-3 " :class="isThreeStep">
                 <figure class="figure" id="3" @click="clickedStepCb">
-                  <img src="../assets/Link-img/link-02.gif" class="figure-img img-fluid rounded-circle " alt="3">
+                  <img src="../assets/Link-img/link_03.gif" class="figure-img img-fluid  " alt="3">
                   <figcaption class="figure-caption text-center font-weight-bolder">3.输入IP地址</figcaption>
                 </figure>
               </div>
@@ -271,7 +271,7 @@
 /* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
 @media only screen and (min-height:480px) and (max-height:900px){
 .rootContain{
-	  height: 780px;
+	  height: 710px;
 	}
 }
 /* 高度最小像素901像素 即高度大于900时*/
