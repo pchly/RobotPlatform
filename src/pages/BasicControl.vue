@@ -64,9 +64,10 @@
             </div>
           </div><!-- 侧边状态显示区域的结束 -->
           <div class="col-9 "><!-- 控制按钮区域的开始 -->
-            <el-tabs type="border-card">
-              <el-tab-pane>
-                <span slot="label"><i class="el-icon-s-operation"></i>仿真控制</span>
+            <el-tabs type="border-card"><!-- 运动控制选项卡 -->
+              <el-tab-pane><!-- 仿真运动控制页面部分 -->
+                <span slot="label"><i class="el-icon-s-operation"></i>仿真控制</span><!-- 分组标题 -->
+                <!-- 控制滑块和计数器组 -->
                 <div class=" row text-center align-items-center"
                   style="height: 60px;"
                   v-for="(item,index) in controlButtonText" :key=index>
@@ -78,68 +79,104 @@
                     v-model="positionOfAxisInSimulate[index]"
                     :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
                 </div>
+                <!-- 回原点、输入备注、记录数据等按钮所在行 -->
                 <div class="row">
                   <div class="col text-right">
-                   <el-button type="primary"
-                   @click="backToZeroPosution"
-                   icon="el-icon-refresh-right" circle></el-button>
-                   <el-input v-model="remarksText"
-                   style="display: inline-block;width: 200px;"
-                   placeholder="请输入备注内容"></el-input>
-                   <el-button type="primary"
-                   icon="el-icon-s-order" @click="addExeclDataSimulate" circle></el-button>
-                   <download-excel
-                        style="display: inline-block;"
-                        :data="outExeclDataSimulate"
-                        :fields="outExeclFields"
-                        name = "关节数据">
-                       <el-button type="primary"
-                       icon="el-icon-download" circle></el-button>
-                   </download-excel>
-                 </div>
+                      <!-- 回到原点 -->
+                      <el-tooltip class="item" effect="dark" content="回到原点" placement="bottom">
+                          <el-button type="primary"
+                          @click="backToZeroPosution"
+                          icon="el-icon-refresh-right" circle style="font-size: 1rem;" alet="12">
+                          </el-button>
+                      </el-tooltip>
+                      <!-- 输入备注 -->
+                     <el-input v-model="remarksTextSimulate"
+                     style="display: inline-block;width: 200px;"
+                     placeholder="请输入备注内容">
+                     </el-input>
+                     <!-- 记录数据按钮 -->
+                     <el-tooltip class="item" effect="dark" content="记录数据" placement="bottom">
+                         <el-button type="primary"
+                         icon="el-icon-s-order" @click="addExeclDataSimulate" circle style="font-size: 1rem;">
+                         </el-button>
+                     </el-tooltip>
+                      <!-- 保存EXECL文件按钮 -->
+                     <download-excel
+                          style="display: inline-block;"
+                          :data="outExeclDataSimulate"
+                          :fields="outExeclFields"
+                          name = "关节数据">
+                          <el-tooltip class="item" effect="dark" content="保存文件" placement="bottom">
+                             <el-button type="primary"
+                             icon="el-icon-folder-add" circle style="font-size: 1rem;">
+                             </el-button>
+                          </el-tooltip>
+                     </download-excel>
+                      <!-- 打开EXECL文件按钮 -->
+                     <label class="upLoadExeclFile" for="fileinp">
+                       <el-tooltip class="item" effect="dark" content="打开数据文档" placement="bottom">
+                          <el-button circle id="btn" type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                          </el-button>
+                       </el-tooltip>
+                       <input type="file" id="fileinp" ref="upload" accept=".xls,.xlsx" class="outputlist_upload">
+                     </label>
+                  </div>
+                 </div><!-- 按钮控制行的结束 -->
+                   <!-- 数据表格所在行 -->
                   <div class="row w-100" style="margin: 10px auto;">
                     <div class="col  border">
+                       <!-- 数据表格 -->
                        <el-table
                           :data="outExeclDataSimulate"
                           height="250"
                           style="width: 100%"
                           >
+                          <!-- 第一列 -->
                           <el-table-column
                             prop="type"
                             label="序号">
                           </el-table-column>
+                          <!-- 第二列 -->
                           <el-table-column
                             prop="oneAxis"
                             label="1轴" >
                           </el-table-column>
+                          <!-- 第三列 -->
                           <el-table-column
                             prop="twoAxis"
                             label="2轴">
                           </el-table-column>
+                          <!-- 第四列 -->
                           <el-table-column
                             prop="threeAxis"
                             label="3轴">
                           </el-table-column>
+                          <!-- 第五列 -->
                           <el-table-column
                             prop="fourAxis"
                             label="4轴">
                           </el-table-column>
+                          <!-- 第六列 -->
                           <el-table-column
                             prop="fiveAxis"
                             label="5轴">
                           </el-table-column>
+                          <!-- 第七列 -->
                           <el-table-column
                             prop="sixAxis"
                             label="6轴">
                           </el-table-column>
+                          <!-- 第八列 -->
                           <el-table-column
                             prop="senveAxis"
                             label="7轴">
                           </el-table-column>
+                          <!-- 第九列 -->
                           <el-table-column
                             prop="remarks"
                             label="备注">
                           </el-table-column>
+                          <!-- 第十列 -->
                           <el-table-column label="操作" width="180">
                                 <template slot-scope="scope">
                                   <el-button
@@ -154,11 +191,36 @@
                         </el-table>
                     </div>
                   </div>
-                </div>
               </el-tab-pane>
+              <!-- 实物控制tab页面 -->
               <el-tab-pane>
-                <span slot="label"><i class="el-icon-s-check"></i>实物控制</span>
-                我的行程
+                  <span slot="label"><i class="el-icon-s-check"></i>实物控制</span>
+                  <!-- 控制按钮和计数器组 -->
+                  <div class=" row text-center align-items-center">
+                    <div class="col-9">
+                      12
+                    </div>
+                    <div class=" col-3">
+                      <el-input-number
+                      v-for="(item,index) in controlButtonText" :key=index
+                       @change="controlAxisRotate(index)"
+                        v-model="positionOfAxisInSimulate[index]"
+                        :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
+                    </div>
+                  </div>
+
+                  <!-- 第二行所在行 -->
+                  <div class="row">
+                    <div class="col text-right">
+                      第二行
+                    </div><!-- 按钮控制行的结束 -->
+                  </div>
+                   <!-- 第三行所在行 -->
+                  <div class="row w-100 bg-danger" style="margin: 10px auto;">
+                    <div class="col  border">
+                      第三行
+                    </div>
+                  </div>
               </el-tab-pane>
               <el-tab-pane>
                 <span slot="label"><i class="el-icon-thumb"></i>拖动控制</span>
@@ -182,8 +244,12 @@
   import RBC from '../robotControl.js'
   //按照map的方法使用vuex的state数据
   import {mapState,mapGetters,mapMutations} from 'vuex';
+  //引入读取本地文件的库
+  import XLSX from 'xlsx'
   export default {
     name:'basicControl',
+    components:{
+    },
     data:function(){
       return{
         camera: null,
@@ -218,17 +284,18 @@
         remarksTextSimulate:'',
         theCountOfDataSimulate:0,
         outExeclFields: {  //导出Excel表格的表头设置
-                    '序号': 'type',
-        	          '1轴': 'oneAxis',
-        	          '2轴': 'twoAxis',
-        	          '3轴': 'threeAxis',
-        	          '4轴': 'fourAxis',
-        	          '5轴': 'fiveAxis',
-                    '6轴': 'sixAxis',
-                    '7轴': 'senveAxis',
-                    '备注':'remarks'
-                  },
+          '序号': 'type',
+          '一轴': 'oneAxis',
+          '二轴': 'twoAxis',
+          '三轴': 'threeAxis',
+          '四轴': 'fourAxis',
+          '五轴': 'fiveAxis',
+          '六轴': 'sixAxis',
+          '七轴': 'senveAxis',
+          '备注':'remarks'
+        },
         outExeclDataSimulate:[],
+        dataSimulateFromExeclFile:[],
         threeViewWidth:450,
         threeVieHeight:350,
         endMechanismValue:true
@@ -247,6 +314,9 @@
       this.init();
       this.setWindown();
       console.log(99999999999);
+      this.$refs.upload.addEventListener('change', e => {//绑定监听表格导入事件
+          this.readExcel(e);
+          })
     },
     updated(){
       console.log('update');
@@ -269,7 +339,7 @@
          		"fiveAxis":this.positionOfAxisInSimulate[4],
          		"sixAxis":this.positionOfAxisInSimulate[5],
          		"senveAxis":this.positionOfAxisInSimulate[6],
-         		"remarks":this.remarksText
+         		"remarks":this.remarksTextSimulate
          	}
 
         // this.theCountOfDataSimulate+=1;
@@ -295,6 +365,54 @@
                 this.outExeclDataSimulate[i].type=parseInt(i)+1
              }
             console.log(this.outExeclDataSimulate);
+        },
+        readExcel(e) {//表格导入
+            var that = this;
+            const files = e.target.files;
+            console.log(files);
+            if(files.length<=0){//如果没有文件名
+            return false;
+            }else if(!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())){
+            this.$Message.error('上传格式不正确，请上传xls或者xlsx格式');
+            return false;
+            }
+            const fileReader = new FileReader();
+            fileReader.onload = (ev) => {
+            try {
+                const data = ev.target.result;
+                const workbook = XLSX.read(data, {
+                type: 'binary'
+                });
+                const wsname = workbook.SheetNames[0];//取第一张表
+                const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);//生成json表格内容
+                console.log('1001');
+                console.log(ws);
+                that.dataSimulateFromExeclFile = [];//清空接收数据
+                //编辑数据
+                for(var i= 0;i<ws.length;i++){
+                var sheetData = {
+                    "type":ws[i].序号,
+                    "oneAxis":ws[i].一轴,
+                    "twoAxis":ws[i].二轴,
+                    "threeAxis":ws[i].三轴,
+                    "fourAxis":ws[i].四轴,
+                    "fiveAxis":ws[i].五轴,
+                    "sixAxis":ws[i].六轴,
+                    "senveAxis":ws[i].七轴,
+                    "remarks":ws[i].备注
+                }
+                that.dataSimulateFromExeclFile.push(sheetData);
+                }
+                console.log('98745');
+                console.log(that.dataSimulateFromExeclFile);
+                that.outExeclDataSimulate=that.dataSimulateFromExeclFile;
+                this.$refs.upload.value = '';
+
+            } catch (e) {
+                return false;
+            }
+            };
+            fileReader.readAsBinaryString(files[0]);
         },
       // 渲染函数
         renderFrame() {
@@ -739,6 +857,20 @@
 
       width: 450px;
     }
+
+.upLoadExeclFile{
+            position: relative;
+        }
+        #fileinp{
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+        #btn{
+            margin-right: 5px;
+            z-index: 10;
+        }
 
 
 /* 媒体查询功能 */
