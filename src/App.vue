@@ -31,12 +31,12 @@ export default {
   },
   //挂载完成的生命周期函数
   mounted(){
-    
+
   },
   computed:{
     //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
-    ...mapGetters(['moreMenus']),
-    ...mapState(['headers']),
+    // ...mapGetters(['moreMenus']),
+    // ...mapState(['headers']),
   },
   data:function(){
     return{
@@ -48,9 +48,9 @@ export default {
     var loginStatus=window.localStorage.getItem('loginStatus');
     if(loginStatus){
       //使用map方法后直接调用mutation定义的函数
-      this.mutationLogin();
-      this.mutationLoginName(window.localStorage.getItem('loginname'));
-      this.mutationAccessToken(window.localStorage.getItem('accesstoken'));
+      // this.mutationLogin();
+      // this.mutationLoginName(window.localStorage.getItem('loginname'));
+      // this.mutationAccessToken(window.localStorage.getItem('accesstoken'));
     }
   },
   methods: {

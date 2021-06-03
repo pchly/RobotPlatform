@@ -5,8 +5,8 @@ const mutations={
   mutationServerIp:function(state,payload){
     state.serverAndLinkInfo.ip=payload;
   },
-  mutationfirstRender:function(state,payload){
-    state.firstRender=payload;
+  mutationOutExeclDataSimulate:function(state,payload){
+    state.outExeclDataSimulate=payload;
   }
     // 用法示例
     // mutationIsShowMoreMenus:function(state,payload){

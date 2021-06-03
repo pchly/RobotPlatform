@@ -10,14 +10,14 @@
       <div class="container-fluid" style="height: 92%;"><!-- 中间区域的开始 -->
         <div class="row h-100  border">
           <div class="col-3"><!-- 侧边状态显示区域的开始 -->
-            <div class="row" style="height: 40%;"><!-- 仿真机械臂显示区域 -->
+            <div class="row border" style="height: 40%;"><!-- 仿真机械臂显示区域 -->
               <div class="col text-center h-100"
               id="container" ref="piuuu"
               style="width: 500px;height: 350px;padding: 0px;"></div>
             </div>
-            <div class="row justify-content-center" style="height: 60%;background-color: #D4D4D4;"><!-- 底部机械臂状态显示区域 -->
+            <div class="row justify-content-center" style="height: 16%;background-color: #D4D4D4;"><!--第一行 底部机械臂状态显示区域 -->
               <div class="col-5  stateCardLeft  border"><!-- 位置及姿态的显示区域 -->
-                <div class="positionCard text-center"><!-- 位置卡片开始 -->
+                <div class="CardContent text-center"><!-- 位置卡片开始 -->
                     <div>
                       <span class="col cardTitle" >位置</span>
                     </div>
@@ -27,7 +27,21 @@
                         <div>Z:<span class="posiAndPoseData">100</span> mm</div>
                     </div>
                 </div><!-- 位置卡片结束 -->
-                <div class="postureCard text-center"><!-- 姿态卡片开始 -->
+              </div>
+              <div class="col-5 stateCardLeft border">
+                <div class="CardContent text-center w-100  "><!-- 末端机构类型卡片开始 -->
+                    <div>
+                      <span class="col cardTitle ">末端机构类型</span>
+                    </div>
+                    <div>
+                        <img src="../assets/Link-img/link-02.gif" style="width: 60%;" />
+                    </div>
+                </div><!-- 末端机构类型卡片结束 -->
+              </div>
+            </div>
+            <div class="row justify-content-center" style="height: 16%;background-color: #D4D4D4;"><!--  第二行 底部机械臂状态显示区域 -->
+              <div class="col-5  stateCardLeft  border"><!-- 位置及姿态的显示区域 -->
+                <div class="CardContent text-center"><!-- 姿态卡片开始 -->
                     <div>
                       <span class="col cardTitle">姿态</span>
                     </div>
@@ -39,15 +53,7 @@
                 </div><!-- 姿态卡片结束 -->
               </div>
               <div class="col-5 stateCardLeft border">
-                <div class="positionCard text-center w-100 p-0 m-0 "><!-- 末端机构类型卡片开始 -->
-                    <div>
-                      <span class="col cardTitle ">末端机构类型</span>
-                    </div>
-                    <div>
-                        <img src="../assets/Link-img/link-02.gif" style="width: 80%;" />
-                    </div>
-                </div><!-- 末端机构类型卡片结束 -->
-                <div class="postureCard text-center w-100 p-0 m-0"><!-- 末端机构状态卡片开始 -->
+                <div class="CardContent text-center w-100 "><!-- 末端机构状态卡片开始 -->
                     <div>
                       <span class="col cardTitle">末端机构状态</span>
                     </div>
@@ -62,9 +68,11 @@
                 </div><!-- 末端机构状态卡片结束 -->
               </div>
             </div>
+            <div class="row justify-content-center" style="height: 28%;background-color: #D4D4D4;"><!--第三行 底部机械臂状态显示区域 -->
+            </div>
           </div><!-- 侧边状态显示区域的结束 -->
-          <div class="col-9 "><!-- 控制按钮区域的开始 -->
-            <el-tabs type="border-card"><!-- 运动控制选项卡 -->
+          <div class="col-9"><!-- 控制按钮区域的开始 -->
+            <el-tabs type="border-card" style="height: 100%;"><!-- 运动控制选项卡 -->
               <el-tab-pane><!-- 仿真运动控制页面部分 -->
                 <span slot="label"><i class="el-icon-s-operation"></i>仿真控制</span><!-- 分组标题 -->
                 <!-- 控制滑块和计数器组 -->
@@ -82,6 +90,7 @@
                 <!-- 回原点、输入备注、记录数据等按钮所在行 -->
                 <div class="row">
                   <div class="col text-right">
+                       <el-divider content-position="left">数据记录</el-divider>
                       <!-- 回到原点 -->
                       <el-tooltip class="item" effect="dark" content="回到原点" placement="bottom">
                           <el-button type="primary"
@@ -115,7 +124,7 @@
                       <!-- 打开EXECL文件按钮 -->
                      <label class="upLoadExeclFile" for="fileinp">
                        <el-tooltip class="item" effect="dark" content="打开数据文档" placement="bottom">
-                          <el-button circle id="btn" type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                          <el-button circle id="upLoadBtn" type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                           </el-button>
                        </el-tooltip>
                        <input type="file" id="fileinp" ref="upload" accept=".xls,.xlsx" class="outputlist_upload">
@@ -196,9 +205,52 @@
               <el-tab-pane>
                   <span slot="label"><i class="el-icon-s-check"></i>实物控制</span>
                   <!-- 控制按钮和计数器组 -->
-                  <div class=" row text-center align-items-center">
-                    <div class="col-9">
-                      12
+                  <div class=" row text-center align-items-top">
+                    <div class="col-9  RealRobotControlButton border">
+                      <label class="ControlButton zPosBtn" for="zPosBtn">
+                           <el-button class="controlBtnDown" circle id="zPosBtn"
+                           @click="zControlPos"
+                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                           </el-button>
+                        <img class="controlBtnUp" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
+                        <img class="controlBtnUpHover" src="../assets/basicControlImge/Z-.png" id="zPosImg" />
+                      </label>
+                      <label class="ControlButton zNegBtn" for="zNegBtn">
+                           <el-button class="controlBtnDown" circle id="zNegBtn"
+                           @click="zControlPos"
+                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                           </el-button>
+                        <img  class="controlBtnUp" src="../assets/basicControlImge/Z-.png" id="zNegImg" />
+                        <img class="controlBtnUpHover" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
+                      </label>
+                      <label class="ControlButton xPosBtn" for="xPosBtn">
+                           <el-button class="controlBtnDown" circle id="xPosBtn"
+                           @click="zControlPos"
+                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                           </el-button>
+                        <img  class="controlBtnUp" src="../assets/basicControlImge/X+.png" id="xPosImg" />
+                      </label>
+                      <label class="ControlButton xNegBtn" for="xNegBtn">
+                           <el-button class="controlBtnDown" circle id="xNegBtn"
+                           @click="zControlPos"
+                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                           </el-button>
+                        <img class="controlBtnUp" src="../assets/basicControlImge/X-.png" id="xNegImg" />
+                      </label>
+                      <label class="ControlButton yPosBtn" for="yPosBtn">
+                           <el-button class="controlBtnDown" circle id="yPosBtn"
+                           @click="zControlPos"
+                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                           </el-button>
+                        <img class="controlBtnUp" src="../assets/basicControlImge/Y+.png" id="yPosImg" />
+                      </label>
+                      <label class="ControlButton yNegBtn" for="yNegBtn">
+                           <el-button class="controlBtnDown" circle id="yNegBtn"
+                           @click="zControlPos"
+                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                           </el-button>
+                        <img class="controlBtnUp"src="../assets/basicControlImge/Y-.png" id="yNegImg" />
+                      </label>
                     </div>
                     <div class=" col-3">
                       <el-input-number
@@ -208,7 +260,6 @@
                         :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
                     </div>
                   </div>
-
                   <!-- 第二行所在行 -->
                   <div class="row">
                     <div class="col text-right">
@@ -294,7 +345,7 @@
           '七轴': 'senveAxis',
           '备注':'remarks'
         },
-        outExeclDataSimulate:[],
+        // outExeclDataSimulate:[],
         dataSimulateFromExeclFile:[],
         threeViewWidth:450,
         threeVieHeight:350,
@@ -304,13 +355,14 @@
     computed:{
       //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
       //引入的各个轴的位置数据positionOfAxis
-      ...mapState(['positionOfAxisInSimulate','firstRender']),
+      ...mapState(['positionOfAxisInSimulate','outExeclDataSimulate']),
       // v-mode双向绑定VUEX中的数据的正确方法
     },
     mounted(){
       console.log('12323');
       this.threeViewWidth=this.$refs.piuuu.offsetWidth;
       this.threeVieHeight=this.$refs.piuuu.offsetHeight;
+      // this.beforeInitClearPosition();
       this.init();
       this.setWindown();
       console.log(99999999999);
@@ -321,9 +373,13 @@
     updated(){
       console.log('update');
     },
+    beforeDestroy(){
+      console.log("destroy");
+      this.backToZeroPosution();
+    },
     methods:{
       //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
-      ...mapMutations(['mutationfirstRender']),
+      ...mapMutations(['mutationOutExeclDataSimulate']),
       //返回主页
       backToHome(){
         this.$router.push('/home');
@@ -366,74 +422,85 @@
              }
             console.log(this.outExeclDataSimulate);
         },
-        readExcel(e) {//表格导入
-            var that = this;
-            const files = e.target.files;
-            console.log(files);
-            if(files.length<=0){//如果没有文件名
-            return false;
-            }else if(!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())){
-            this.$Message.error('上传格式不正确，请上传xls或者xlsx格式');
-            return false;
-            }
-            const fileReader = new FileReader();
-            fileReader.onload = (ev) => {
-            try {
-                const data = ev.target.result;
-                const workbook = XLSX.read(data, {
-                type: 'binary'
-                });
-                const wsname = workbook.SheetNames[0];//取第一张表
-                const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);//生成json表格内容
-                console.log('1001');
-                console.log(ws);
-                that.dataSimulateFromExeclFile = [];//清空接收数据
-                //编辑数据
-                for(var i= 0;i<ws.length;i++){
-                var sheetData = {
-                    "type":ws[i].序号,
-                    "oneAxis":ws[i].一轴,
-                    "twoAxis":ws[i].二轴,
-                    "threeAxis":ws[i].三轴,
-                    "fourAxis":ws[i].四轴,
-                    "fiveAxis":ws[i].五轴,
-                    "sixAxis":ws[i].六轴,
-                    "senveAxis":ws[i].七轴,
-                    "remarks":ws[i].备注
-                }
-                that.dataSimulateFromExeclFile.push(sheetData);
-                }
-                console.log('98745');
-                console.log(that.dataSimulateFromExeclFile);
-                that.outExeclDataSimulate=that.dataSimulateFromExeclFile;
-                this.$refs.upload.value = '';
-
-            } catch (e) {
-                return false;
-            }
-            };
-            fileReader.readAsBinaryString(files[0]);
-        },
-      // 渲染函数
-        renderFrame() {
-            this.renderer.render(this.scene, this.camera); //执行渲染操作
-            requestAnimationFrame(this.renderFrame);//请求再次执行渲染函数render，渲染下一帧
-          },
-          // //定义窗口的设置
-           setWindown(){
-             var that=this;
-              //加入事件监听器,窗口自适应
-              window.addEventListener('resize', function(){
-                console.log(that.$refs)
-                that.threeViewWidth = that.$refs.piuuu.offsetWidth; //窗口宽度
-                // console.log(this.$refs.piuuu.offsetWidth);
-                that.threeVieHeight = that.$refs.piuuu.offsetHeight; //窗口高度
-                // console.log(that.threeViewWidth);
-                that.renderer.setSize(that.threeViewWidth,that.threeVieHeight);
-                that.camera.aspect = that.threeViewWidth/that.threeVieHeight;
-                that.camera.updateProjectionMatrix();
+      readExcel(e) {//表格导入
+          var that = this;
+          const files = e.target.files;
+          console.log(files);
+          if(files.length<=0){//如果没有文件名
+          return false;
+          }else if(!/\.(xls|xlsx)$/.test(files[0].name.toLowerCase())){
+          this.$Message.error('上传格式不正确，请上传xls或者xlsx格式');
+          return false;
+          }
+          const fileReader = new FileReader();
+          fileReader.onload = (ev) => {
+          try {
+              const data = ev.target.result;
+              const workbook = XLSX.read(data, {
+              type: 'binary'
               });
-            },
+              const wsname = workbook.SheetNames[0];//取第一张表
+              const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]);//生成json表格内容
+              console.log('1001');
+              console.log(ws);
+              that.dataSimulateFromExeclFile = [];//清空接收数据
+              //编辑数据
+              for(var i= 0;i<ws.length;i++){
+              var sheetData = {
+                  "type":ws[i].序号,
+                  "oneAxis":ws[i].一轴,
+                  "twoAxis":ws[i].二轴,
+                  "threeAxis":ws[i].三轴,
+                  "fourAxis":ws[i].四轴,
+                  "fiveAxis":ws[i].五轴,
+                  "sixAxis":ws[i].六轴,
+                  "senveAxis":ws[i].七轴,
+                  "remarks":ws[i].备注
+              }
+              that.dataSimulateFromExeclFile.push(sheetData);
+              }
+              console.log('98745');
+              console.log(that.dataSimulateFromExeclFile);
+              that.mutationOutExeclDataSimulate(that.dataSimulateFromExeclFile);
+              // that.outExeclDataSimulate=that.dataSimulateFromExeclFile;
+              this.$refs.upload.value = '';
+
+          } catch (e) {
+              return false;
+          }
+          };
+          fileReader.readAsBinaryString(files[0]);
+      },
+    // 渲染函数
+      renderFrame() {
+          this.renderer.render(this.scene, this.camera); //执行渲染操作
+          requestAnimationFrame(this.renderFrame);//请求再次执行渲染函数render，渲染下一帧
+        },
+        // //定义窗口的设置
+      setWindown(){
+           var that=this;
+            //加入事件监听器,窗口自适应
+            // this.$refs.piuuu.addEventListener('resize', function(){
+            //   console.log(that.$refs)
+            //   that.threeViewWidth = that.$refs.piuuu.offsetWidth; //窗口宽度
+            //   // console.log(this.$refs.piuuu.offsetWidth);
+            //   that.threeVieHeight = that.$refs.piuuu.offsetHeight; //窗口高度
+            //   // console.log(that.threeViewWidth);
+            //   that.renderer.setSize(that.threeViewWidth,that.threeVieHeight);
+            //   that.camera.aspect = that.threeViewWidth/that.threeVieHeight;
+            //   that.camera.updateProjectionMatrix();
+            // });
+            window.addEventListener('resize', function(){
+              console.log(that.$refs)
+              that.threeViewWidth = that.$refs.piuuu.offsetWidth; //窗口宽度
+              // console.log(this.$refs.piuuu.offsetWidth);
+              that.threeVieHeight = that.$refs.piuuu.offsetHeight; //窗口高度
+              // console.log(that.threeViewWidth);
+              that.renderer.setSize(that.threeViewWidth,that.threeVieHeight);
+              that.camera.aspect = that.threeViewWidth/that.threeVieHeight;
+              that.camera.updateProjectionMatrix();
+            });
+          },
       init: function() {
         // this.setWindown();
         let container = document.getElementById("container");
@@ -811,13 +878,38 @@
         this.positionOfAxisInSimulate[6]=0.0;
       },
       beforeInitClearPosition(){
-        this.oneRotateGroup.rotation.y=0.0;
-        this.twoRotateGroup.rotation.x=0.0;
-        this.threeRotateGroup.rotation.y=0.0;
-        this.fourRotateGroup.rotation.x=0.0;
-        this.fiveRotateGroup.rotation.y=0.0;
-        this.sixRotateGroup.rotation.x=0.0;
-        this.senveRotateGroup.rotation.y=0.0;
+        var oneA=this.positionOfAxisInSimulate[0];
+        var twoA=this.positionOfAxisInSimulate[1];
+        var threeA=this.positionOfAxisInSimulate[2];
+        var fourA=this.positionOfAxisInSimulate[3];
+        var fiveA=this.positionOfAxisInSimulate[4];
+        var sixA=this.positionOfAxisInSimulate[5];
+        var senveA=this.positionOfAxisInSimulate[6];
+        this.positionOfAxisInSimulate[0]=0.0;
+        this.positionOfAxisInSimulate[1]=0.0;
+        this.positionOfAxisInSimulate[2]=0.0;
+        this.positionOfAxisInSimulate[3]=0.0;
+        this.positionOfAxisInSimulate[4]=0.0;
+        this.positionOfAxisInSimulate[5]=0.0;
+        this.positionOfAxisInSimulate[6]=0.0;
+        this.oneRotateGroup.rotation.y=0.0;//绕axis轴旋转π/8;
+        this.twoRotateGroup.rotation.x=0.0;//绕axis轴旋转π/8;
+        this.fourRotateGroup.rotation.x=0.0;//绕axis轴旋转π/8;
+        this.fiveRotateGroup.rotation.y=0.0;//绕axis轴旋转π/8;
+        this.sixRotateGroup.rotation.x=0.0;//绕axis轴旋转π/8
+        this.senveRotateGroup.rotation.y=0.0;//绕axis轴旋转π/8;
+        this.init();
+        this.positionOfAxisInSimulate[0]=oneA;
+        this.positionOfAxisInSimulate[1]=twoA;
+        this.positionOfAxisInSimulate[2]=threeA;
+        this.positionOfAxisInSimulate[3]=fourA;
+        this.positionOfAxisInSimulate[4]=fiveA;
+        this.positionOfAxisInSimulate[5]=sixA;
+        this.positionOfAxisInSimulate[6]=senveA;
+
+      },
+      zControlPos(){
+        console.log(125666);
       },
       //基础控制页面发送数据的函数
       sendSocketMsgInBasicControl(){
@@ -834,22 +926,25 @@
   }
   .stateCardLeft{
     margin: 10px;
-    padding:30px 10px 30px 10px;
+    padding:5px 10px 5px 10px;
     border-radius: 10px;
+    height: 130px;
     background-color: #ECECEC;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+    box-shadow: 5px 10px 12px 0 rgba(0, 0, 0, 0.5)
   }
-  .positionCard,.postureCard {
-      font-size: 18px;
-      margin: 10px;
-      padding: 10px;
+  .CardContent {
+      font-size: 15px;
+      margin: 5px;
+      padding: 1px;
+      /* border: 5px solid #0000FF; */
     }
     .cardTitle{
-      font-size: 20px;
+      font-size: 15px;
       font-family: "微软雅黑";
       font-weight: bold;
     }
     .posiAndPoseData{
+      font-size: 16px;
       color: #00B0FF;
     }
     .positionSlider{
@@ -859,41 +954,128 @@
     }
 
 .upLoadExeclFile{
-            position: relative;
-        }
-        #fileinp{
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-        }
-        #btn{
-            margin-right: 5px;
-            z-index: 10;
-        }
+        position: relative;
+    }
+    #fileinp{
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+    }
+    #upLoadBtn{
+        margin-right: 5px;
+        z-index: 10;
+    }
+  .ControlButton{
+          position: relative;
+      }
+   .controlBtnDown{
+          position: absolute;
+          left: 0;
+          top: 0;
+          opacity: 0;
+      }
+   .controlBtnUp{
+          width: 60px;
+          margin-right: 5px;
+          z-index: 0;
+      }
+   .controlBtnUpHover{
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 60px;
+        margin-right: 5px;
+        z-index: 1;
+      }
+    .controlBtnUpHover:hover{
+         position: absolute;
+         left: 0;
+         top: 0;
+         opacity: 1;
+         width: 60px;
+         margin-right: 5px;
+         z-index: 1;
+       }
 
+   .RealRobotControlButton{
+     position: relative;
+     background-color: #D4D4D4;
+     border:  1px solid #0000FF;
+   }
+   .zPosBtn{
+     position: absolute;
+     top: 5px;
+     left: 45px;
+   }
+   .zNegBtn{
+     position: absolute;
+     top: 5px;
+     left: 185px;
+   }
+   .xPosBtn{
+     position: absolute;
+     top: 75px;
+     left: 115px;
+   }
+   .xNegBtn{
+     position: absolute;
+     top: 185px;
+     left: 115px;
+   }
+   #yPosImg{
+     width: 80px;
+   }
+   #yNegImg{
+     width: 82px;
+   }
+   .yPosBtn{
+     position: absolute;
+     top: 130px;
+     left: 60px;
+   }
+   .yNegBtn{
+     position: absolute;
+     top: 131px;
+     left: 140px;
+   }
 
 /* 媒体查询功能 */
-/* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
-@media only screen and (min-height:480px) and (max-height:900px){
+/* 高度最大像素1000像素 最小像素480像素 即高度在480-1000之间时 */
+@media only screen and (min-height:480px) and (max-height:1000px){
 .wholeWrap{
-	  height: 710px;
+	  height: 960px;
 	}
-  .positionCard,.postureCard  {
-      font-size: 14px;
-      margin: 5px;
-      padding: 5px;
+
+}
+/* 高度最小像素1001像素 即高度大于1000时*/
+@media only screen and (min-height:1001px) {
+	.wholeWrap{
+	  height: 1000px;
+	}
+}
+/* 媒体查询功能 */
+/* 宽度最大像素1500像素 最小像素480像素 即宽度在480-1500之间时 */
+@media only screen and (min-width:480px) and (max-width:1500px){
+  .CardContent {
+      font-size: 12px;
+      margin: 2px;
+      padding: 1px;
+      /* border: 5px solid #0000FF; */
     }
     .cardTitle{
-      font-size: 16px;
+      font-size: 13px;
       font-family: "微软雅黑";
       font-weight: bold;
     }
+    .posiAndPoseData{
+      font-size: 14px;
+      color: #00B0FF;
+    }
 }
-/* 高度最小像素901像素 即高度大于900时*/
-@media only screen and (min-height:901px) {
-	.wholeWrap{
-	  height: 940px;
-	}
+/* 宽度最小像素1501像素 即高度大于1500时*/
+@media only screen and (min-width:1501px) {
+
 }
 </style>
