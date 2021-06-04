@@ -78,7 +78,7 @@
                 <!-- 控制滑块和计数器组 -->
                 <div class=" row text-center align-items-center"
                   style="height: 60px;"
-                  v-for="(item,index) in controlButtonText" :key=index>
+                  v-for="(item,index) in controlAxisButtonText" :key=index>
                   <el-tag class="col-1" style="font-size: 20px;">{{item.name}}</el-tag>
                   <el-slider @input="controlAxisRotate(index)"
                   class=" col-8 positionSlider"
@@ -253,11 +253,14 @@
                       </label>
                     </div>
                     <div class=" col-3">
-                      <el-input-number
-                      v-for="(item,index) in controlButtonText" :key=index
-                       @change="controlAxisRotate(index)"
-                        v-model="positionOfAxisInSimulate[index]"
-                        :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
+                      <div class="text-center "
+                        style="height: 50px;"
+                        v-for="(item,index) in controlPosButtonText" :key=index>
+                        <el-tag class="col-4" style="font-size: 20px;">{{item.name}}</el-tag>
+                        <el-input-number class="col-8" @change="controlAxisRotate(index)"
+                          v-model="positionOfAxisInSimulate[index]"
+                          :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
+                      </div>
                     </div>
                   </div>
                   <!-- 第二行所在行 -->
@@ -323,7 +326,7 @@
         sixRotateGroup:null,
         senveRotateGroup:null,
         controls:null,
-        controlButtonText:[
+        controlAxisButtonText:[
           {name:'1轴'},
           {name:'2轴'},
           {name:'3轴'},
@@ -331,6 +334,14 @@
           {name:'5轴'},
           {name:'6轴'},
           {name:'7轴'}
+        ],
+        controlPosButtonText:[
+          {name:'X轴'},
+          {name:'Y轴'},
+          {name:'Z轴'},
+          {name:'Roll'},
+          {name:'Pitch'},
+          {name:'Yaw'}
         ],
         remarksTextSimulate:'',
         theCountOfDataSimulate:0,
@@ -346,6 +357,25 @@
           '备注':'remarks'
         },
         // outExeclDataSimulate:[],
+        theOldPos:{
+         		"type":'',
+         		"oneAxis":0.0,
+         		"twoAxis":0.0,
+         		"threeAxis":0.0,
+         		"fourAxis":0.0,
+         		"fiveAxis":0.0,
+         		"sixAxis":0.0,
+         		"senveAxis":0.0,
+         		"remarks":''
+         	},
+        oneAxisChangeStep:0.0,
+        twoAxisChangeStep:0.0,
+        threeAxisChangeStep:0.0,
+        fourAxisChangeStep:0.0,
+        fiveAxisChangeStep:0.0,
+        sixAxisChangeStep:0.0,
+        senveAxisChangeStep:0.0,
+        TrackCountNum:0,
         dataSimulateFromExeclFile:[],
         threeViewWidth:450,
         threeVieHeight:350,
@@ -397,23 +427,88 @@
          		"senveAxis":this.positionOfAxisInSimulate[6],
          		"remarks":this.remarksTextSimulate
          	}
-
         // this.theCountOfDataSimulate+=1;
         this.outExeclDataSimulate.push(obj);
+
+        this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
+        this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
+        this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
+        this.theOldPos.fourAxis=this.positionOfAxisInSimulate[3];
+        this.theOldPos.fiveAxis=this.positionOfAxisInSimulate[4];
+        this.theOldPos.sixAxis=this.positionOfAxisInSimulate[5];
+        this.theOldPos.senveAxis=this.positionOfAxisInSimulate[6];
+
         for(let i in this.outExeclDataSimulate){
             this.outExeclDataSimulate[i].type=parseInt(i)+1
          }
       },
       handleRunSimulate(index, row) {
             console.log(index, row);
-            this.oneRotateGroup.rotation.y=this.outExeclDataSimulate[index].oneAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.twoRotateGroup.rotation.x=this.outExeclDataSimulate[index].twoAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.threeRotateGroup.rotation.y=this.outExeclDataSimulate[index].threeAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.fourRotateGroup.rotation.x=this.outExeclDataSimulate[index].fourAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.fiveRotateGroup.rotation.y=this.outExeclDataSimulate[index].fiveAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.sixRotateGroup.rotation.x=this.outExeclDataSimulate[index].sixAxis*Math.PI/180;//绕axis轴旋转π/8
-            this.senveRotateGroup.rotation.y=this.outExeclDataSimulate[index].senveAxis*Math.PI/180;//绕axis轴旋转π/8;
+            this.robotRunPosToPos(this.theOldPos,this.outExeclDataSimulate[index]);
+            // this.oneRotateGroup.rotation.y=this.outExeclDataSimulate[index].oneAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.twoRotateGroup.rotation.x=this.outExeclDataSimulate[index].twoAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.threeRotateGroup.rotation.y=this.outExeclDataSimulate[index].threeAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.fourRotateGroup.rotation.x=this.outExeclDataSimulate[index].fourAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.fiveRotateGroup.rotation.y=this.outExeclDataSimulate[index].fiveAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.sixRotateGroup.rotation.x=this.outExeclDataSimulate[index].sixAxis*Math.PI/180;//绕axis轴旋转π/8
+            // this.senveRotateGroup.rotation.y=this.outExeclDataSimulate[index].senveAxis*Math.PI/180;//绕axis轴旋转π/8;
             },
+      robotRunPosToPos(theOldPos,theTargetPos){
+        this.TrackCountNum=0;
+        let  timer = setInterval(() => {
+                this.fun(timer,theOldPos,theTargetPos)
+                 }, 100)
+      },
+      fun (timer,theOldPos,theTargetPos) {
+         // console.log('theOld:');
+         // console.log(theOldPos);
+         this.oneAxisChangeStep=(theTargetPos.oneAxis-theOldPos.oneAxis)/20;
+         this.twoAxisChangeStep=(theTargetPos.twoAxis-theOldPos.twoAxis)/20;
+         this.threeAxisChangeStep=(theTargetPos.threeAxis-theOldPos.threeAxis)/20;
+         this.fourAxisChangeStep=(theTargetPos.fourAxis-theOldPos.fourAxis)/20;
+         this.fiveAxisChangeStep=(theTargetPos.fiveAxis-theOldPos.fiveAxis)/20;
+         this.sixAxisChangeStep=(theTargetPos.sixAxis-theOldPos.sixAxis)/20;
+         this.senveAxisChangeStep=(theTargetPos.senveAxis-theOldPos.senveAxis)/20;
+
+         var that=this;
+         setTimeout(()=>{
+          // 这里ajax 请求的代码片段和判断是否停止定时器
+          if(that.TrackCountNum<=19){
+            this.positionOfAxisInSimulate[0]=(theOldPos.oneAxis + that.TrackCountNum*that.oneAxisChangeStep);//绕axis轴旋转π/8;
+            this.positionOfAxisInSimulate[1]=(theOldPos.twoAxis + that.TrackCountNum*that.twoAxisChangeStep);//绕axis轴旋转π/8;
+            this.positionOfAxisInSimulate[2]=(theOldPos.threeAxis+that.TrackCountNum*that.threeAxisChangeStep);//绕axis轴旋转π/8;
+            this.positionOfAxisInSimulate[3]=(theOldPos.fourAxis+that.TrackCountNum*that.fourAxisChangeStep);//绕axis轴旋转π/8;
+            this.positionOfAxisInSimulate[4]=(theOldPos.fiveAxis+that.TrackCountNum*that.fiveAxisChangeStep);//绕axis轴旋转π/8;
+            this.positionOfAxisInSimulate[5]=(theOldPos.sixAxis+that.TrackCountNum*that.sixAxisChangeStep);//绕axis轴旋转π/8
+            this.positionOfAxisInSimulate[6]=(theOldPos.senveAxis+that.TrackCountNum*that.senveAxisChangeStep);//绕axis轴旋转π/8;
+          }
+          
+          that.TrackCountNum=that.TrackCountNum+1;
+
+          // 如需要停止定时器，只需加入以下：
+            if(that.TrackCountNum==20){
+              
+              this.positionOfAxisInSimulate[0]=theTargetPos.oneAxis;//绕axis轴旋转π/8;
+              this.positionOfAxisInSimulate[1]=theTargetPos.twoAxis;//绕axis轴旋转π/8;
+              this.positionOfAxisInSimulate[2]=theTargetPos.threeAxis;//绕axis轴旋转π/8;
+              this.positionOfAxisInSimulate[3]=theTargetPos.fourAxis;//绕axis轴旋转π/8;
+              this.positionOfAxisInSimulate[4]=theTargetPos.fiveAxis;//绕axis轴旋转π/8;
+              this.positionOfAxisInSimulate[5]=theTargetPos.sixAxis;//绕axis轴旋转π/8
+              this.positionOfAxisInSimulate[6]=theTargetPos.senveAxis;//绕axis轴旋转π/8;
+
+
+              that.TrackCountNum=0;
+              clearInterval(timer);
+              this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
+              this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
+              this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
+              this.theOldPos.fourAxis=this.positionOfAxisInSimulate[3];
+              this.theOldPos.fiveAxis=this.positionOfAxisInSimulate[4];
+              this.theOldPos.sixAxis=this.positionOfAxisInSimulate[5];
+              this.theOldPos.senveAxis=this.positionOfAxisInSimulate[6];
+            }
+          }, 0)
+         },
       handleDeleteSimulate(index, row) {
             console.log(index, row);
             this.outExeclDataSimulate.splice(index,1);
