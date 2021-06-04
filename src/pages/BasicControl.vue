@@ -121,6 +121,26 @@
                              </el-button>
                           </el-tooltip>
                      </download-excel>
+                     <!-- 选择运行模式 -->
+                      <el-radio-group v-model="runModeRadio">
+                         <el-radio :label="1">循环</el-radio>
+                         <el-radio :label="2">单次</el-radio>
+                         <el-radio :label="3">设定次数</el-radio>
+                      </el-radio-group>
+                      <el-input-number v-model="runCountSet" controls-position="right" :min="1" :max="10"></el-input-number>
+                     <!-- 按照模式运行按钮 -->
+                     <el-tooltip class="item" effect="dark" content="开始运行" placement="bottom">
+                         <el-button type="primary"
+                         @click="handleMultipleRunSimulate"
+                         icon="el-icon-video-play" circle style="font-size: 1rem;" alet="12">
+                         </el-button>
+                     </el-tooltip>
+                     <el-tooltip class="item" effect="dark" content="停止运行" placement="bottom">
+                         <el-button type="primary"
+                         @click="stopleMultipleRunSimulate"
+                         icon="el-icon-video-pause" circle style="font-size: 1rem;" alet="12">
+                         </el-button>
+                     </el-tooltip>
                       <!-- 打开EXECL文件按钮 -->
                      <label class="upLoadExeclFile" for="fileinp">
                        <el-tooltip class="item" effect="dark" content="打开数据文档" placement="bottom">
@@ -129,6 +149,7 @@
                        </el-tooltip>
                        <input type="file" id="fileinp" ref="upload" accept=".xls,.xlsx" class="outputlist_upload">
                      </label>
+
                   </div>
                  </div><!-- 按钮控制行的结束 -->
                    <!-- 数据表格所在行 -->
@@ -139,7 +160,13 @@
                           :data="outExeclDataSimulate"
                           height="250"
                           style="width: 100%"
+                          @selection-change="handleTableRowSelectionChange"
                           >
+                         <!-- //多选框列 -->
+                          <el-table-column
+                                type="selection"
+                                width="55">
+                              </el-table-column>
                           <!-- 第一列 -->
                           <el-table-column
                             prop="type"
@@ -376,6 +403,12 @@
         sixAxisChangeStep:0.0,
         senveAxisChangeStep:0.0,
         TrackCountNum:0,
+        runRowNum:0,
+        multipleRunData:[],
+        stopleMultipleRunSimulateBool:false,
+        runModeRadio:1,
+        runCountSet:0,
+        haveRunConut:0,
         dataSimulateFromExeclFile:[],
         threeViewWidth:450,
         threeVieHeight:350,
@@ -443,7 +476,7 @@
          }
       },
       handleRunSimulate(index, row) {
-            console.log(index, row);
+            // console.log(index, row);
             this.robotRunPosToPos(this.theOldPos,this.outExeclDataSimulate[index]);
             // this.oneRotateGroup.rotation.y=this.outExeclDataSimulate[index].oneAxis*Math.PI/180;//绕axis轴旋转π/8;
             // this.twoRotateGroup.rotation.x=this.outExeclDataSimulate[index].twoAxis*Math.PI/180;//绕axis轴旋转π/8;
@@ -455,11 +488,11 @@
             },
       robotRunPosToPos(theOldPos,theTargetPos){
         this.TrackCountNum=0;
-        let  timer = setInterval(() => {
-                this.fun(timer,theOldPos,theTargetPos)
+        let  runPosToPosTimer = setInterval(() => {
+                this.posToPosFun(runPosToPosTimer,theOldPos,theTargetPos)
                  }, 100)
       },
-      fun (timer,theOldPos,theTargetPos) {
+      posToPosFun(PosToPosTimer,theOldPos,theTargetPos) {
          // console.log('theOld:');
          // console.log(theOldPos);
          this.oneAxisChangeStep=(theTargetPos.oneAxis-theOldPos.oneAxis)/20;
@@ -482,12 +515,12 @@
             this.positionOfAxisInSimulate[5]=(theOldPos.sixAxis+that.TrackCountNum*that.sixAxisChangeStep);//绕axis轴旋转π/8
             this.positionOfAxisInSimulate[6]=(theOldPos.senveAxis+that.TrackCountNum*that.senveAxisChangeStep);//绕axis轴旋转π/8;
           }
-          
+
           that.TrackCountNum=that.TrackCountNum+1;
 
           // 如需要停止定时器，只需加入以下：
             if(that.TrackCountNum==20){
-              
+
               this.positionOfAxisInSimulate[0]=theTargetPos.oneAxis;//绕axis轴旋转π/8;
               this.positionOfAxisInSimulate[1]=theTargetPos.twoAxis;//绕axis轴旋转π/8;
               this.positionOfAxisInSimulate[2]=theTargetPos.threeAxis;//绕axis轴旋转π/8;
@@ -496,9 +529,8 @@
               this.positionOfAxisInSimulate[5]=theTargetPos.sixAxis;//绕axis轴旋转π/8
               this.positionOfAxisInSimulate[6]=theTargetPos.senveAxis;//绕axis轴旋转π/8;
 
-
               that.TrackCountNum=0;
-              clearInterval(timer);
+              clearInterval(PosToPosTimer);
               this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
               this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
               this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
@@ -509,6 +541,62 @@
             }
           }, 0)
          },
+      handleTableRowSelectionChange(val){
+            console.log('val:');
+            console.log(val);
+            this.multipleRunData=val;
+         },
+      handleMultipleRunSimulate(){
+        // this.theOldPos=this.multipleRunData[0];
+        this.haveRunConut=0;
+        let  multipleRunPosToPosTimer = setInterval(() => {
+                this.multiplePosToPosFun(multipleRunPosToPosTimer)
+                 }, 2500)
+      },
+      stopleMultipleRunSimulate(){
+
+        this.stopleMultipleRunSimulateBool=true;
+        console.log(this.stopleMultipleRunSimulateBool);
+      },
+      multiplePosToPosFun(timer){
+        var that=this;
+        setTimeout(()=>{
+           this.robotRunPosToPos(this.theOldPos,this.multipleRunData[that.runRowNum]);
+           that.runRowNum=that.runRowNum+1;
+          if(that.runModeRadio==1){
+            if(that.stopleMultipleRunSimulateBool==true){
+              clearInterval(timer);
+              that.stopleMultipleRunSimulateBool=false;
+            }
+          }
+          // 如需要停止定时器，只需加入以下：
+          if(that.runRowNum==this.multipleRunData.length){
+            that.runRowNum=0;
+            if(that.runModeRadio==1){
+              if(that.stopleMultipleRunSimulateBool==true){
+                clearInterval(timer);
+                that.stopleMultipleRunSimulateBool=false;
+              }
+            }
+            if(that.runModeRadio==2){
+              console.log(that.stopleMultipleRunSimulateBool)
+              clearInterval(timer);
+            }
+            if(that.runModeRadio==3){
+              that.haveRunConut=that.haveRunConut+1;
+              console.log(that.stopleMultipleRunSimulateBool)
+              if(that.stopleMultipleRunSimulateBool==false){
+                if(that.runCountSet==that.haveRunConut){
+                  clearInterval(timer);
+                }
+              }else{
+                clearInterval(timer);
+              }
+            }
+
+          }
+          }, 0)
+      },
       handleDeleteSimulate(index, row) {
             console.log(index, row);
             this.outExeclDataSimulate.splice(index,1);
@@ -932,8 +1020,8 @@
         console.log(12235555);
       },
       controlAxisRotate(index){
-        console.log(index)
-        console.log(this.positionOfAxisInSimulate[index])
+        // console.log(index)
+        // console.log(this.positionOfAxisInSimulate[index])
         if((index+1)==1){
           this.oneRotateGroup.rotation.y=this.positionOfAxisInSimulate[index]*Math.PI/180;//绕axis轴旋转π/8;
         }
