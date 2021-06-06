@@ -68,7 +68,37 @@
                 </div><!-- 末端机构状态卡片结束 -->
               </div>
             </div>
-            <div class="row justify-content-center" style="height: 28%;background-color: #D4D4D4;"><!--第三行 底部机械臂状态显示区域 -->
+            <div class="row justify-content-center" style="height: 16%;background-color: #D4D4D4;"><!--第一行 底部机械臂状态显示区域 -->
+              <div class="col-5  stateCardLeft  border"><!-- 控制模式的显示区域 -->
+                <div class="CardContent text-center"><!-- 控制模式卡片开始 -->
+                    <div>
+                      <span class="col cardTitle" >模式</span>
+                    </div>
+                    <div class="col xyzData">
+                        <div>
+                          <span v-if="runModeRadio==1" class="posiAndPoseData">循环模式</span>
+                          <span v-else-if="runModeRadio==2" class="posiAndPoseData">单次模式</span>
+                          <span v-else-if="runModeRadio==3" class="posiAndPoseData">设定模式</span>
+                        </div>
+
+                    </div>
+                </div><!-- 位置卡片结束 -->
+              </div>
+              <div class="col-5 stateCardLeft border">
+                <div class="CardContent text-center w-100  "><!-- 末端机构类型卡片开始 -->
+                    <div>
+                      <span class="col cardTitle ">当前运行过程</span>
+                    </div>
+                    <div>
+                        <div>
+                          <div>当前运行第<span v-if="runModeRadio==1" class="posiAndPoseData">{{showRunRowNum}}</span>组</div>
+                          <div>已经运行第<span v-if="runModeRadio==1" class="posiAndPoseData">{{computedShowHaveRunConut}}</span>次</div>
+                        </div>
+                    </div>
+                </div><!-- 末端机构类型卡片结束 -->
+              </div>
+            </div>
+            <div class="row justify-content-center" style="height: 12%;background-color: #D4D4D4;"><!--第三行 底部机械臂状态显示区域 -->
             </div>
           </div><!-- 侧边状态显示区域的结束 -->
           <div class="col-9"><!-- 控制按钮区域的开始 -->
@@ -77,8 +107,8 @@
                 <span slot="label"><i class="el-icon-s-operation"></i>仿真控制</span><!-- 分组标题 -->
                 <!-- 控制滑块和计数器组 -->
                 <div class=" row text-center align-items-center"
-                  style="height: 60px;"
-                  v-for="(item,index) in controlButtonText" :key=index>
+                  style="height: 45px;"
+                  v-for="(item,index) in controlAxisButtonText" :key=index>
                   <el-tag class="col-1" style="font-size: 20px;">{{item.name}}</el-tag>
                   <el-slider @input="controlAxisRotate(index)"
                   class=" col-8 positionSlider"
@@ -90,23 +120,23 @@
                 <!-- 回原点、输入备注、记录数据等按钮所在行 -->
                 <div class="row">
                   <div class="col text-right">
-                       <el-divider content-position="left">数据记录</el-divider>
+                      <el-divider content-position="left">数据记录</el-divider>
                       <!-- 回到原点 -->
                       <el-tooltip class="item" effect="dark" content="回到原点" placement="bottom">
                           <el-button type="primary"
                           @click="backToZeroPosution"
-                          icon="el-icon-refresh-right" circle style="font-size: 1rem;" alet="12">
+                          icon="el-icon-refresh-right" circle style="font-size: 1.2rem;" alet="12">
                           </el-button>
                       </el-tooltip>
                       <!-- 输入备注 -->
-                     <el-input v-model="remarksTextSimulate"
-                     style="display: inline-block;width: 200px;"
+                     <el-input  v-model="remarksTextSimulate"
+                     style="display: inline-block;width: 150px;"
                      placeholder="请输入备注内容">
                      </el-input>
                      <!-- 记录数据按钮 -->
                      <el-tooltip class="item" effect="dark" content="记录数据" placement="bottom">
                          <el-button type="primary"
-                         icon="el-icon-s-order" @click="addExeclDataSimulate" circle style="font-size: 1rem;">
+                         icon="el-icon-s-order" @click="addExeclDataSimulate" circle style="font-size: 1.2rem;">
                          </el-button>
                      </el-tooltip>
                       <!-- 保存EXECL文件按钮 -->
@@ -117,18 +147,52 @@
                           name = "关节数据">
                           <el-tooltip class="item" effect="dark" content="保存文件" placement="bottom">
                              <el-button type="primary"
-                             icon="el-icon-folder-add" circle style="font-size: 1rem;">
+                             icon="el-icon-folder-add" circle style="font-size: 1.2rem;">
                              </el-button>
                           </el-tooltip>
                      </download-excel>
-                      <!-- 打开EXECL文件按钮 -->
+                     <!-- 打开EXECL文件按钮 -->
                      <label class="upLoadExeclFile" for="fileinp">
                        <el-tooltip class="item" effect="dark" content="打开数据文档" placement="bottom">
-                          <el-button circle id="upLoadBtn" type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                          <el-button circle id="upLoadBtn" type="primary" style="font-size: 1.2rem;" icon="el-icon-notebook-1">
                           </el-button>
                        </el-tooltip>
-                       <input type="file" id="fileinp" ref="upload" accept=".xls,.xlsx" class="outputlist_upload">
+                       <input type="file" id="fileinp" ref="upload" style="width: 50px;"
+                       accept=".xls,.xlsx" class="outputlist_upload">
                      </label>
+                     <!-- 选择运行模式 -->
+                      <el-radio-group style="width: 190px;" v-model="runModeRadio">
+                         <el-radio  style="width: 60px;margin: 1px;" :label="1">循环</el-radio>
+                         <el-radio  style="width: 60px;margin: 1px;" :label="2">单次</el-radio>
+                         <el-radio  style="width: 60px;margin: 1px;" :label="3">设定</el-radio>
+                      </el-radio-group>
+                      <el-input-number  style="width: 85px;" v-model="runCountSet" controls-position="right" :min="1" :max="10"></el-input-number>
+                     <!-- 按照模式运行按钮 -->
+                     <el-tooltip class="item" effect="dark" content="启动" placement="bottom">
+                         <el-button type="primary"
+                         @click="handleMultipleRunSimulate"
+                         icon="el-icon-timer" circle style="font-size: 1.2rem;">
+                         </el-button>
+                     </el-tooltip>
+                     <el-tooltip class="item" effect="dark" content="开始运行" placement="bottom">
+                         <el-button type="primary"
+                         @click="rePlayMultipleRunSimulate"
+                         icon="el-icon-video-play" circle style="font-size: 1.2rem;" >
+                         </el-button>
+                     </el-tooltip>
+                     <el-tooltip class="item" effect="dark" content="暂停运行" placement="bottom">
+                         <el-button type="primary"
+                         @click="pauseleMultipleRunSimulate"
+                         icon="el-icon-video-pause" circle style="font-size: 1.2rem;">
+                         </el-button>
+                     </el-tooltip>
+                     <el-tooltip class="item" effect="dark" content="停止运行" placement="bottom">
+                         <el-button type="primary"
+                         @click="stopleMultipleRunSimulate"
+                         icon="el-icon-circle-close" circle style="font-size: 1.2rem;">
+                         </el-button>
+                     </el-tooltip>
+
                   </div>
                  </div><!-- 按钮控制行的结束 -->
                    <!-- 数据表格所在行 -->
@@ -139,7 +203,13 @@
                           :data="outExeclDataSimulate"
                           height="250"
                           style="width: 100%"
+                          @selection-change="handleTableRowSelectionChange"
                           >
+                         <!-- //多选框列 -->
+                          <el-table-column
+                                type="selection"
+                                width="55">
+                              </el-table-column>
                           <!-- 第一列 -->
                           <el-table-column
                             prop="type"
@@ -253,11 +323,14 @@
                       </label>
                     </div>
                     <div class=" col-3">
-                      <el-input-number
-                      v-for="(item,index) in controlButtonText" :key=index
-                       @change="controlAxisRotate(index)"
-                        v-model="positionOfAxisInSimulate[index]"
-                        :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
+                      <div class="text-center "
+                        style="height: 50px;"
+                        v-for="(item,index) in controlPosButtonText" :key=index>
+                        <el-tag class="col-4" style="font-size: 20px;">{{item.name}}</el-tag>
+                        <el-input-number class="col-8" @change="controlAxisRotate(index)"
+                          v-model="positionOfAxisInSimulate[index]"
+                          :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
+                      </div>
                     </div>
                   </div>
                   <!-- 第二行所在行 -->
@@ -323,7 +396,7 @@
         sixRotateGroup:null,
         senveRotateGroup:null,
         controls:null,
-        controlButtonText:[
+        controlAxisButtonText:[
           {name:'1轴'},
           {name:'2轴'},
           {name:'3轴'},
@@ -331,6 +404,14 @@
           {name:'5轴'},
           {name:'6轴'},
           {name:'7轴'}
+        ],
+        controlPosButtonText:[
+          {name:'X轴'},
+          {name:'Y轴'},
+          {name:'Z轴'},
+          {name:'Roll'},
+          {name:'Pitch'},
+          {name:'Yaw'}
         ],
         remarksTextSimulate:'',
         theCountOfDataSimulate:0,
@@ -346,6 +427,35 @@
           '备注':'remarks'
         },
         // outExeclDataSimulate:[],
+        theOldPos:{
+         		"type":'',
+         		"oneAxis":0.0,
+         		"twoAxis":0.0,
+         		"threeAxis":0.0,
+         		"fourAxis":0.0,
+         		"fiveAxis":0.0,
+         		"sixAxis":0.0,
+         		"senveAxis":0.0,
+         		"remarks":''
+         	},
+        oneAxisChangeStep:0.0,
+        twoAxisChangeStep:0.0,
+        threeAxisChangeStep:0.0,
+        fourAxisChangeStep:0.0,
+        fiveAxisChangeStep:0.0,
+        sixAxisChangeStep:0.0,
+        senveAxisChangeStep:0.0,
+        TrackCountNum:0,
+        runRowNum:0,
+        showRunRowNum:0,
+        pauseRunRowNum:0,
+        multipleRunData:[],
+        stopleMultipleRunSimulateBool:false,
+        pauseleMultipleRunSimulateBool:false,
+        runModeRadio:1,
+        runCountSet:0,
+        haveRunConut:0,
+        showHaveRunConut:0,
         dataSimulateFromExeclFile:[],
         threeViewWidth:450,
         threeVieHeight:350,
@@ -357,6 +467,17 @@
       //引入的各个轴的位置数据positionOfAxis
       ...mapState(['positionOfAxisInSimulate','outExeclDataSimulate']),
       // v-mode双向绑定VUEX中的数据的正确方法
+      // 解决现实已经运行多少次的问题
+       computedShowHaveRunConut:{
+         get(){
+           if(this.showHaveRunConut==0){
+             return 0;
+           }else{
+             return this.showHaveRunConut-1;
+           }
+         }
+
+       }
     },
     mounted(){
       console.log('12323');
@@ -397,23 +518,199 @@
          		"senveAxis":this.positionOfAxisInSimulate[6],
          		"remarks":this.remarksTextSimulate
          	}
-
         // this.theCountOfDataSimulate+=1;
         this.outExeclDataSimulate.push(obj);
+
+        this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
+        this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
+        this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
+        this.theOldPos.fourAxis=this.positionOfAxisInSimulate[3];
+        this.theOldPos.fiveAxis=this.positionOfAxisInSimulate[4];
+        this.theOldPos.sixAxis=this.positionOfAxisInSimulate[5];
+        this.theOldPos.senveAxis=this.positionOfAxisInSimulate[6];
+
         for(let i in this.outExeclDataSimulate){
             this.outExeclDataSimulate[i].type=parseInt(i)+1
          }
       },
       handleRunSimulate(index, row) {
-            console.log(index, row);
-            this.oneRotateGroup.rotation.y=this.outExeclDataSimulate[index].oneAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.twoRotateGroup.rotation.x=this.outExeclDataSimulate[index].twoAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.threeRotateGroup.rotation.y=this.outExeclDataSimulate[index].threeAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.fourRotateGroup.rotation.x=this.outExeclDataSimulate[index].fourAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.fiveRotateGroup.rotation.y=this.outExeclDataSimulate[index].fiveAxis*Math.PI/180;//绕axis轴旋转π/8;
-            this.sixRotateGroup.rotation.x=this.outExeclDataSimulate[index].sixAxis*Math.PI/180;//绕axis轴旋转π/8
-            this.senveRotateGroup.rotation.y=this.outExeclDataSimulate[index].senveAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // console.log(index, row);
+            this.robotRunPosToPos(this.theOldPos,this.outExeclDataSimulate[index]);
+            // this.oneRotateGroup.rotation.y=this.outExeclDataSimulate[index].oneAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.twoRotateGroup.rotation.x=this.outExeclDataSimulate[index].twoAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.threeRotateGroup.rotation.y=this.outExeclDataSimulate[index].threeAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.fourRotateGroup.rotation.x=this.outExeclDataSimulate[index].fourAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.fiveRotateGroup.rotation.y=this.outExeclDataSimulate[index].fiveAxis*Math.PI/180;//绕axis轴旋转π/8;
+            // this.sixRotateGroup.rotation.x=this.outExeclDataSimulate[index].sixAxis*Math.PI/180;//绕axis轴旋转π/8
+            // this.senveRotateGroup.rotation.y=this.outExeclDataSimulate[index].senveAxis*Math.PI/180;//绕axis轴旋转π/8;
             },
+      robotRunPosToPos(theOldPos,theTargetPos){
+
+        this.oneAxisChangeStep=(theTargetPos.oneAxis-theOldPos.oneAxis)/20;
+        this.twoAxisChangeStep=(theTargetPos.twoAxis-theOldPos.twoAxis)/20;
+        this.threeAxisChangeStep=(theTargetPos.threeAxis-theOldPos.threeAxis)/20;
+        this.fourAxisChangeStep=(theTargetPos.fourAxis-theOldPos.fourAxis)/20;
+        this.fiveAxisChangeStep=(theTargetPos.fiveAxis-theOldPos.fiveAxis)/20;
+        this.sixAxisChangeStep=(theTargetPos.sixAxis-theOldPos.sixAxis)/20;
+        this.senveAxisChangeStep=(theTargetPos.senveAxis-theOldPos.senveAxis)/20;
+
+        let  runPosToPosTimer = setInterval(() => {
+                this.posToPosFun(runPosToPosTimer,theOldPos,theTargetPos)
+                 }, 100)
+      },
+      posToPosFun(PosToPosTimer,theOldPos,theTargetPos) {
+         var that=this;
+         setTimeout(()=>{
+           console.log('enter the PosToPostimer');
+           console.log("that.stopleMultipleRunSimulateBool:"+that.stopleMultipleRunSimulateBool);
+           console.log("that.pauseleMultipleRunSimulateBool:"+that.pauseleMultipleRunSimulateBool);
+           console.log("that.TrackCountNum:"+that.TrackCountNum);
+           if(that.stopleMultipleRunSimulateBool==true){
+             this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
+             this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
+             this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
+             this.theOldPos.fourAxis=this.positionOfAxisInSimulate[3];
+             this.theOldPos.fiveAxis=this.positionOfAxisInSimulate[4];
+             this.theOldPos.sixAxis=this.positionOfAxisInSimulate[5];
+             this.theOldPos.senveAxis=this.positionOfAxisInSimulate[6];
+             clearInterval(PosToPosTimer);
+             console.log("have cleared");
+           }
+           else{
+             if(that.pauseleMultipleRunSimulateBool==false){
+               // 这里ajax 请求的代码片段和判断是否停止定时器
+               if(that.TrackCountNum<=19){
+                 this.positionOfAxisInSimulate[0]=(theOldPos.oneAxis + that.TrackCountNum*that.oneAxisChangeStep);//绕axis轴旋转π/8;
+                 this.positionOfAxisInSimulate[1]=(theOldPos.twoAxis + that.TrackCountNum*that.twoAxisChangeStep);//绕axis轴旋转π/8;
+                 this.positionOfAxisInSimulate[2]=(theOldPos.threeAxis+that.TrackCountNum*that.threeAxisChangeStep);//绕axis轴旋转π/8;
+                 this.positionOfAxisInSimulate[3]=(theOldPos.fourAxis+that.TrackCountNum*that.fourAxisChangeStep);//绕axis轴旋转π/8;
+                 this.positionOfAxisInSimulate[4]=(theOldPos.fiveAxis+that.TrackCountNum*that.fiveAxisChangeStep);//绕axis轴旋转π/8;
+                 this.positionOfAxisInSimulate[5]=(theOldPos.sixAxis+that.TrackCountNum*that.sixAxisChangeStep);//绕axis轴旋转π/8
+                 this.positionOfAxisInSimulate[6]=(theOldPos.senveAxis+that.TrackCountNum*that.senveAxisChangeStep);//绕axis轴旋转π/8;
+               }
+               that.TrackCountNum=that.TrackCountNum+1;
+               // 如需要停止定时器，只需加入以下：
+                 if(that.TrackCountNum==20){
+                   this.positionOfAxisInSimulate[0]=theTargetPos.oneAxis;//绕axis轴旋转π/8;
+                   this.positionOfAxisInSimulate[1]=theTargetPos.twoAxis;//绕axis轴旋转π/8;
+                   this.positionOfAxisInSimulate[2]=theTargetPos.threeAxis;//绕axis轴旋转π/8;
+                   this.positionOfAxisInSimulate[3]=theTargetPos.fourAxis;//绕axis轴旋转π/8;
+                   this.positionOfAxisInSimulate[4]=theTargetPos.fiveAxis;//绕axis轴旋转π/8;
+                   this.positionOfAxisInSimulate[5]=theTargetPos.sixAxis;//绕axis轴旋转π/8
+                   this.positionOfAxisInSimulate[6]=theTargetPos.senveAxis;//绕axis轴旋转π/8;
+
+                   that.TrackCountNum=0;
+                   clearInterval(PosToPosTimer);
+                   this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
+                   this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
+                   this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
+                   this.theOldPos.fourAxis=this.positionOfAxisInSimulate[3];
+                   this.theOldPos.fiveAxis=this.positionOfAxisInSimulate[4];
+                   this.theOldPos.sixAxis=this.positionOfAxisInSimulate[5];
+                   this.theOldPos.senveAxis=this.positionOfAxisInSimulate[6];
+                 }
+             }
+             else{
+               this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
+               this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
+               this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
+               this.theOldPos.fourAxis=this.positionOfAxisInSimulate[3];
+               this.theOldPos.fiveAxis=this.positionOfAxisInSimulate[4];
+               this.theOldPos.sixAxis=this.positionOfAxisInSimulate[5];
+               this.theOldPos.senveAxis=this.positionOfAxisInSimulate[6];
+               this.TrackCountNum=0;
+               clearInterval(PosToPosTimer);
+             }
+           }
+
+          }, 0)
+         },
+      handleTableRowSelectionChange(val){
+            console.log('val:');
+            console.log(val);
+            this.multipleRunData=val;
+         },
+      handleMultipleRunSimulate(){
+        // this.theOldPos=this.multipleRunData[0];
+        this.pauseleMultipleRunSimulateBool=false;
+        this.stopleMultipleRunSimulateBool=false;
+        let  multipleRunPosToPosTimer = setInterval(() => {
+                this.multiplePosToPosFun(multipleRunPosToPosTimer)
+                 }, 2500)
+      },
+      rePlayMultipleRunSimulate(){
+        this.pauseleMultipleRunSimulateBool=false;
+        this.stopleMultipleRunSimulateBool=false;
+        this.runRowNum=this.pauseRunRowNum;
+        let  multipleRunPosToPosTimer = setInterval(() => {
+                this.multiplePosToPosFun(multipleRunPosToPosTimer)
+                 }, 2500)
+      },
+      stopleMultipleRunSimulate(){
+        this.stopleMultipleRunSimulateBool=true;
+        this.TrackCountNum=0;
+        this.runRowNum=0;
+        this.haveRunConut=0;
+        this.showRunRowNum=0;
+        this.showHaveRunConut=0;
+        console.log(this.stopleMultipleRunSimulateBool);
+        // this.theOldPos=this.multipleRunData[0];
+      },
+      pauseleMultipleRunSimulate(){
+        this.pauseleMultipleRunSimulateBool=true;
+      },
+      multiplePosToPosFun(timer){
+        var that=this;
+        setTimeout(()=>{
+
+            if(that.stopleMultipleRunSimulateBool==true){
+              clearInterval(timer);
+            }else{
+
+                if(this.pauseleMultipleRunSimulateBool==false){
+                  this.pauseRunRowNum=that.runRowNum;
+                  this.showRunRowNum=that.runRowNum;
+                  this.robotRunPosToPos(this.theOldPos,this.multipleRunData[that.runRowNum]);
+                  that.runRowNum=that.runRowNum+1;
+                  if(this.showRunRowNum==1){
+                    this.showHaveRunConut=this.showHaveRunConut+1;
+                  }
+                  // 如需要停止定时器，只需加入以下：
+                  if(that.runRowNum==this.multipleRunData.length){
+                    that.runRowNum=0;
+                    that.haveRunConut=that.haveRunConut+1;
+                    if(that.runModeRadio==1){
+                      if(that.stopleMultipleRunSimulateBool==true){
+                        clearInterval(timer);
+                        // that.stopleMultipleRunSimulateBool=false;
+                      }
+                    }
+                    if(that.runModeRadio==2){
+                      console.log(that.stopleMultipleRunSimulateBool)
+                      clearInterval(timer);
+                    }
+                    if(that.runModeRadio==3){
+                      // that.haveRunConut=that.haveRunConut+1;
+                      console.log(that.stopleMultipleRunSimulateBool)
+                      if(that.stopleMultipleRunSimulateBool==false){
+                        if(that.runCountSet==that.haveRunConut){
+                          clearInterval(timer);
+                          that.showHaveRunConut=0;
+                          that.haveRunConut=0;
+                        }
+                      }else{
+                        clearInterval(timer);
+                      }
+                    }
+                }
+              }
+              else{
+                clearInterval(timer);
+              }
+            }
+
+          }, 0)
+      },
       handleDeleteSimulate(index, row) {
             console.log(index, row);
             this.outExeclDataSimulate.splice(index,1);
@@ -837,8 +1134,8 @@
         console.log(12235555);
       },
       controlAxisRotate(index){
-        console.log(index)
-        console.log(this.positionOfAxisInSimulate[index])
+        // console.log(index)
+        // console.log(this.positionOfAxisInSimulate[index])
         if((index+1)==1){
           this.oneRotateGroup.rotation.y=this.positionOfAxisInSimulate[index]*Math.PI/180;//绕axis轴旋转π/8;
         }

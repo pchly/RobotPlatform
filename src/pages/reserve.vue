@@ -55,7 +55,13 @@ export default {
             {name:'6轴'},
             {name:'7轴'}
           ]
+          // trackClock:null,
+          // trackMixer:null,
+          // oneAxisTrack:null,
+          // oneAxisTrackValue:[],
+          // TrackTimes:[]
         }
+
     },
     mounted(){
       console.log('12323');
@@ -94,6 +100,10 @@ export default {
         renderFrame() {
             this.renderer.render(this.scene, this.camera); //执行渲染操作
             requestAnimationFrame(this.renderFrame);//请求再次执行渲染函数render，渲染下一帧
+
+            //clock.getDelta()方法获得两帧的时间间隔
+                  // 更新混合器相关的时间
+            // this.trackMixer.update(this.trackClock.getDelta());
           },
           // //定义窗口的设置
           //  setWindown(){
@@ -138,6 +148,12 @@ export default {
            this.fiveRotateGroup=new Three.Group();
            this.sixRotateGroup=new Three.Group();
            this.senveRotateGroup=new Three.Group();
+
+           // this.TrackTimes=[0,10];
+           // this.oneAxisTrackValue=[1,6];
+           // var duration = 10;
+           // // 创建一个时钟对象Clock
+           // this.trackClock = new Three.Clock();
             /**
              * stl数据加载
              */
@@ -166,6 +182,27 @@ export default {
               that.scene.add(that.JointOneMesh); //网格模型添加到场景中
               that.scene.add(that.oneRotateGroup); //网格模型添加到场景中
             })
+
+            //  console.log('99646464');
+            //  console.log(that.oneRotateGroup);
+            //  console.log(that.oneRotateGroup.rotation);
+            // that.oneAxisTrack=new Three.KeyframeTrack('that.oneRotateGroup.rotation.y',that.TrackTimes,that.oneAxisTrackValue);
+            // // 多个帧动画作为元素创建一个剪辑clip对象，命名"default"，持续时间20
+            //     var clip = new Three.AnimationClip("default", duration, [that.oneAxisTrack]);
+
+            //     /**
+            //      * 播放编辑好的关键帧数据
+            //      */
+            //     // group作为混合器的参数，可以播放group中所有子对象的帧动画
+            //     that.trackMixer = new Three.AnimationMixer(that.oneRotateGroup);
+            //     // 剪辑clip作为参数，通过混合器clipAction方法返回一个操作对象AnimationAction
+            //     var AnimationAction = that.trackMixer.clipAction(clip);
+            //     //通过操作Action设置播放方式
+            //     AnimationAction.timeScale = 10;//默认1，可以调节播放速度
+            //     AnimationAction.loop = Three.LoopOnce; //不循环播放
+            //     AnimationAction.play();//开始播放
+           
+           
             //加载关节2
             loader.load('../../static/robotStl/Joint-2.stl',function (JointTwoGeometry) {
               JointTwoGeometry.center();
