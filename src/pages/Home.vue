@@ -203,9 +203,6 @@ export default {
 </script>
 
 <style>
-  .wrap{
-
-  }
   .el-header, .el-footer {
     background-color: #B3C0D1;
     color: #333;

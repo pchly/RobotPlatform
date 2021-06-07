@@ -23,7 +23,7 @@
                     <el-option label="用户电话" value="3"></el-option> -->
                     </el-select>
                     <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
-                 </el-input>
+                </el-input>
             </div>
             <el-button size="medium" class="buttonAboutServe" @click="linkToServe" :type=linkButtonType>{{linkButtonText}}</el-button>
         </span>

@@ -1,41 +1,37 @@
 <template>
     <div>
-      <table width="100%" height=10%>
+      <table width="100%" height=4%>
         <tr id="tabRow" height="1em">
           <el-button-group>
-          <el-button @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
+          <el-button @click="backToHome" type="primary" icon="el-icon-arrow-left" title="返回首页">返回</el-button>
           </el-button-group>
             <td class="tabmax">
-              <button id="trashButton" class="notext" title="...">
+              <button id="trashButton" class="notext" title="清空工作区" v-on:click="discard()">
                 <img src='../assets/blockly_media/1x1.gif' class="trash icon21">
               </button>
-              <button id="linkButton" class="notext" title="...">
-                <img src='../assets/blockly_media/1x1.gif' class="link icon21">
-              </button>
-              <button id="runButton" class="notext primary" title="...">
+              <button id="runButton" class="notext primary" title="运行" v-on:click="runJS()">
                 <img src='../assets/blockly_media/1x1.gif' class="run icon21">
               </button>
             </td>
-            <td>
-              <select id="languageMenu"></select>
-            </td>  
         </tr>
       </table>        
      <BlocklyComponent id="blockly2" :options="options" ref="foo"></BlocklyComponent>  
      <p id="code">
-      <button v-on:click="showCode()">Show JavaScript</button>
+      <el-footer>生成的JS代码</el-footer>
       <pre v-html="code"></pre>
     </p>   
     </div>
 </template>
 
 <script>
+import Vue from'vue'
 import BlocklyComponent from './components/BlocklyComponent.vue'
 import '../blocks/BlockDefinition';
 import '../prompt';
-
 import Blockly from'blockly'
 import BlocklyJS from 'blockly/javascript';
+import Code from '../blocks/code'
+Vue.config.ignoredElements.push('xml');
   export default {
       name:'blockly',
       components: {
@@ -43,7 +39,7 @@ import BlocklyJS from 'blockly/javascript';
       },
       data(){
     return {
-      code: '点击按钮显示JavaSceipt代码',
+      code: '',
       options: {
         media: '../../../node_modules/blockly/media/',
 
@@ -204,12 +200,65 @@ import BlocklyJS from 'blockly/javascript';
       }
     }
   },
+  //
+  mounted() {
+    this.timer = setInterval(()=>{
+    this.showCode()},1000)  
+  },
+  beforeDestroy() {
+      clearInterval(this.timer);
+  },
       methods:{
         backToHome(){
           this.$router.push('/home');
         },
+       get() {
+        this.value ++;
+        console.log(1);
+      },
         showCode() {
-      this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
+           this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
+        },
+        test2(){
+          console.log("test1111");
+        },
+         test3(){
+          console.log("test2222");
+        },
+        discard(){
+            var count = this.$refs["foo"].workspace.getAllBlocks(false).length;
+            if (count < 2 ||
+                window.confirm(Blockly.Msg['DELETE_ALL_BLOCKS'].replace('%1', count))) {
+              this.$refs["foo"].workspace.clear();
+              if (window.location.hash) {
+                window.location.hash = '';
+              }
+            }
+        },
+        runJS(){
+          Blockly.JavaScript.INFINITE_LOOP_TRAP = 'checkTimeout();\n';
+          var timeouts = 0;
+          var checkTimeout = function() {
+            if (timeouts++ > 1000000) {
+              throw MSG['timeout'];
+            }
+          };
+          var tmpcode = Blockly.JavaScript.workspaceToCode(this.$refs["foo"].workspace);
+          //alert(tmpcode);
+          //var tmpcode = Blockly.JavaScript.workspaceToCode(this.$refs["foo"].workspace);
+          //var tmpcode="this.test2()";
+          Blockly.JavaScript.INFINITE_LOOTRAP = null;
+          try {
+           eval(tmpcode);
+          } catch (e) {
+            //alert(MSG['badCode'].replace('%1', e));
+          }
+        },
+        jogMove(jog1,jog2,jog3,jog4,jog5,jog6,jog7){
+          console.log(jog1);
+        },
+        cartMove(x,y,z,a,b,c,pos){
+          console.log(x);
         }
       }
   }
@@ -218,7 +267,6 @@ import BlocklyJS from 'blockly/javascript';
 
 <style scoped>
 button {
-  margin: 5px;
   padding: 10px;
   border-radius: 4px;
   border: 1px solid #ddd;
@@ -228,7 +276,7 @@ button {
 }
 button.primary {
   border: 1px solid #dd4b39;
-  background-color: #dd4b39;
+  background-color: #fd3243;
   color: #fff;
 }
 button.primary>img {
@@ -293,7 +341,7 @@ td.tabmax {
   border-right-style: none !important;
   width: 99%;
   padding-left: 10px;
-  padding-right: 100px;
+  padding-right: 10px;
   padding-top:3px;
   text-align: right;
 }
@@ -386,17 +434,26 @@ button {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 85%;
-  height: 96.5%;
+  width: 80%;
+  height: 96%;
 }
 #code {
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 15%;
-  height: 96.5%;
+  width: 20%;
+  height: 96%;
   margin: 0;
   background-color: rgb(235, 235, 232);
-  font-size: 150%;
+  font-size: 120%;
 }
+.el-footer {
+    background-color: #c2c6cc;
+    color: #2f3435;
+    text-align:left;
+    line-height: 60px;
+    font-size: 20px;
+    font-style:initial;
+    height:50%;
+  }
 </style>

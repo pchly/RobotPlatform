@@ -265,7 +265,7 @@ Blockly.JavaScript['jogmove'] = function(block) {
   var number_jog7input = block.getFieldValue('jog7Input');
   // TODO: Assemble JavaScript into code variable.
   //var code = '...;\n';
-  var code = 'jogMove('+number_jog1input+','+number_jog2input+','+number_jog3input+','+number_jog4input+','+number_jog5input+','+number_jog6input+')\n';
+  var code = 'this.jogMove('+number_jog1input+','+number_jog2input+','+number_jog3input+','+number_jog4input+','+number_jog5input+','+number_jog6input+')\n';
   return code;
 };
 
@@ -279,13 +279,13 @@ Blockly.JavaScript['cartmove'] = function(block) {
   var number_posinput = block.getFieldValue('PosInput');
   // TODO: Assemble JavaScript into code variable.
   //var code = '...;\n';
-  var code = 'cartMove('+number_xinput+','+number_yinput+','+number_zinput+','+number_ainput+','+number_binput+','+number_cinput+')\n';
+  var code = 'this.cartMove('+number_xinput+','+number_yinput+','+number_zinput+','+number_ainput+','+number_binput+','+number_cinput+')\n';
   return code;
 };
 
 Blockly.JavaScript['zero'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
-  var code = 'homeMove();\n';
+  var code = "this.test2();\n";
   return code;
 };
 
