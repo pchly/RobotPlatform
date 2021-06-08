@@ -7,7 +7,25 @@ const mutations={
   },
   mutationOutExeclDataSimulate:function(state,payload){
     state.outExeclDataSimulate=payload;
-  }
+  },
+  mutationEnableRobot:function(state,payload){
+    state.enableRobot=payload;
+  },
+  mutationMoveVecReal:function(state,payload){
+    state.moveVecReal=payload;
+  },
+  mutationKindOfEndTool:function(state,payload){
+    state.kindOfEndTool=payload;
+  },
+  mutationStateOfEndSuck:function(state,payload){
+    state.stateOfEndSuck=payload;
+  },
+  mutationPosOfEndJaw:function(state,payload){
+    state.posOfEndJaw=payload;
+  },
+  mutationRealRobotControlMode:function(state,payload){
+    state.realRobotControlMode=payload;
+  },
     // 用法示例
     // mutationIsShowMoreMenus:function(state,payload){
     //     //state表示当前的状态数据
