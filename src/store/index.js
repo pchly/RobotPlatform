@@ -41,7 +41,31 @@ const store=new Vuex.Store({
             "sixAxis":'0.0',
             "senveAxis":'0.0'
           },
+          positionOfXYZRPYInReal:{
+            "XPos":'0.0',
+            "YPos":'0.0',
+            "ZPos":'0.0',
+            "Roll":'0.0',
+            "Pitch":'0.0',
+            "Yaw":'0.0',
+          },
+          positionOfAxisInReal:{
+            "oneAxis":'0.0',
+            "twoAxis":'0.0',
+            "threeAxis":'0.0',
+            "fourAxis":'0.0',
+            "fiveAxis":'0.0',
+            "sixAxis":'0.0',
+            "senveAxis":'0.0'
+          },
+          enableRobot:false,
+          moveVecReal:0.0,
+          kindOfEndTool:0,//0代表夹爪，1代表吸盘
+          stateOfEndSuck:false,
+          posOfEndJaw:0.0,
+          realRobotControlMode:1,//1代表点动模式,2代表手动模式
           outExeclDataSimulate:[],
+          outExeclDataHandMode:[],
           // 自动上报的数据
           autoUpdateMessage:{
             // 机器人状态初始化为全零数组
