@@ -34,7 +34,8 @@
                       <span class="col cardTitle ">末端机构类型</span>
                     </div>
                     <div>
-                        <img src="../assets/Link-img/link-02.gif" style="width: 60%;" />
+                        <img v-if="kindOfEndTool==0" src="../assets/basicControlImge/endJaw.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==1" src="../assets/basicControlImge/endSuck.png" style="width: 60%;" />
                     </div>
                 </div><!-- 末端机构类型卡片结束 -->
               </div>
@@ -58,12 +59,10 @@
                       <span class="col cardTitle">末端机构状态</span>
                     </div>
                     <div class="align-middle"><!-- 姿态角数据显示 -->
-                        <el-switch
-                          v-model="endMechanismValue"
-                          active-color="#13ce66"
-                          inactive-color="#ff4949"
-                          >
-                        </el-switch>
+                        <img v-if="kindOfEndTool==0&&modePosOfEndJaw==0" src="../assets/basicControlImge/jawOpen.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==0&&modePosOfEndJaw!=0" src="../assets/basicControlImge/jawClose.png" style="width: 60%;" />
+                        <img v-if="kindOfEndTool==1&&stateOfEndSuck==false" src="../assets/basicControlImge/suckOff.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==1&&stateOfEndSuck!=true" src="../assets/basicControlImge/suckOn.png" style="width: 60%;" />
                     </div><!-- 姿态角数据显示 -->
                 </div><!-- 末端机构状态卡片结束 -->
               </div>
@@ -463,10 +462,18 @@
                           <div>
                             <span class="cardTitle">末端控制</span>
                           </div>
-                          <div class="align-middle"><!-- 姿态角数据显示 -->
+                          <div class=" row align-item-middle justify-content-center p-0 "><!-- 姿态角数据显示 -->
+                              <el-button  type="primary"
+                              @click="subPosOfEndJaw"
+                              icon="el-icon-minus"  class=" col-1 p-0 m-0" alet="12">
+                              </el-button>
                               <el-slider @input="controlPosOfEndJaw"
-                              class=" col-12 positionSlider"
-                              :min="-180" :max="180" v-model="modePosOfEndJaw"></el-slider>
+                              class=" col-9 positionSlider "
+                              :min="0" :max="100" v-model="modePosOfEndJaw"></el-slider>
+                              <el-button  type="primary"
+                              @click="addPosOfEndJaw"
+                              icon="el-icon-plus"  class="col-1 p-0 m-0" alet="12">
+                              </el-button>
                           </div><!-- 姿态角数据显示 -->
                       </div><!-- 末端机构状态卡片结束 -->
                     </div><!-- 按钮控制行的结束 -->
@@ -492,10 +499,18 @@
                           <div>
                             <span class="cardTitle">速度控制</span>
                           </div>
-                          <div class="align-middle"><!-- 姿态角数据显示 -->
+                          <div class="row align-item-middle justify-content-center p-0 "><!-- 姿态角数据显示 -->
+                              <el-button  type="primary"
+                              @click="subMoveVecReal"
+                              icon="el-icon-minus"  class="col-1 p-0 m-0" alet="12">
+                              </el-button>
                               <el-slider @input="controlMoveVecReal"
-                              class=" col-12 positionSlider"
-                              :min="-180" :max="180" v-model="modeMoveVecReal"></el-slider>
+                              class=" col-9 positionSlider"
+                              :min="0" :max="100" v-model="modeMoveVecReal"></el-slider>
+                              <el-button  type="primary"
+                              @click="addMoveVecReal"
+                              icon="el-icon-plus"  class="col-1 p-0 m-0" alet="12">
+                              </el-button>
                           </div><!-- 姿态角数据显示 -->
                       </div><!-- 末端机构状态卡片结束 -->
                     </div><!-- 按钮控制行的结束 -->
@@ -941,6 +956,22 @@
       },
       savePosReal(){
 
+      },
+      subPosOfEndJaw(){
+        console.log(this.posOfEndJaw)
+        this.mutationPosOfEndJaw(this.posOfEndJaw-1);
+        console.log(this.posOfEndJaw)
+      },
+      addPosOfEndJaw(){
+        console.log(this.posOfEndJaw)
+        this.mutationPosOfEndJaw(this.posOfEndJaw+1);
+        console.log(this.posOfEndJaw)
+      },
+      subMoveVecReal(){
+        this.mutationMoveVecReal(this.moveVecReal-1);
+      },
+      addMoveVecReal(){
+        this.mutationMoveVecReal(this.moveVecReal+1);
       },
       controlPosOfEndJaw(){
 
@@ -1725,7 +1756,7 @@
   .wholeWrap{
   }
   .topBar{
-    
+
   }
   .stateCardLeft{
     margin: 10px;
@@ -1776,7 +1807,6 @@
     }
     .positionSlider{
       display: inline-block;
-
       width: 450px;
     }
 
@@ -1949,6 +1979,10 @@
      border: 2px solid #0DB7F0;
      box-shadow: 1px 4px 6px 0 rgba(0, 0, 0, 0.5)
   }
+  .sliderButtonContain{
+      /* position: relative; */
+  }
+
 /* 媒体查询功能 */
 /* 高度最大像素1000像素 最小像素480像素 即高度在480-1000之间时 */
 @media only screen and (min-height:480px) and (max-height:1000px){
