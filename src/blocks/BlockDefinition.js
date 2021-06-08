@@ -32,19 +32,19 @@ Blockly.Blocks['jogmove'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldLabelSerializable("关节运动"), "jogMoveName")
         .appendField(new Blockly.FieldLabelSerializable("J1"), "jog1")
-        .appendField(new Blockly.FieldNumber(0, 0, 360, 3), "jog1Input")
+        .appendField(new Blockly.FieldNumber(0, 0, 360, 0.01), "jog1Input")
         .appendField(new Blockly.FieldLabelSerializable("J2"), "jog2")
-        .appendField(new Blockly.FieldNumber(0, 0, 360, 3), "jog2Input")
+        .appendField(new Blockly.FieldNumber(0, 0, 360, 0.01), "jog2Input")
         .appendField(new Blockly.FieldLabelSerializable("J3"), "jog3")
-        .appendField(new Blockly.FieldNumber(0, 0, 360, 3), "jog3Input")
+        .appendField(new Blockly.FieldNumber(0, 0, 360, 0.01), "jog3Input")
         .appendField(new Blockly.FieldLabelSerializable("J4"), "jog4")
-        .appendField(new Blockly.FieldNumber(0, 0, 360, 3), "jog4Input")
+        .appendField(new Blockly.FieldNumber(0, 0, 360, 0.01), "jog4Input")
         .appendField(new Blockly.FieldLabelSerializable("J5"), "jog5")
-        .appendField(new Blockly.FieldNumber(0, 0, 360, 3), "jog5Input")
+        .appendField(new Blockly.FieldNumber(0, 0, 360, 0.01), "jog5Input")
         .appendField(new Blockly.FieldLabelSerializable("J6"), "jog6")
-        .appendField(new Blockly.FieldNumber(0, 0, 360, 3), "jog6Input")
+        .appendField(new Blockly.FieldNumber(0, 0, 360, 0.01), "jog6Input")
         .appendField(new Blockly.FieldLabelSerializable("J7"), "jog7")
-        .appendField(new Blockly.FieldNumber(0, 0, 360, 3), "jog7Input");
+        .appendField(new Blockly.FieldNumber(0, 0, 360, 0.01), "jog7Input");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(165);
@@ -265,7 +265,7 @@ Blockly.JavaScript['jogmove'] = function(block) {
   var number_jog7input = block.getFieldValue('jog7Input');
   // TODO: Assemble JavaScript into code variable.
   //var code = '...;\n';
-  var code = 'this.jogMove('+number_jog1input+','+number_jog2input+','+number_jog3input+','+number_jog4input+','+number_jog5input+','+number_jog6input+')\n';
+  var code = 'this.jogMove('+number_jog1input+','+number_jog2input+','+number_jog3input+','+number_jog4input+','+number_jog5input+','+number_jog6input+','+number_jog7input+')\n';
   return code;
 };
 
