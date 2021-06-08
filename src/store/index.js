@@ -63,6 +63,7 @@ const store=new Vuex.Store({
           kindOfEndTool:0,//0代表夹爪，1代表吸盘
           stateOfEndSuck:false,
           posOfEndJaw:0.0,
+          theRunInformation:'未连接机械臂',
           realRobotControlMode:1,//1代表点动模式,2代表手动模式
           outExeclDataSimulate:[],
           outExeclDataHandMode:[],

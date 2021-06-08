@@ -3,7 +3,25 @@
       <div class="container-fluid topBar " style="height: 6%;"><!-- //顶部返回，状态和急停的开始 -->
         <div class="row h-100">
            <el-button class="col-2 " @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
-           <el-link class="col-8" type="primary" disabled>主要链接</el-link>
+           <!-- <el-link class="col-8" type="primary">主要链接</el-link> -->
+           <div class="col-8 border text-center align-item-middle" style="padding-top: 11px;">
+             <el-badge :value="12" class="item">
+               <el-button size="medium" style="font-size: 1.3rem;"
+               @click="showInformationTable = true"
+               type="text">{{theRunInformation}}</el-button>
+             </el-badge>
+           </div>
+           <el-drawer
+             title="运行日志信息"
+             :visible.sync="showInformationTable"
+             direction="rtl"
+             size="30%">
+              <el-table :data="gridData">
+                 <el-table-column property="date" label="日期" width="150"></el-table-column>
+                 <el-table-column property="name" label="姓名" width="200"></el-table-column>
+                 <el-table-column property="address" label="地址"></el-table-column>
+               </el-table>
+           </el-drawer>
            <el-button class="col-2" @click="scramButtonClicked" type="danger" icon="el-icon-refresh">急停</el-button>
         </div><!-- //顶部的结束 -->
       </div>
@@ -814,6 +832,7 @@
         rePlayDisabledHandMode:true,
         pauseDisabledHandMode:true,
         stopDisabledHandMode:true,
+        showInformationTable:false,
         threeViewWidth:450,
         threeVieHeight:350,
         endMechanismValue:true
@@ -824,7 +843,7 @@
       //引入的各个轴的位置数据positionOfAxis
       ...mapState(['positionOfAxisInSimulate','positionOfAxisInReal','positionOfXYZRPYInReal',
       'enableRobot','moveVecReal','kindOfEndTool','stateOfEndSuck','posOfEndJaw','realRobotControlMode',
-      'outExeclDataSimulate','outExeclDataHandMode']),
+      'outExeclDataSimulate','outExeclDataHandMode','theRunInformation']),
       // v-mode双向绑定VUEX中的数据的正确方法
       modeEnableRobot:{
         get(){

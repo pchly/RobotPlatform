@@ -26,6 +26,9 @@ const mutations={
   mutationRealRobotControlMode:function(state,payload){
     state.realRobotControlMode=payload;
   },
+  mutationTheRunInformationfunction(state,payload){
+    state.theRunInformation=payload;
+  },
     // 用法示例
     // mutationIsShowMoreMenus:function(state,payload){
     //     //state表示当前的状态数据

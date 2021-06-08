@@ -141,7 +141,7 @@
    },
    methods:{
      //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
-     ...mapMutations(['mutationServerIp','mutationPositionOfXAxis']),
+     ...mapMutations(['mutationServerIp','mutationPositionOfXAxis','mutationTheRunInformationfunction']),
      clickedStepCb(event){
        this.clickedStep=event.target.alt;
        this.currentStep=this.clickedStep;
@@ -165,6 +165,7 @@
                         openevent=>{
                         //openevent为回调参数，里面包含各种连接信息
                         // console.log(openevent);
+                        this.mutationTheRunInformationfunction('机械臂连接成功');
                         console.log('opened');
                         this.serverAndLinkInfo.linkButtonType="danger";
                         this.serverAndLinkInfo.linkButtonText='断开连接';
@@ -191,6 +192,7 @@
                         error=>{
                         console.log(error);
                         console.log('have error');
+                        this.mutationTheRunInformationfunction('机械臂连接出错');
                         this.$alert('服务器连接失败', '错误信息', {
                                 confirmButtonText: '确定',
                                 callback: () => {
@@ -202,6 +204,7 @@
                         closeevent=>{
                         console.log(closeevent);
                         console.log('closed');
+                        this.mutationTheRunInformationfunction('未连接机械臂');
                         if(this.serverAndLinkInfo.haveEverLink){
                             this.$alert('服务器关闭', '信息提示', {
                                 confirmButtonText: '确定',
