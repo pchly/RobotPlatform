@@ -1,6 +1,6 @@
 <template>
     <div class="wholeWrap">
-      <div class="container-fluid  " style="height: 6%;"><!-- //顶部返回，状态和急停的开始 -->
+      <div class="container-fluid topBar " style="height: 6%;"><!-- //顶部返回，状态和急停的开始 -->
         <div class="row h-100">
            <el-button class="col-2 " @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
            <el-link class="col-8" type="primary" disabled>主要链接</el-link>
@@ -22,9 +22,9 @@
                       <span class="col cardTitle" >位置</span>
                     </div>
                     <div class="col xyzData">
-                        <div>X:<span class="posiAndPoseData">100</span> mm</div>
-                        <div>Y:<span class="posiAndPoseData">100</span> mm</div>
-                        <div>Z:<span class="posiAndPoseData">100</span> mm</div>
+                        <div>X:<span class="posiAndPoseData" ref='XPoseLable'>{{positionOfAxisInReal[0]}}</span> mm</div>
+                        <div>Y:<span class="posiAndPoseData" ref='YPoseLable'>{{positionOfAxisInReal[1]}}</span> mm</div>
+                        <div>Z:<span class="posiAndPoseData" ref='ZPoseLable'>{{positionOfAxisInReal[2]}}</span> mm</div>
                     </div>
                 </div><!-- 位置卡片结束 -->
               </div>
@@ -34,7 +34,8 @@
                       <span class="col cardTitle ">末端机构类型</span>
                     </div>
                     <div>
-                        <img src="../assets/Link-img/link-02.gif" style="width: 60%;" />
+                        <img v-if="kindOfEndTool==0" src="../assets/basicControlImge/endJaw.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==1" src="../assets/basicControlImge/endSuck.png" style="width: 60%;" />
                     </div>
                 </div><!-- 末端机构类型卡片结束 -->
               </div>
@@ -46,9 +47,9 @@
                       <span class="col cardTitle">姿态</span>
                     </div>
                     <div class="rpyData"><!-- 姿态角数据显示 -->
-                        <div>Roll:<span class="posiAndPoseData">100</span> °</div>
-                        <div>Pitch:<span class="posiAndPoseData">100</span> °</div>
-                        <div>Yaw:<span class="posiAndPoseData">100</span> °</div>
+                        <div>Roll:<span class="posiAndPoseData" ref='RPoseLable'>{{positionOfAxisInReal[3]}}</span> °</div>
+                        <div>Pitch:<span class="posiAndPoseData" ref='PPoseLable'>{{positionOfAxisInReal[4]}}</span> °</div>
+                        <div>Yaw:<span class="posiAndPoseData" ref='YawPoseLable'>{{positionOfAxisInReal[5]}}</span> °</div>
                     </div><!-- 姿态角数据显示 -->
                 </div><!-- 姿态卡片结束 -->
               </div>
@@ -58,12 +59,10 @@
                       <span class="col cardTitle">末端机构状态</span>
                     </div>
                     <div class="align-middle"><!-- 姿态角数据显示 -->
-                        <el-switch
-                          v-model="endMechanismValue"
-                          active-color="#13ce66"
-                          inactive-color="#ff4949"
-                          >
-                        </el-switch>
+                        <img v-if="kindOfEndTool==0&&modePosOfEndJaw==0" src="../assets/basicControlImge/jawOpen.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==0&&modePosOfEndJaw!=0" src="../assets/basicControlImge/jawClose.png" style="width: 60%;" />
+                        <img v-if="kindOfEndTool==1&&stateOfEndSuck==false" src="../assets/basicControlImge/suckOff.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==1&&stateOfEndSuck!=true" src="../assets/basicControlImge/suckOn.png" style="width: 60%;" />
                     </div><!-- 姿态角数据显示 -->
                 </div><!-- 末端机构状态卡片结束 -->
               </div>
@@ -76,11 +75,18 @@
                     </div>
                     <div class="col xyzData">
                         <div>
-                          <span v-if="runModeRadio==1" class="posiAndPoseData">循环模式</span>
-                          <span v-else-if="runModeRadio==2" class="posiAndPoseData">单次模式</span>
-                          <span v-else-if="runModeRadio==3" class="posiAndPoseData">设定模式</span>
+                          <span v-if="modeEnableRobot==false" class="posiAndPoseData">仿真机械臂</span>
+                          <span v-else-if="modeEnableRobot==true" class="posiAndPoseData">真实机械臂</span>
                         </div>
-
+                        <div>
+                          <span v-if="runModeRadio==1&&modeEnableRobot==false" class="posiAndPoseData">循环模式</span>
+                          <span v-else-if="runModeRadio==2&&modeEnableRobot==false" class="posiAndPoseData">单次模式</span>
+                          <span v-else-if="runModeRadio==3&&modeEnableRobot==false" class="posiAndPoseData">设定模式</span>
+                        </div>
+                        <div>
+                          <span v-if="realRobotControlMode==1&&modeEnableRobot==true" class="posiAndPoseData">点动模式</span>
+                          <span v-else-if="realRobotControlMode==2&&modeEnableRobot==true" class="posiAndPoseData">手动模式</span>
+                        </div>
                     </div>
                 </div><!-- 位置卡片结束 -->
               </div>
@@ -91,8 +97,8 @@
                     </div>
                     <div>
                         <div>
-                          <div>当前运行第<span v-if="runModeRadio==1" class="posiAndPoseData">{{showRunRowNum}}</span>组</div>
-                          <div>已经运行第<span v-if="runModeRadio==1" class="posiAndPoseData">{{computedShowHaveRunConut}}</span>次</div>
+                          <div>当前运行第<span  class="posiAndPoseData">{{showRunRowNum}}</span>组</div>
+                          <div>已经运行第<span  class="posiAndPoseData">{{showHaveRunConut}}</span>次</div>
                         </div>
                     </div>
                 </div><!-- 末端机构类型卡片结束 -->
@@ -110,10 +116,10 @@
                   style="height: 45px;"
                   v-for="(item,index) in controlAxisButtonText" :key=index>
                   <el-tag class="col-1" style="font-size: 20px;">{{item.name}}</el-tag>
-                  <el-slider @input="controlAxisRotate(index)"
+                  <el-slider @input="controlAxisRotateInSimulate(index)"
                   class=" col-8 positionSlider"
                   :min="-180" :max="180" v-model="positionOfAxisInSimulate[index]"></el-slider>
-                  <el-input-number class="col-3" @change="controlAxisRotate(index)"
+                  <el-input-number class="col-3" @change="controlAxisRotateInSimulate(index)"
                     v-model="positionOfAxisInSimulate[index]"
                     :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
                 </div>
@@ -124,8 +130,8 @@
                       <!-- 回到原点 -->
                       <el-tooltip class="item" effect="dark" content="回到原点" placement="bottom">
                           <el-button type="primary"
-                          @click="backToZeroPosution"
-                          icon="el-icon-refresh-right" circle style="font-size: 1.2rem;" alet="12">
+                          @click="backToZeroPosition"
+                          icon="el-icon-refresh-right" circle class="runModeAndDataSaveAboutButton" alet="12">
                           </el-button>
                       </el-tooltip>
                       <!-- 输入备注 -->
@@ -136,7 +142,7 @@
                      <!-- 记录数据按钮 -->
                      <el-tooltip class="item" effect="dark" content="记录数据" placement="bottom">
                          <el-button type="primary"
-                         icon="el-icon-s-order" @click="addExeclDataSimulate" circle style="font-size: 1.2rem;">
+                         icon="el-icon-s-order" @click="addExeclDataSimulate" circle class="runModeAndDataSaveAboutButton">
                          </el-button>
                      </el-tooltip>
                       <!-- 保存EXECL文件按钮 -->
@@ -147,14 +153,14 @@
                           name = "关节数据">
                           <el-tooltip class="item" effect="dark" content="保存文件" placement="bottom">
                              <el-button type="primary"
-                             icon="el-icon-folder-add" circle style="font-size: 1.2rem;">
+                             icon="el-icon-folder-add" circle class="runModeAndDataSaveAboutButton">
                              </el-button>
                           </el-tooltip>
                      </download-excel>
                      <!-- 打开EXECL文件按钮 -->
                      <label class="upLoadExeclFile" for="fileinp">
                        <el-tooltip class="item" effect="dark" content="打开数据文档" placement="bottom">
-                          <el-button circle id="upLoadBtn" type="primary" style="font-size: 1.2rem;" icon="el-icon-notebook-1">
+                          <el-button circle id="upLoadBtn" type="primary" class="runModeAndDataSaveAboutButton" icon="el-icon-notebook-1">
                           </el-button>
                        </el-tooltip>
                        <input type="file" id="fileinp" ref="upload" style="width: 50px;"
@@ -168,28 +174,28 @@
                       </el-radio-group>
                       <el-input-number  style="width: 85px;" v-model="runCountSet" controls-position="right" :min="1" :max="10"></el-input-number>
                      <!-- 按照模式运行按钮 -->
-                     <el-tooltip class="item" effect="dark" content="启动" placement="bottom">
-                         <el-button type="primary"
-                         @click="handleMultipleRunSimulate"
-                         icon="el-icon-timer" circle style="font-size: 1.2rem;">
+                     <el-tooltip class="item"  effect="dark" content="启动" placement="bottom">
+                         <el-button type="primary" :disabled="startDisabled"
+                         @click="startMultipleRunSimulate"
+                         icon="el-icon-timer" circle class="runModeAndDataSaveAboutButton">
                          </el-button>
                      </el-tooltip>
-                     <el-tooltip class="item" effect="dark" content="开始运行" placement="bottom">
-                         <el-button type="primary"
+                     <el-tooltip class="item"  effect="dark" content="开始运行" placement="bottom">
+                         <el-button type="primary" :disabled="rePlayDisabled"
                          @click="rePlayMultipleRunSimulate"
-                         icon="el-icon-video-play" circle style="font-size: 1.2rem;" >
+                         icon="el-icon-video-play" circle class="runModeAndDataSaveAboutButton" >
                          </el-button>
                      </el-tooltip>
-                     <el-tooltip class="item" effect="dark" content="暂停运行" placement="bottom">
-                         <el-button type="primary"
-                         @click="pauseleMultipleRunSimulate"
-                         icon="el-icon-video-pause" circle style="font-size: 1.2rem;">
+                     <el-tooltip class="item"  effect="dark" content="暂停运行" placement="bottom">
+                         <el-button type="primary" :disabled="pauseDisabled"
+                         @click="pauseMultipleRunSimulate"
+                         icon="el-icon-video-pause" circle class="runModeAndDataSaveAboutButton">
                          </el-button>
                      </el-tooltip>
-                     <el-tooltip class="item" effect="dark" content="停止运行" placement="bottom">
-                         <el-button type="primary"
-                         @click="stopleMultipleRunSimulate"
-                         icon="el-icon-circle-close" circle style="font-size: 1.2rem;">
+                     <el-tooltip class="item"  effect="dark" content="停止运行" placement="bottom">
+                         <el-button type="primary" :disabled="stopDisabled"
+                         @click="stopMultipleRunSimulate"
+                         icon="el-icon-circle-close" circle class="runModeAndDataSaveAboutButton">
                          </el-button>
                      </el-tooltip>
 
@@ -201,7 +207,7 @@
                        <!-- 数据表格 -->
                        <el-table
                           :data="outExeclDataSimulate"
-                          height="250"
+                          height="350px"
                           style="width: 100%"
                           @selection-change="handleTableRowSelectionChange"
                           >
@@ -276,79 +282,420 @@
                   <span slot="label"><i class="el-icon-s-check"></i>实物控制</span>
                   <!-- 控制按钮和计数器组 -->
                   <div class=" row text-center align-items-top">
-                    <div class="col-9  RealRobotControlButton border">
-                      <label class="ControlButton zPosBtn" for="zPosBtn">
-                           <el-button class="controlBtnDown" circle id="zPosBtn"
-                           @click="zControlPos"
-                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
-                           </el-button>
-                        <img class="controlBtnUp" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
-                        <img class="controlBtnUpHover" src="../assets/basicControlImge/Z-.png" id="zPosImg" />
-                      </label>
-                      <label class="ControlButton zNegBtn" for="zNegBtn">
-                           <el-button class="controlBtnDown" circle id="zNegBtn"
-                           @click="zControlPos"
-                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
-                           </el-button>
-                        <img  class="controlBtnUp" src="../assets/basicControlImge/Z-.png" id="zNegImg" />
-                        <img class="controlBtnUpHover" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
-                      </label>
-                      <label class="ControlButton xPosBtn" for="xPosBtn">
-                           <el-button class="controlBtnDown" circle id="xPosBtn"
-                           @click="zControlPos"
-                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
-                           </el-button>
-                        <img  class="controlBtnUp" src="../assets/basicControlImge/X+.png" id="xPosImg" />
-                      </label>
-                      <label class="ControlButton xNegBtn" for="xNegBtn">
-                           <el-button class="controlBtnDown" circle id="xNegBtn"
-                           @click="zControlPos"
-                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
-                           </el-button>
-                        <img class="controlBtnUp" src="../assets/basicControlImge/X-.png" id="xNegImg" />
-                      </label>
-                      <label class="ControlButton yPosBtn" for="yPosBtn">
-                           <el-button class="controlBtnDown" circle id="yPosBtn"
-                           @click="zControlPos"
-                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
-                           </el-button>
-                        <img class="controlBtnUp" src="../assets/basicControlImge/Y+.png" id="yPosImg" />
-                      </label>
-                      <label class="ControlButton yNegBtn" for="yNegBtn">
-                           <el-button class="controlBtnDown" circle id="yNegBtn"
-                           @click="zControlPos"
-                           type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
-                           </el-button>
-                        <img class="controlBtnUp"src="../assets/basicControlImge/Y-.png" id="yNegImg" />
-                      </label>
-                    </div>
-                    <div class=" col-3">
+                    <div class=" col-3 p-0">
                       <div class="text-center "
                         style="height: 50px;"
-                        v-for="(item,index) in controlPosButtonText" :key=index>
-                        <el-tag class="col-4" style="font-size: 20px;">{{item.name}}</el-tag>
-                        <el-input-number class="col-8" @change="controlAxisRotate(index)"
-                          v-model="positionOfAxisInSimulate[index]"
+                        v-for="(item,index) in controlAxisButtonText" :key=index>
+                        <el-tag class="col-4" style="font-size: 20px;width: 20%;">{{item.name}}</el-tag>
+                        <el-input-number class="col-8" @change="controlAxisReal(index)"
+                          v-model="positionOfAxisInReal[index]"
+                          style="width: 80%;"
                           :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
                       </div>
                     </div>
+                    <div class="col-6  RealRobotControlButton ">
+                      <div class="row" style="width: 100%;">
+                          <div class="col-6 XYZButton " style="width: 50%;">
+                              <label class="ControlButton zPosBtn" for="zPosBtn">
+                                   <el-button class="controlBtnDown" circle id="zPosBtn"
+                                   @click="zControlPosAdd"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
+                                <!-- <img class="controlBtnUpHover" src="../assets/basicControlImge/Z-.png" id="zPosImg" /> -->
+                              </label>
+                              <label class="ControlButton zNegBtn" for="zNegBtn">
+                                   <el-button class="controlBtnDown" circle id="zNegBtn"
+                                   @click="zControlPosSub"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img  class="controlBtnUp" src="../assets/basicControlImge/Z-.png" id="zNegImg" />
+                                <!-- <img class="controlBtnUpHover" src="../assets/basicControlImge/Z+.png" id="zPosImg" /> -->
+                              </label>
+                              <label class="ControlButton xPosBtn" for="xPosBtn">
+                                   <el-button class="controlBtnDown" circle id="xPosBtn"
+                                   @click="xControlPosAdd"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img  class="controlBtnUp" src="../assets/basicControlImge/X+.png" id="xPosImg" />
+                              </label>
+                              <label class="ControlButton xNegBtn" for="xNegBtn">
+                                   <el-button class="controlBtnDown" circle id="xNegBtn"
+                                   @click="xControlPosSub"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp" src="../assets/basicControlImge/X-.png" id="xNegImg" />
+                              </label>
+                              <label class="ControlButton yPosBtn" for="yPosBtn">
+                                   <el-button class="controlBtnDown" circle id="yPosBtn"
+                                   @click="yControlPosAdd"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Y+.png" id="yPosImg" />
+                              </label>
+                              <label class="ControlButton yNegBtn" for="yNegBtn">
+                                   <el-button class="controlBtnDown" circle id="yNegBtn"
+                                   @click="yControlPosSub"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp"src="../assets/basicControlImge/Y-.png" id="yNegImg" />
+                              </label>
+                          </div>
+                          <div class="col-6 RPYButton " style="width: 50%;">
+                              <label class="ControlButton rPosBtn" for="rPosBtn">
+                                   <el-button class="controlBtnDown" circle id="rPosBtn"
+                                   @click="rControlPosAdd"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
+                                <!-- <img class="controlBtnUpHover" src="../assets/basicControlImge/Z-.png" id="zPosImg" /> -->
+                              </label>
+                              <label class="ControlButton rNegBtn" for="rNegBtn">
+                                   <el-button class="controlBtnDown" circle id="rNegBtn"
+                                   @click="rControlPosSub"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img  class="controlBtnUp" src="../assets/basicControlImge/Z-.png" id="zNegImg" />
+                                <!-- <img <class="controlBtnUpHover" src="../assets/basicControlImge/Z+.png" id="zPosImg" /> -->
+                              </label>
+                              <label class="ControlButton pPosBtn" for="pPosBtn">
+                                   <el-button class="controlBtnDown" circle id="pPosBtn"
+                                   @click="pControlPosAdd"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img  class="controlBtnUp" src="../assets/basicControlImge/X+.png" id="xPosImg" />
+                              </label>
+                              <label class="ControlButton pNegBtn" for="pNegBtn">
+                                   <el-button class="controlBtnDown" circle id="pNegBtn"
+                                   @click="pControlPosSub"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp" src="../assets/basicControlImge/X-.png" id="xNegImg" />
+                              </label>
+                              <label class="ControlButton yawPosBtn" for="yawPosBtn">
+                                   <el-button class="controlBtnDown" circle id="yawPosBtn"
+                                   @click="yawControlPosAdd"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Y+.png" id="yPosImg" />
+                              </label>
+                              <label class="ControlButton yawNegBtn" for="yawNegBtn">
+                                   <el-button class="controlBtnDown" circle id="yawNegBtn"
+                                   @click="yawControlPosSub"
+                                   type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
+                                   </el-button>
+                                <img class="controlBtnUp"src="../assets/basicControlImge/Y-.png" id="yNegImg" />
+                              </label>
+                          </div>
+                      </div>
+
+                    </div>
+                    <div class=" col-3  p-0 align-items-center">
+                      <div class="text-left "
+                        style="height: 50px;">
+                        <el-tag class="col-6" style="font-size: 20px;">笛卡尔坐标</el-tag>
+                      </div>
+                      <div class="text-left "
+                        style="height: 50px;"
+                        v-for="(item,index) in controlPosButtonText" :key=index>
+                        <el-tag class="col-4 XYZRPYPosTag">{{item.name}}</el-tag>
+                        <el-input-number  class="col-8" @change="controlPOsXYZRPYReal(index)"
+                          v-model="positionOfXYZRPYInReal[index]"
+                          style="width: 80%;"
+                          :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
+                      </div>
+                    </div>
+
                   </div>
+                  <el-divider content-position="left"></el-divider>
                   <!-- 第二行所在行 -->
-                  <div class="row">
-                    <div class="col text-right">
-                      第二行
+                  <div class="row text-center justify-content-center">
+                    <div class="col-1 controlCardCenter text-center">
+                      <div class="CardContent text-center m-0 w-100 "><!-- 末端机构状态卡片开始 -->
+                          <div>
+                            <span class="cardTitle">使能控制</span>
+                          </div>
+                          <div class="align-middle"><!-- 姿态角数据显示 -->
+                              <el-switch
+                              @change="enableControl"
+                                v-model="modeEnableRobot"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                style="margin-top: 10px;"
+                                >
+                              </el-switch>
+                          </div><!-- 姿态角数据显示 -->
+                      </div><!-- 末端机构状态卡片结束 -->
+                    </div>
+                    <div class="col-1 controlCardCenter text-center">
+                      <div class="CardContent text-center w-100  m-0"><!-- 末端机构状态卡片开始 -->
+                          <div>
+                            <span class="cardTitle">零位控制</span>
+                          </div>
+                          <div class="align-middle"><!-- 姿态角数据显示 -->
+                              <el-tooltip class="item"  effect="dark" content="回零" placement="bottom">
+                                  <el-button type="primary"
+                                  @click="backToZeroReal"
+                                  icon="el-icon-refresh-right" circle style="font-size: 1.2rem;">
+                                  </el-button>
+                              </el-tooltip>
+                          </div><!-- 姿态角数据显示 -->
+                      </div><!-- 末端机构状态卡片结束 -->
+                    </div><!-- 使能控制行的结束 -->
+                    <div class="col-1 controlCardCenter text-center">
+                      <div class="CardContent text-center w-100 m-0"><!-- 末端机构状态卡片开始 -->
+                          <div>
+                            <span class="cardTitle">位置保存</span>
+                          </div>
+                          <div class="align-middle"><!-- 姿态角数据显示 -->
+                              <el-tooltip class="item"  effect="dark" content="保存位置" placement="bottom">
+                                  <el-button type="primary"
+                                  @click="savePosReal"
+                                  icon="el-icon-s-management" circle style="font-size: 1.2rem;">
+                                  </el-button>
+                              </el-tooltip>
+                          </div><!-- 姿态角数据显示 -->
+                      </div><!-- 末端机构状态卡片结束 -->
+                    </div><!-- 按钮控制行的结束 -->
+                    <div class="col-3 controlCardCenter text-center">
+                      <div class="CardContent text-center w-100 m-0"><!-- 末端机构状态卡片开始 -->
+                          <div>
+                            <span class="cardTitle">末端控制</span>
+                          </div>
+                          <div class=" row align-item-middle justify-content-center p-0 "><!-- 姿态角数据显示 -->
+                              <el-button  type="primary"
+                              @click="subPosOfEndJaw"
+                              icon="el-icon-minus"  class=" col-1 p-0 m-0" alet="12">
+                              </el-button>
+                              <el-slider @input="controlPosOfEndJaw"
+                              class=" col-9 positionSlider "
+                              :min="0" :max="100" v-model="modePosOfEndJaw"></el-slider>
+                              <el-button  type="primary"
+                              @click="addPosOfEndJaw"
+                              icon="el-icon-plus"  class="col-1 p-0 m-0" alet="12">
+                              </el-button>
+                          </div><!-- 姿态角数据显示 -->
+                      </div><!-- 末端机构状态卡片结束 -->
+                    </div><!-- 按钮控制行的结束 -->
+                    <div class="col-1 controlCardCenter text-center">
+                      <div class="CardContent text-center m-0 w-100 "><!-- 末端机构状态卡片开始 -->
+                          <div>
+                            <span class="cardTitle">吸盘控制</span>
+                          </div>
+                          <div class="align-middle"><!-- 姿态角数据显示 -->
+                              <el-switch
+                              @change="controlStateOfEndSuck"
+                                v-model="modeStateOfEndSuck"
+                                active-color="#13ce66"
+                                inactive-color="#ff4949"
+                                style="margin-top: 10px;"
+                                >
+                              </el-switch>
+                          </div><!-- 姿态角数据显示 -->
+                      </div><!-- 末端机构状态卡片结束 -->
+                    </div>
+                    <div class="col-3 controlCardCenter text-center ">
+                      <div class="CardContent text-center w-100 m-0 "><!-- 末端机构状态卡片开始 -->
+                          <div>
+                            <span class="cardTitle">速度控制</span>
+                          </div>
+                          <div class="row align-item-middle justify-content-center p-0 "><!-- 姿态角数据显示 -->
+                              <el-button  type="primary"
+                              @click="subMoveVecReal"
+                              icon="el-icon-minus"  class="col-1 p-0 m-0" alet="12">
+                              </el-button>
+                              <el-slider @input="controlMoveVecReal"
+                              class=" col-9 positionSlider"
+                              :min="0" :max="100" v-model="modeMoveVecReal"></el-slider>
+                              <el-button  type="primary"
+                              @click="addMoveVecReal"
+                              icon="el-icon-plus"  class="col-1 p-0 m-0" alet="12">
+                              </el-button>
+                          </div><!-- 姿态角数据显示 -->
+                      </div><!-- 末端机构状态卡片结束 -->
                     </div><!-- 按钮控制行的结束 -->
                   </div>
+                  <el-divider content-position="left"></el-divider>
                    <!-- 第三行所在行 -->
-                  <div class="row w-100 bg-danger" style="margin: 10px auto;">
+                  <!-- <div class="row w-100 bg-danger" style="margin: 10px auto;">
                     <div class="col  border">
                       第三行
                     </div>
-                  </div>
+                  </div> -->
               </el-tab-pane>
               <el-tab-pane>
                 <span slot="label"><i class="el-icon-thumb"></i>拖动控制</span>
-                我的行9
+                <!-- 回原点、输入备注、记录数据等按钮所在行 -->
+                <div class="row">
+                  <div class="col text-left">
+                      <el-divider content-position="left">手动操作</el-divider>
+                      <!-- 回到原点 -->
+                      <el-tooltip v-if="realRobotControlMode==1"class="item" effect="dark" content="开启手动" placement="bottom">
+                          <el-button type="primary"
+                          @click="startHandMode"
+                          icon="el-icon-thumb"  class="runModeAndDataSaveAboutButtonHandMode" alet="12">
+                          </el-button>
+                      </el-tooltip>
+                      <!-- 回到原点 -->
+                      <el-tooltip v-if="realRobotControlMode==2" class="item" effect="dark" content="关闭手动" placement="bottom">
+                          <el-button type="primary"
+                          @click="stoptHandMode"
+                          icon="el-icon-coordinate"  class="runModeAndDataSaveAboutButtonHandMode" alet="12">
+                          </el-button>
+                      </el-tooltip>
+                      <!-- 回到原点 -->
+                      <el-tooltip class="item" effect="dark" content="回到原点" placement="bottom">
+                          <el-button type="primary"
+                          @click="backToZeroPositionHandMode"
+                          icon="el-icon-refresh-right"  class="runModeAndDataSaveAboutButtonHandMode" alet="12">
+                          </el-button>
+                      </el-tooltip>
+                      <!-- 输入备注 -->
+                     <el-input  v-model="remarksTextSimulate"
+                     style="display: inline-block;width: 140px;"
+                     placeholder="请输入备注内容">
+                     </el-input>
+                     <!-- 记录数据按钮 -->
+                     <el-tooltip class="item" effect="dark" content="记录数据" placement="bottom">
+                         <el-button type="primary"
+                         icon="el-icon-s-order" @click="addExeclDataHandMode"  class="runModeAndDataSaveAboutButtonHandMode">
+                         </el-button>
+                     </el-tooltip>
+                      <!-- 保存EXECL文件按钮 -->
+                     <download-excel
+                          style="display: inline-block;"
+                          :data="outExeclDataHandMode"
+                          :fields="outExeclFields"
+                          name = "关节数据">
+                          <el-tooltip class="item" effect="dark" content="保存文件" placement="bottom">
+                             <el-button type="primary"
+                             icon="el-icon-folder-add" class="runModeAndDataSaveAboutButtonHandMode">
+                             </el-button>
+                          </el-tooltip>
+                     </download-excel>
+                     <!-- 打开EXECL文件按钮 -->
+                     <label class="upLoadExeclFile" for="fileinp">
+                       <el-tooltip class="item" effect="dark" content="打开数据文档" placement="bottom">
+                          <el-button  id="upLoadBtn" type="primary" class="runModeAndDataSaveAboutButtonHandMode" icon="el-icon-notebook-1">
+                          </el-button>
+                       </el-tooltip>
+                       <input type="file" id="fileinp" ref="upload" style="width: 50px;"
+                       accept=".xls,.xlsx" class="outputlist_upload">
+                     </label>
+                  </div>
+                 </div><!-- 按钮控制行的结束 -->
+                 <div class="row">
+                   <div class="col text-left">
+                       <el-divider content-position="left">运动控制</el-divider>
+                      <!-- 选择运行模式 -->
+                       <el-radio-group style="width: 190px;" v-model="runModeRadioHandMode">
+                          <el-radio  style="width: 60px;margin: 1px;" :label="1">循环</el-radio>
+                          <el-radio  style="width: 60px;margin: 1px;" :label="2">单次</el-radio>
+                          <el-radio  style="width: 60px;margin: 1px;" :label="3">设定</el-radio>
+                       </el-radio-group>
+                       <el-input-number  style="width: 85px;" v-model="runCountSetHandMode" controls-position="right" :min="1" :max="10"></el-input-number>
+                      <!-- 按照模式运行按钮 -->
+                      <el-tooltip class="item"  effect="dark" content="启动" placement="bottom">
+                          <el-button type="primary" :disabled="startDisabledHandMode"
+                          @click="startMultipleRunHandMode"
+                          icon="el-icon-timer"  class="runModeAndDataSaveAboutButtonHandMode">
+                          </el-button>
+                      </el-tooltip>
+                      <el-tooltip class="item"  effect="dark" content="开始运行" placement="bottom">
+                          <el-button type="primary" :disabled="rePlayDisabledHandMode"
+                          @click="rePlayMultipleRunHandMode"
+                          icon="el-icon-video-play"  class="runModeAndDataSaveAboutButtonHandMode" >
+                          </el-button>
+                      </el-tooltip>
+                      <el-tooltip class="item"  effect="dark" content="暂停运行" placement="bottom">
+                          <el-button type="primary" :disabled="pauseDisabledHandMode"
+                          @click="pauseMultipleRunHandMode"
+                          icon="el-icon-video-pause"  class="runModeAndDataSaveAboutButtonHandMode">
+                          </el-button>
+                      </el-tooltip>
+                      <el-tooltip class="item"  effect="dark" content="停止运行" placement="bottom">
+                          <el-button type="primary" :disabled="stopDisabledHandMode"
+                          @click="stopMultipleRunHandMode"
+                          icon="el-icon-circle-close"  class="runModeAndDataSaveAboutButtonHandMode">
+                          </el-button>
+                      </el-tooltip>
+                   </div>
+                  </div><!-- 按钮控制行的结束 -->
+                 <!-- 数据表格所在行 -->
+                 <div class="row w-100" style="margin: 10px auto;">
+                   <div class="col  border">
+                      <!-- 数据表格 -->
+                      <el-table
+                         :data="outExeclDataHandMode"
+                         height="350px"
+                         style="width: 100%"
+                         @selection-change="handleTableRowSelectionChange"
+                         >
+                        <!-- //多选框列 -->
+                         <el-table-column
+                               type="selection"
+                               width="55">
+                             </el-table-column>
+                         <!-- 第一列 -->
+                         <el-table-column
+                           prop="type"
+                           label="序号">
+                         </el-table-column>
+                         <!-- 第二列 -->
+                         <el-table-column
+                           prop="oneAxis"
+                           label="1轴" >
+                         </el-table-column>
+                         <!-- 第三列 -->
+                         <el-table-column
+                           prop="twoAxis"
+                           label="2轴">
+                         </el-table-column>
+                         <!-- 第四列 -->
+                         <el-table-column
+                           prop="threeAxis"
+                           label="3轴">
+                         </el-table-column>
+                         <!-- 第五列 -->
+                         <el-table-column
+                           prop="fourAxis"
+                           label="4轴">
+                         </el-table-column>
+                         <!-- 第六列 -->
+                         <el-table-column
+                           prop="fiveAxis"
+                           label="5轴">
+                         </el-table-column>
+                         <!-- 第七列 -->
+                         <el-table-column
+                           prop="sixAxis"
+                           label="6轴">
+                         </el-table-column>
+                         <!-- 第八列 -->
+                         <el-table-column
+                           prop="senveAxis"
+                           label="7轴">
+                         </el-table-column>
+                         <!-- 第九列 -->
+                         <el-table-column
+                           prop="remarks"
+                           label="备注">
+                         </el-table-column>
+                         <!-- 第十列 -->
+                         <el-table-column label="操作" width="180">
+                               <template slot-scope="scope">
+                                 <el-button
+                                   size="mini"
+                                   @click="handleRunSimulate(scope.$index, scope.row)">运行</el-button>
+                                 <el-button
+                                   size="mini"
+                                   type="danger"
+                                   @click="handleDeleteSimulate(scope.$index, scope.row)">删除</el-button>
+                               </template>
+                             </el-table-column>
+                       </el-table>
+                   </div>
+                 </div>
               </el-tab-pane>
             </el-tabs>
           </div><!-- 控制按钮区域的开始 -->
@@ -450,13 +797,23 @@
         showRunRowNum:0,
         pauseRunRowNum:0,
         multipleRunData:[],
-        stopleMultipleRunSimulateBool:false,
-        pauseleMultipleRunSimulateBool:false,
+        stopMultipleRunSimulateBool:false,
+        pauseMultipleRunSimulateBool:false,
         runModeRadio:1,
+        runModeRadioHandMode:1,
         runCountSet:0,
+        runCountSetHandMode:0,
         haveRunConut:0,
         showHaveRunConut:0,
         dataSimulateFromExeclFile:[],
+        rePlayDisabled:true,
+        pauseDisabled:true,
+        stopDisabled:true,
+        startDisabled:true,
+        startDisabledHandMode:true,
+        rePlayDisabledHandMode:true,
+        pauseDisabledHandMode:true,
+        stopDisabledHandMode:true,
         threeViewWidth:450,
         threeVieHeight:350,
         endMechanismValue:true
@@ -465,19 +822,42 @@
     computed:{
       //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
       //引入的各个轴的位置数据positionOfAxis
-      ...mapState(['positionOfAxisInSimulate','outExeclDataSimulate']),
+      ...mapState(['positionOfAxisInSimulate','positionOfAxisInReal','positionOfXYZRPYInReal',
+      'enableRobot','moveVecReal','kindOfEndTool','stateOfEndSuck','posOfEndJaw','realRobotControlMode',
+      'outExeclDataSimulate','outExeclDataHandMode']),
       // v-mode双向绑定VUEX中的数据的正确方法
-      // 解决现实已经运行多少次的问题
-       computedShowHaveRunConut:{
-         get(){
-           if(this.showHaveRunConut==0){
-             return 0;
-           }else{
-             return this.showHaveRunConut-1;
-           }
-         }
-
-       }
+      modeEnableRobot:{
+        get(){
+          return this.enableRobot
+        },
+        set(value){
+           this.mutationEnableRobot(value)
+        }
+      },
+      modeMoveVecReal:{
+        get(){
+          return this.moveVecReal
+        },
+        set(value){
+           this.mutationMoveVecReal(value)
+        }
+      },
+      modePosOfEndJaw:{
+        get(){
+          return this.posOfEndJaw
+        },
+        set(value){
+           this.mutationPosOfEndJaw(value)
+        }
+      },
+      modeStateOfEndSuck:{
+        get(){
+          return this.stateOfEndSuck
+        },
+        set(value){
+           this.mutationStateOfEndSuck(value)
+        }
+      },
     },
     mounted(){
       console.log('12323');
@@ -489,21 +869,160 @@
       console.log(99999999999);
       this.$refs.upload.addEventListener('change', e => {//绑定监听表格导入事件
           this.readExcel(e);
-          })
+          });
+      this.setOriginPosXYZRPY();
     },
     updated(){
       console.log('update');
     },
     beforeDestroy(){
       console.log("destroy");
-      this.backToZeroPosution();
+      this.backToZeroPosition();
     },
     methods:{
       //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
-      ...mapMutations(['mutationOutExeclDataSimulate']),
+      ...mapMutations(['mutationOutExeclDataSimulate','mutationEnableRobot','mutationMoveVecReal',
+      'mutationKindOfEndTool','mutationStateOfEndSuck','mutationPosOfEndJaw','mutationRealRobotControlMode'
+      ]),
       //返回主页
       backToHome(){
         this.$router.push('/home');
+      },
+      enableControl(){
+
+      },
+      backToZeroReal(){
+
+      },
+      zControlPosAdd(){
+        console.log('ZAdd');
+        this.positionOfXYZRPYInReal[2]+=1;
+        this.$refs.ZPoseLable.innerHTML=this.positionOfXYZRPYInReal[2];
+      },
+      zControlPosSub(){
+        console.log('ZSub');
+        this.positionOfXYZRPYInReal[2]-=1;
+        this.$refs.ZPoseLable.innerHTML=this.positionOfXYZRPYInReal[2];
+      },
+      xControlPosAdd(){
+        console.log('XAdd');
+        this.positionOfXYZRPYInReal[0]+=1;
+        this.$refs.XPoseLable.innerHTML=this.positionOfXYZRPYInReal[0];
+      },
+      xControlPosSub(){
+        console.log('XSub');
+        this.positionOfXYZRPYInReal[0]-=1;
+        this.$refs.XPoseLable.innerHTML=this.positionOfXYZRPYInReal[0];
+      },
+      yControlPosAdd(){
+        console.log('YAdd');
+        this.positionOfXYZRPYInReal[1]+=1;
+        this.$refs.YPoseLable.innerHTML=this.positionOfXYZRPYInReal[1];
+      },
+      yControlPosSub(){
+        console.log('YSub');
+        this.positionOfXYZRPYInReal[1]-=1;
+        this.$refs.YPoseLable.innerHTML=this.positionOfXYZRPYInReal[1];
+      },
+      rControlPosAdd(){
+        console.log('RAdd');
+        this.positionOfXYZRPYInReal[3]+=1;
+        this.$refs.RPoseLable.innerHTML=this.positionOfXYZRPYInReal[3];
+      },
+      rControlPosSub(){
+        console.log('RSub');
+        this.positionOfXYZRPYInReal[3]-=1;
+        this.$refs.RPoseLable.innerHTML=this.positionOfXYZRPYInReal[3];
+      },
+      pControlPosAdd(){
+        console.log('PAdd');
+        this.positionOfXYZRPYInReal[4]+=1;
+        this.$refs.PPoseLable.innerHTML=this.positionOfXYZRPYInReal[4];
+      },
+      pControlPosSub(){
+        console.log('PSub');
+        this.positionOfXYZRPYInReal[4]-=1;
+        this.$refs.PPoseLable.innerHTML=this.positionOfXYZRPYInReal[4];
+      },
+      yawControlPosAdd(){
+        console.log('YawAdd');
+        this.positionOfXYZRPYInReal[5]+=1;
+        this.$refs.YawPoseLable.innerHTML=this.positionOfXYZRPYInReal[5];
+      },
+      yawControlPosSub(){
+        console.log('YawSub');
+        this.positionOfXYZRPYInReal[5]-=1;
+        this.$refs.YawPoseLable.innerHTML=this.positionOfXYZRPYInReal[5];
+      },
+      savePosReal(){
+
+      },
+      subPosOfEndJaw(){
+        console.log(this.posOfEndJaw)
+        this.mutationPosOfEndJaw(this.posOfEndJaw-1);
+        console.log(this.posOfEndJaw)
+      },
+      addPosOfEndJaw(){
+        console.log(this.posOfEndJaw)
+        this.mutationPosOfEndJaw(this.posOfEndJaw+1);
+        console.log(this.posOfEndJaw)
+      },
+      subMoveVecReal(){
+        this.mutationMoveVecReal(this.moveVecReal-1);
+      },
+      addMoveVecReal(){
+        this.mutationMoveVecReal(this.moveVecReal+1);
+      },
+      controlPosOfEndJaw(){
+
+      },
+      controlStateOfEndSuck(){
+
+      },
+      controlMoveVecReal(){
+
+      },
+      setOriginPosXYZRPY(){
+        for(let i in this.positionOfXYZRPYInReal){
+            this.positionOfXYZRPYInReal[i]=0.0;
+         };
+         for(let i in this.positionOfAxisInReal){
+             this.positionOfAxisInReal[i]=0.0;
+          }
+      },
+      controlAxisReal(index){
+        console.log(this.positionOfAxisInReal[index]);
+      },
+      controlPOsXYZRPYReal(index){
+         console.log(this.positionOfXYZRPYInReal[index]);
+            // //发送消息的函数
+            // // WSocket.send("this.sendMessage");
+            // //执行运动控制函数
+            // RBC.xMove('200');
+      },
+      startHandMode(){
+        this.mutationRealRobotControlMode(2);
+      },
+      stoptHandMode(){
+        this.mutationRealRobotControlMode(1);
+      },
+      backToZeroPositionHandMode(){
+
+      },
+      addExeclDataHandMode(){
+
+      },
+      startMultipleRunHandMode(){
+
+      },
+      rePlayMultipleRunHandMode(){
+
+      },
+      stopMultipleRunHandMode(){
+
+      },
+      pauseMultipleRunHandMode(){
+
       },
       addExeclDataSimulate(){
         console.log("enterAddExeclData");
@@ -562,10 +1081,10 @@
          var that=this;
          setTimeout(()=>{
            console.log('enter the PosToPostimer');
-           console.log("that.stopleMultipleRunSimulateBool:"+that.stopleMultipleRunSimulateBool);
-           console.log("that.pauseleMultipleRunSimulateBool:"+that.pauseleMultipleRunSimulateBool);
+           console.log("that.stopMultipleRunSimulateBool:"+that.stopMultipleRunSimulateBool);
+           console.log("that.pauseMultipleRunSimulateBool:"+that.pauseMultipleRunSimulateBool);
            console.log("that.TrackCountNum:"+that.TrackCountNum);
-           if(that.stopleMultipleRunSimulateBool==true){
+           if(that.stopMultipleRunSimulateBool==true){
              this.theOldPos.oneAxis=this.positionOfAxisInSimulate[0];
              this.theOldPos.twoAxis=this.positionOfAxisInSimulate[1];
              this.theOldPos.threeAxis=this.positionOfAxisInSimulate[2];
@@ -577,7 +1096,7 @@
              console.log("have cleared");
            }
            else{
-             if(that.pauseleMultipleRunSimulateBool==false){
+             if(that.pauseMultipleRunSimulateBool==false){
                // 这里ajax 请求的代码片段和判断是否停止定时器
                if(that.TrackCountNum<=19){
                  this.positionOfAxisInSimulate[0]=(theOldPos.oneAxis + that.TrackCountNum*that.oneAxisChangeStep);//绕axis轴旋转π/8;
@@ -608,6 +1127,11 @@
                    this.theOldPos.fiveAxis=this.positionOfAxisInSimulate[4];
                    this.theOldPos.sixAxis=this.positionOfAxisInSimulate[5];
                    this.theOldPos.senveAxis=this.positionOfAxisInSimulate[6];
+                   if(this.showRunRowNum==this.multipleRunData.length-1){
+                     console.log(this.showHaveRunConut);
+                     this.showHaveRunConut=this.showHaveRunConut+1;
+                     console.log(this.showHaveRunConut);
+                   }
                  }
              }
              else{
@@ -628,75 +1152,94 @@
       handleTableRowSelectionChange(val){
             console.log('val:');
             console.log(val);
+            this.startDisabled=false;
             this.multipleRunData=val;
+            if(this.multipleRunData.length==0){
+              this.startDisabled=true;
+            }
          },
-      handleMultipleRunSimulate(){
+      startMultipleRunSimulate(){
+        this.pauseDisabled=false;
+        this.stopDisabled=false;
+        this.startDisabled=true;
         // this.theOldPos=this.multipleRunData[0];
-        this.pauseleMultipleRunSimulateBool=false;
-        this.stopleMultipleRunSimulateBool=false;
-        let  multipleRunPosToPosTimer = setInterval(() => {
-                this.multiplePosToPosFun(multipleRunPosToPosTimer)
-                 }, 2500)
-      },
-      rePlayMultipleRunSimulate(){
-        this.pauseleMultipleRunSimulateBool=false;
-        this.stopleMultipleRunSimulateBool=false;
-        this.runRowNum=this.pauseRunRowNum;
-        let  multipleRunPosToPosTimer = setInterval(() => {
-                this.multiplePosToPosFun(multipleRunPosToPosTimer)
-                 }, 2500)
-      },
-      stopleMultipleRunSimulate(){
-        this.stopleMultipleRunSimulateBool=true;
         this.TrackCountNum=0;
         this.runRowNum=0;
         this.haveRunConut=0;
         this.showRunRowNum=0;
         this.showHaveRunConut=0;
-        console.log(this.stopleMultipleRunSimulateBool);
+        this.pauseMultipleRunSimulateBool=false;
+        this.stopMultipleRunSimulateBool=false;
+        let  multipleRunPosToPosTimer = setInterval(() => {
+                this.multiplePosToPosFun(multipleRunPosToPosTimer)
+                 }, 2500)
+      },
+      rePlayMultipleRunSimulate(){
+        this.pauseMultipleRunSimulateBool=false;
+        this.stopMultipleRunSimulateBool=false;
+        this.runRowNum=this.pauseRunRowNum;
+        let  multipleRunPosToPosTimer = setInterval(() => {
+                this.multiplePosToPosFun(multipleRunPosToPosTimer)
+                 }, 2500)
+      },
+      stopMultipleRunSimulate(){
+        this.startDisabled=false;
+        this.stopMultipleRunSimulateBool=true;
+        this.TrackCountNum=0;
+        this.runRowNum=0;
+        this.haveRunConut=0;
+        this.showRunRowNum=0;
+        this.showHaveRunConut=0;
+        console.log(this.stopMultipleRunSimulateBool);
         // this.theOldPos=this.multipleRunData[0];
       },
-      pauseleMultipleRunSimulate(){
-        this.pauseleMultipleRunSimulateBool=true;
+      pauseMultipleRunSimulate(){
+        this.rePlayDisabled=false;
+        this.pauseMultipleRunSimulateBool=true;
       },
       multiplePosToPosFun(timer){
         var that=this;
         setTimeout(()=>{
 
-            if(that.stopleMultipleRunSimulateBool==true){
+            if(that.stopMultipleRunSimulateBool==true){
               clearInterval(timer);
             }else{
 
-                if(this.pauseleMultipleRunSimulateBool==false){
+                if(this.pauseMultipleRunSimulateBool==false){
                   this.pauseRunRowNum=that.runRowNum;
                   this.showRunRowNum=that.runRowNum;
                   this.robotRunPosToPos(this.theOldPos,this.multipleRunData[that.runRowNum]);
                   that.runRowNum=that.runRowNum+1;
-                  if(this.showRunRowNum==1){
-                    this.showHaveRunConut=this.showHaveRunConut+1;
-                  }
+                  // if(this.showRunRowNum==this.multipleRunData.length-1){
+                  //   console.log(this.showHaveRunConut);
+                  //   this.showHaveRunConut=this.showHaveRunConut+1;
+                  //   console.log(this.showHaveRunConut);
+                  // }
                   // 如需要停止定时器，只需加入以下：
                   if(that.runRowNum==this.multipleRunData.length){
                     that.runRowNum=0;
                     that.haveRunConut=that.haveRunConut+1;
                     if(that.runModeRadio==1){
-                      if(that.stopleMultipleRunSimulateBool==true){
+                      if(that.stopMultipleRunSimulateBool==true){
                         clearInterval(timer);
+                        this.showHaveRunConut=0;
+                        this.startDisabled=false;
                         // that.stopleMultipleRunSimulateBool=false;
                       }
                     }
                     if(that.runModeRadio==2){
-                      console.log(that.stopleMultipleRunSimulateBool)
+                      console.log(that.stopMultipleRunSimulateBool)
                       clearInterval(timer);
+                      this.startDisabled=false;
                     }
                     if(that.runModeRadio==3){
                       // that.haveRunConut=that.haveRunConut+1;
-                      console.log(that.stopleMultipleRunSimulateBool)
-                      if(that.stopleMultipleRunSimulateBool==false){
+                      console.log(that.stopMultipleRunSimulateBool)
+                      if(that.stopMultipleRunSimulateBool==false){
                         if(that.runCountSet==that.haveRunConut){
                           clearInterval(timer);
-                          that.showHaveRunConut=0;
                           that.haveRunConut=0;
+                          this.startDisabled=false;
                         }
                       }else{
                         clearInterval(timer);
@@ -1133,7 +1676,7 @@
       scramButtonClicked(){
         console.log(12235555);
       },
-      controlAxisRotate(index){
+      controlAxisRotateInSimulate(index){
         // console.log(index)
         // console.log(this.positionOfAxisInSimulate[index])
         if((index+1)==1){
@@ -1158,7 +1701,7 @@
           this.senveRotateGroup.rotation.y=this.positionOfAxisInSimulate[index]*Math.PI/180;//绕axis轴旋转π/8;
         }
       },
-      backToZeroPosution(){
+      backToZeroPosition(){
         this.oneRotateGroup.rotation.y=0.0;
         this.positionOfAxisInSimulate[0]=0.0;
         this.twoRotateGroup.rotation.x=0.0;
@@ -1204,22 +1747,16 @@
         this.positionOfAxisInSimulate[5]=sixA;
         this.positionOfAxisInSimulate[6]=senveA;
 
-      },
-      zControlPos(){
-        console.log(125666);
-      },
-      //基础控制页面发送数据的函数
-      sendSocketMsgInBasicControl(){
-            //发送消息的函数
-            // WSocket.send("this.sendMessage");
-            //执行运动控制函数
-            RBC.xMove('200');
       }
+
     }
   }
 </script>
 <style>
   .wholeWrap{
+  }
+  .topBar{
+
   }
   .stateCardLeft{
     margin: 10px;
@@ -1227,7 +1764,31 @@
     border-radius: 10px;
     height: 130px;
     background-color: #ECECEC;
-    box-shadow: 5px 10px 12px 0 rgba(0, 0, 0, 0.5)
+     box-shadow: 4px 8px 10px 0 rgba(0, 0, 0, 0.5)
+  }
+  .stateCardLeft:hover{
+    margin: 10px;
+    padding:5px 10px 5px 10px;
+    border-radius: 10px;
+    height: 130px;
+    background-color: #ECECEC;
+    box-shadow: 7px 16px 18px 0 rgba(0, 0, 0, 0.5)
+  }
+  .controlCardCenter{
+    margin: 10px;
+    padding:5px 10px 5px 10px;
+    border-radius: 10px;
+    height: 80px;
+    background-color: #ECECEC;
+    box-shadow: 4px 5px 7px 0 rgba(0, 0, 0, 0.5)
+  }
+  .controlCardCenter:hover{
+    margin: 10px;
+    padding:5px 10px 5px 10px;
+    border-radius: 10px;
+    height: 80px;
+    background-color: #ECECEC;
+    box-shadow: 6px 11px 14px 0 rgba(0, 0, 0, 0.5)
   }
   .CardContent {
       font-size: 15px;
@@ -1246,7 +1807,6 @@
     }
     .positionSlider{
       display: inline-block;
-
       width: 450px;
     }
 
@@ -1276,8 +1836,15 @@
           width: 60px;
           margin-right: 5px;
           z-index: 0;
+          box-shadow: 6px 11px 14px 0 rgba(0, 0, 0, 0.5)
       }
-   .controlBtnUpHover{
+    .controlBtnUp:hover{
+             width: 60px;
+             margin-right: 5px;
+             z-index: 0;
+             box-shadow: 2px 6px 9px 0 rgba(0, 0, 0, 0.5)
+         }
+  /* .controlBtnUpHover{
         position: absolute;
         left: 0;
         top: 0;
@@ -1285,6 +1852,7 @@
         width: 60px;
         margin-right: 5px;
         z-index: 1;
+        box-shadow: 2px 5px 8px 0 rgba(0, 0, 0, 0.5)
       }
     .controlBtnUpHover:hover{
          position: absolute;
@@ -1294,12 +1862,26 @@
          width: 60px;
          margin-right: 5px;
          z-index: 1;
-       }
+       } */
 
    .RealRobotControlButton{
      position: relative;
-     background-color: #D4D4D4;
-     border:  1px solid #0000FF;
+     /* border:  1px solid #0000FF; */
+   }
+   .XYZRPYPosTag{
+    font-size: 20px;
+    width: 20%;
+   }
+   .XYZButton{
+     position: absolute;
+     top: 50px;
+     /* border:  1px solid #0000FF; */
+   }
+   .RPYButton{
+     position: absolute;
+     top: 50px;
+     left: 300px;
+    /* border:  1px solid #0000FF; */
    }
    .zPosBtn{
      position: absolute;
@@ -1338,6 +1920,69 @@
      left: 140px;
    }
 
+
+  .rPosBtn{
+    position: absolute;
+    top: 5px;
+    left: 45px;
+  }
+  .rNegBtn{
+    position: absolute;
+    top: 5px;
+    left: 185px;
+  }
+  .pPosBtn{
+    position: absolute;
+    top: 75px;
+    left: 115px;
+  }
+  .pNegBtn{
+    position: absolute;
+    top: 185px;
+    left: 115px;
+  }
+  #yPosImg{
+    width: 80px;
+  }
+  #yNegImg{
+    width: 82px;
+  }
+  .yawPosBtn{
+    position: absolute;
+    top: 130px;
+    left: 60px;
+  }
+  .yawNegBtn{
+    position: absolute;
+    top: 131px;
+    left: 140px;
+  }
+  .runModeAndDataSaveAboutButton{
+    font-size: 1.2rem;
+    border: 2px solid #0DB7F0;
+    box-shadow: 3px 6px 8px 0 rgba(0, 0, 0, 0.5)
+  }
+  .runModeAndDataSaveAboutButton:hover{
+    font-size: 1.2rem;
+    border: 2px solid #0DB7F0;
+    box-shadow: 1px 4px 6px 0 rgba(0, 0, 0, 0.5)
+  }
+  .runModeAndDataSaveAboutButtonHandMode{
+    font-size: 1.2rem;
+     border: 2px solid red;
+     border: 2px solid #0DB7F0;
+     box-shadow: 3px 6px 8px 0 rgba(0, 0, 0, 0.5)
+  }
+  .runModeAndDataSaveAboutButtonHandMode:hover{
+    font-size: 1.2rem;
+     border: 2px solid red;
+     border: 2px solid #0DB7F0;
+     box-shadow: 1px 4px 6px 0 rgba(0, 0, 0, 0.5)
+  }
+  .sliderButtonContain{
+      /* position: relative; */
+  }
+
 /* 媒体查询功能 */
 /* 高度最大像素1000像素 最小像素480像素 即高度在480-1000之间时 */
 @media only screen and (min-height:480px) and (max-height:1000px){
@@ -1369,6 +2014,21 @@
     .posiAndPoseData{
       font-size: 14px;
       color: #00B0FF;
+    }
+    .XYZRPYPosTag{
+     font-size: 20px;
+     width: 20%;
+     padding: 2px;
+    }
+    .XYZButton{
+      position: absolute;
+      top: 50px;
+      left: -10px;
+    }
+    .RPYButton{
+      position: absolute;
+      top: 50px;
+      left: 220px;
     }
 }
 /* 宽度最小像素1501像素 即高度大于1500时*/
