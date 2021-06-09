@@ -69,7 +69,7 @@ const store=new Vuex.Store({
           },
           enableRobot:false,
           moveVecReal:0.0,
-          kindOfEndTool:2,//0代表夹爪，1代表吸盘,2代表无
+          kindOfEndTool:0,//0代表夹爪，1代表吸盘,2代表无
           stateOfEndSuck:false,
           posOfEndJaw:0.0,
           theRunInformation:'未连接机械臂',

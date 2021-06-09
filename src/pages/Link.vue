@@ -9,7 +9,7 @@
             <div class="col-6 text-right ">
               <div class="row">
                 <div class="col-3 offset-6 text-right">
-                   <span class="font-weight-bolder" style="font-size: 16px;">设置</span>
+                   <span  class="font-weight-bolder" style="font-size: 16px;">设置</span>
                 </div>
                 <div class="col-3 text-center">
                   <el-dropdown @command="handleCommand">
@@ -41,7 +41,7 @@
               <div class="col-1  text-center" >
                <i v-if="currentStep==1" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
                <i v-else-if="currentStep==2" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-               <i v-else="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+               <i v-else-if="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
               </div>
               <!-- 第二步 -->
               <div class="col-3 " :class="isTwoStep">
@@ -54,7 +54,7 @@
               <div class="col-1  text-center">
                 <i v-if="currentStep==1" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
                 <i v-else-if="currentStep==2" class="bi bi-chevron-double-right  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
-                <i v-else="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
+                <i v-else-if="currentStep==3" class="bi bi-chevron-double-left  align-middle" style="font-size: 2rem; color: cornflowerblue;"></i>
               </div>
               <!-- 第三步 -->
               <div class="col-3 " :class="isThreeStep">
@@ -98,6 +98,8 @@
 <script>
   //引入WebSocke
   import WSocket from '../socket.js';
+  //引入日志添加函数
+  import addRunInf from '../addRunInformation.js'
   //按照map的方法使用vuex的state数据
   import {mapState,mapGetters,mapMutations} from 'vuex';
  export default{
@@ -113,7 +115,7 @@
    computed:{
      //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
      //引入了headers页面跳转按钮文本数据、serverAndLinkInfo连接服务器相关参数、positionOfAxis各个轴的位置数据
-     ...mapState(['serverAndLinkInfo','positionOfAxis']),
+     ...mapState(['serverAndLinkInfo','runInformationDataBuff',,'positionOfAxis']),
      // v-mode双向绑定VUEX中的数据的正确方法
      modeServerIp:{
        get(){
@@ -166,6 +168,8 @@
                         //openevent为回调参数，里面包含各种连接信息
                         // console.log(openevent);
                         this.mutationTheRunInformationfunction('机械臂连接成功');
+                        addRunInf.addRunInformation('连接信息','成功连接机械臂',this.runInformationDataBuff);
+                        console.log(this.runInformationDataBuff);
                         console.log('opened');
                         this.serverAndLinkInfo.linkButtonType="danger";
                         this.serverAndLinkInfo.linkButtonText='断开连接';
@@ -193,6 +197,7 @@
                         console.log(error);
                         console.log('have error');
                         this.mutationTheRunInformationfunction('机械臂连接出错');
+                        addRunInf.addRunInformation('连接信息','服务器连接失败',this.runInformationDataBuff);
                         this.$alert('服务器连接失败', '错误信息', {
                                 confirmButtonText: '确定',
                                 callback: () => {
@@ -205,6 +210,7 @@
                         console.log(closeevent);
                         console.log('closed');
                         this.mutationTheRunInformationfunction('未连接机械臂');
+                        addRunInf.addRunInformation('连接信息','连接机械臂断开',this.runInformationDataBuff);
                         if(this.serverAndLinkInfo.haveEverLink){
                             this.$alert('服务器关闭', '信息提示', {
                                 confirmButtonText: '确定',
