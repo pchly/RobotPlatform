@@ -8,6 +8,9 @@ const mutations={
   mutationOutExeclDataSimulate:function(state,payload){
     state.outExeclDataSimulate=payload;
   },
+  mutationOutExeclDataBlockly:function(state,payload){
+    state.outExeclDataBlockly=payload;
+  },
   mutationEnableRobot:function(state,payload){
     state.enableRobot=payload;
   },

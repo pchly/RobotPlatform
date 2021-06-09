@@ -41,6 +41,15 @@ const store=new Vuex.Store({
             "sixAxis":'0.0',
             "senveAxis":'0.0'
           },
+          positionOfAxisInBlockly:{
+            "oneAxis":'0.0',
+            "twoAxis":'0.0',
+            "threeAxis":'0.0',
+            "fourAxis":'0.0',
+            "fiveAxis":'0.0',
+            "sixAxis":'0.0',
+            "senveAxis":'0.0'
+          },
           positionOfXYZRPYInReal:{
             "XPos":'0.0',
             "YPos":'0.0',
@@ -67,6 +76,7 @@ const store=new Vuex.Store({
           runInformationDataBuff:[],
           realRobotControlMode:1,//1代表点动模式,2代表手动模式
           outExeclDataSimulate:[],
+          outExeclDataBlockly:[],
           outExeclDataHandMode:[],
 
 

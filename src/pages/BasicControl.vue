@@ -1196,6 +1196,7 @@
                  }, 2500)
       },
       rePlayMultipleRunSimulate(){
+        this.rePlayDisabled=true;
         this.pauseMultipleRunSimulateBool=false;
         this.stopMultipleRunSimulateBool=false;
         this.runRowNum=this.pauseRunRowNum;
@@ -1205,6 +1206,9 @@
       },
       stopMultipleRunSimulate(){
         this.startDisabled=false;
+        this.stopDisabled=true;
+        this.rePlayDisabled=true;
+        this.pauseDisabled=true;
         this.stopMultipleRunSimulateBool=true;
         this.TrackCountNum=0;
         this.runRowNum=0;
@@ -1216,6 +1220,7 @@
       },
       pauseMultipleRunSimulate(){
         this.rePlayDisabled=false;
+        this.pauseDisabled=true;
         this.pauseMultipleRunSimulateBool=true;
       },
       multiplePosToPosFun(timer){
