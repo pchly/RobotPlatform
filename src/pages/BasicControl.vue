@@ -16,7 +16,7 @@
              :visible.sync="showInformationTable"
              direction="rtl"
              size="30%">
-              <el-table :data="gridData">
+              <el-table :data="runInformationDataBuff">
                  <el-table-column property="date" label="日期" width="150"></el-table-column>
                  <el-table-column property="name" label="姓名" width="200"></el-table-column>
                  <el-table-column property="address" label="地址"></el-table-column>
@@ -51,9 +51,10 @@
                     <div>
                       <span class="col cardTitle ">末端机构类型</span>
                     </div>
-                    <div>
+                    <div >
                         <img v-if="kindOfEndTool==0" src="../assets/basicControlImge/endJaw.png" style="width: 60%;" />
                         <img v-else-if="kindOfEndTool==1" src="../assets/basicControlImge/endSuck.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==2" src="../assets/basicControlImge/endNone.png" style="width: 60%;" />
                     </div>
                 </div><!-- 末端机构类型卡片结束 -->
               </div>
@@ -80,7 +81,8 @@
                         <img v-if="kindOfEndTool==0&&modePosOfEndJaw==0" src="../assets/basicControlImge/jawOpen.png" style="width: 60%;" />
                         <img v-else-if="kindOfEndTool==0&&modePosOfEndJaw!=0" src="../assets/basicControlImge/jawClose.png" style="width: 60%;" />
                         <img v-if="kindOfEndTool==1&&stateOfEndSuck==false" src="../assets/basicControlImge/suckOff.png" style="width: 60%;" />
-                        <img v-else-if="kindOfEndTool==1&&stateOfEndSuck!=true" src="../assets/basicControlImge/suckOn.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==1&&stateOfEndSuck==true" src="../assets/basicControlImge/suckOn.png" style="width: 60%;" />
+                        <img v-else-if="kindOfEndTool==2" src="../assets/basicControlImge/endNone.png" style="width: 60%;" />
                     </div><!-- 姿态角数据显示 -->
                 </div><!-- 末端机构状态卡片结束 -->
               </div>
@@ -133,7 +135,7 @@
                 <div class=" row text-center align-items-center"
                   style="height: 45px;"
                   v-for="(item,index) in controlAxisButtonText" :key=index>
-                  <el-tag class="col-1" style="font-size: 20px;">{{item.name}}</el-tag>
+                  <el-tag class="col-1 controlButtonTag" style="font-size: 20px;">{{item.name}}</el-tag>
                   <el-slider @input="controlAxisRotateInSimulate(index)"
                   class=" col-8 positionSlider"
                   :min="-180" :max="180" v-model="positionOfAxisInSimulate[index]"></el-slider>
@@ -304,7 +306,7 @@
                       <div class="text-center "
                         style="height: 50px;"
                         v-for="(item,index) in controlAxisButtonText" :key=index>
-                        <el-tag class="col-4" style="font-size: 20px;width: 20%;">{{item.name}}</el-tag>
+                        <el-tag class="col-4 controlButtonTag" style="font-size: 20px;width: 20%;">{{item.name}}</el-tag>
                         <el-input-number class="col-8" @change="controlAxisReal(index)"
                           v-model="positionOfAxisInReal[index]"
                           style="width: 80%;"
@@ -411,12 +413,12 @@
                     <div class=" col-3  p-0 align-items-center">
                       <div class="text-left "
                         style="height: 50px;">
-                        <el-tag class="col-6" style="font-size: 20px;">笛卡尔坐标</el-tag>
+                        <el-tag class="col-6 controlButtonTag" style="font-size: 20px;">笛卡尔坐标</el-tag>
                       </div>
                       <div class="text-left "
                         style="height: 50px;"
                         v-for="(item,index) in controlPosButtonText" :key=index>
-                        <el-tag class="col-4 XYZRPYPosTag">{{item.name}}</el-tag>
+                        <el-tag class="col-4 controlButtonTag XYZRPYPosTag">{{item.name}}</el-tag>
                         <el-input-number  class="col-8" @change="controlPOsXYZRPYReal(index)"
                           v-model="positionOfXYZRPYInReal[index]"
                           style="width: 80%;"
@@ -774,9 +776,9 @@
           {name:'X轴'},
           {name:'Y轴'},
           {name:'Z轴'},
-          {name:'Roll'},
           {name:'Pitch'},
-          {name:'Yaw'}
+          {name:'Yaw'},
+          {name:'Roll'}
         ],
         remarksTextSimulate:'',
         theCountOfDataSimulate:0,
@@ -843,7 +845,7 @@
       //引入的各个轴的位置数据positionOfAxis
       ...mapState(['positionOfAxisInSimulate','positionOfAxisInReal','positionOfXYZRPYInReal',
       'enableRobot','moveVecReal','kindOfEndTool','stateOfEndSuck','posOfEndJaw','realRobotControlMode',
-      'outExeclDataSimulate','outExeclDataHandMode','theRunInformation']),
+      'outExeclDataSimulate','outExeclDataHandMode','theRunInformation','runInformationDataBuff']),
       // v-mode双向绑定VUEX中的数据的正确方法
       modeEnableRobot:{
         get(){
@@ -945,32 +947,32 @@
       },
       rControlPosAdd(){
         console.log('RAdd');
-        this.positionOfXYZRPYInReal[3]+=1;
+        this.positionOfXYZRPYInReal[5]+=1;
         this.$refs.RPoseLable.innerHTML=this.positionOfXYZRPYInReal[3];
       },
       rControlPosSub(){
         console.log('RSub');
-        this.positionOfXYZRPYInReal[3]-=1;
+        this.positionOfXYZRPYInReal[5]-=1;
         this.$refs.RPoseLable.innerHTML=this.positionOfXYZRPYInReal[3];
       },
       pControlPosAdd(){
         console.log('PAdd');
-        this.positionOfXYZRPYInReal[4]+=1;
+        this.positionOfXYZRPYInReal[3]+=1;
         this.$refs.PPoseLable.innerHTML=this.positionOfXYZRPYInReal[4];
       },
       pControlPosSub(){
         console.log('PSub');
-        this.positionOfXYZRPYInReal[4]-=1;
+        this.positionOfXYZRPYInReal[3]-=1;
         this.$refs.PPoseLable.innerHTML=this.positionOfXYZRPYInReal[4];
       },
       yawControlPosAdd(){
         console.log('YawAdd');
-        this.positionOfXYZRPYInReal[5]+=1;
+        this.positionOfXYZRPYInReal[4]+=1;
         this.$refs.YawPoseLable.innerHTML=this.positionOfXYZRPYInReal[5];
       },
       yawControlPosSub(){
         console.log('YawSub');
-        this.positionOfXYZRPYInReal[5]-=1;
+        this.positionOfXYZRPYInReal[4]-=1;
         this.$refs.YawPoseLable.innerHTML=this.positionOfXYZRPYInReal[5];
       },
       savePosReal(){
@@ -1194,6 +1196,7 @@
                  }, 2500)
       },
       rePlayMultipleRunSimulate(){
+        this.rePlayDisabled=true;
         this.pauseMultipleRunSimulateBool=false;
         this.stopMultipleRunSimulateBool=false;
         this.runRowNum=this.pauseRunRowNum;
@@ -1203,6 +1206,9 @@
       },
       stopMultipleRunSimulate(){
         this.startDisabled=false;
+        this.stopDisabled=true;
+        this.rePlayDisabled=true;
+        this.pauseDisabled=true;
         this.stopMultipleRunSimulateBool=true;
         this.TrackCountNum=0;
         this.runRowNum=0;
@@ -1214,6 +1220,7 @@
       },
       pauseMultipleRunSimulate(){
         this.rePlayDisabled=false;
+        this.pauseDisabled=true;
         this.pauseMultipleRunSimulateBool=true;
       },
       multiplePosToPosFun(timer){
@@ -1808,6 +1815,9 @@
     height: 80px;
     background-color: #ECECEC;
     box-shadow: 6px 11px 14px 0 rgba(0, 0, 0, 0.5)
+  }
+  .controlButtonTag{
+    box-shadow: 3px 6px 8px 0 rgba(0, 0, 0, 0.5)
   }
   .CardContent {
       font-size: 15px;
