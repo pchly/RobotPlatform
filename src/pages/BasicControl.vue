@@ -2,7 +2,8 @@
     <div class="wholeWrap">
       <div class="container-fluid topBar " style="height: 6%;"><!-- //顶部返回，状态和急停的开始 -->
         <div class="row h-100">
-           <el-button class="col-2 " @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
+           <el-button class="col-2 " style="font-size: 20px;" @click="backToHome" type="primary" icon="el-icon-arrow-left">
+             返回</el-button>
            <!-- <el-link class="col-8" type="primary">主要链接</el-link> -->
            <div class="col-8 border text-center align-item-middle" style="padding-top: 11px;">
              <el-badge :value="12" class="item">
@@ -15,14 +16,15 @@
              title="运行日志信息"
              :visible.sync="showInformationTable"
              direction="rtl"
-             size="30%">
+             size="50%">
               <el-table :data="runInformationDataBuff">
-                 <el-table-column property="date" label="日期" width="150"></el-table-column>
-                 <el-table-column property="name" label="姓名" width="200"></el-table-column>
-                 <el-table-column property="address" label="地址"></el-table-column>
+                 <el-table-column property="number" label="编号" ></el-table-column>
+                 <el-table-column property="type" label="错误类型"></el-table-column>
+                 <el-table-column property="content" label="内容"></el-table-column>
+                  <el-table-column property="time" label="时间"></el-table-column>
                </el-table>
            </el-drawer>
-           <el-button class="col-2" @click="scramButtonClicked" type="danger" icon="el-icon-refresh">急停</el-button>
+           <el-button class="col-2" style="font-size: 20px;" @click="scramButtonClicked" type="danger" icon="el-icon-refresh">急停</el-button>
         </div><!-- //顶部的结束 -->
       </div>
       <div class="container-fluid" style="height: 92%;"><!-- 中间区域的开始 -->
@@ -130,7 +132,7 @@
           <div class="col-9"><!-- 控制按钮区域的开始 -->
             <el-tabs type="border-card" style="height: 100%;"><!-- 运动控制选项卡 -->
               <el-tab-pane><!-- 仿真运动控制页面部分 -->
-                <span slot="label"><i class="el-icon-s-operation"></i>仿真控制</span><!-- 分组标题 -->
+              <span slot="label"><i class="bi bi-file-earmark-slides-fill"></i> 仿真控制</span>
                 <!-- 控制滑块和计数器组 -->
                 <div class=" row text-center align-items-center"
                   style="height: 45px;"
@@ -299,7 +301,7 @@
               </el-tab-pane>
               <!-- 实物控制tab页面 -->
               <el-tab-pane>
-                  <span slot="label"><i class="el-icon-s-check"></i>实物控制</span>
+                  <span slot="label"><i class="bi bi-joystick"></i> 实物控制</span>
                   <!-- 控制按钮和计数器组 -->
                   <div class=" row text-center align-items-top">
                     <div class=" col-3 p-0">
@@ -544,7 +546,7 @@
                   </div> -->
               </el-tab-pane>
               <el-tab-pane>
-                <span slot="label"><i class="el-icon-thumb"></i>拖动控制</span>
+                <span slot="label"><i class="bi bi-person-check-fill"></i> 拖动控制</span>
                 <!-- 回原点、输入备注、记录数据等按钮所在行 -->
                 <div class="row">
                   <div class="col text-left">
