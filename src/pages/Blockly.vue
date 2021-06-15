@@ -1,31 +1,41 @@
 <template>
   <div class="wholeWrap">
-        <div class="container-fluid topBar " style="height: 6%;"><!-- //顶部返回，状态和急停的开始 -->
+        <div class="container-fluid topBar "
+        style="height: 6%; position:fixed;z-index: 100;background-color: white;"><!-- //顶部返回，状态和急停的开始 -->
           <div class="row h-100">
              <el-button class="col-2 " style="font-size: 20px;" @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
-             <div class="col-8 text-center align-item-middle" style="padding-top: 11px;">
-               <el-badge :value="12" class="item">
+             <div class="col-8 text-center align-item-middle" style="padding-top: 11px;background-color: white;">
+               <el-badge :value="runErrorCount" class="item">
                  <el-button size="medium" style="font-size: 1.3rem;"
-                 @click="showInformationTable = true"
+                 @click="showInformationTable=true"
                  type="text">{{theRunInformation}}</el-button>
                </el-badge>
              </div>
-             <el-drawer
-               title="运行日志信息"
-               :visible.sync="showInformationTable"
-               direction="rtl"
-               size="50%">
-                <el-table :data="runInformationDataBuff">
-                   <el-table-column property="number" label="编号" ></el-table-column>
-                   <el-table-column property="type" label="错误类型"></el-table-column>
-                   <el-table-column property="content" label="内容"></el-table-column>
-                    <el-table-column property="time" label="时间"></el-table-column>
-                 </el-table>
-             </el-drawer>
              <el-button class="col-2" style="font-size: 20px;" @click="scramButtonClicked" type="danger" icon="el-icon-refresh">急停</el-button>
           </div><!-- //顶部的结束 -->
         </div>
-        <div class="container-fluid" style="height: 92%;"><!-- 中间区域的开始 -->
+        <el-drawer
+          title="运行日志信息"
+          :visible.sync="showInformationTable"
+          direction="rtl"
+          size="60%">
+           <el-table :data="runInformationDataBuff" :row-class-name="tableRowClassName">
+              <el-table-column property="number" label="编号" width="90px"></el-table-column>
+              <el-table-column property="type" label="错误类型"></el-table-column>
+              <el-table-column property="content" label="内容"></el-table-column>
+              <el-table-column property="time" label="时间"></el-table-column>
+              <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        @click="handleDeleteRunInformation(scope.$index, scope.row)">删除</el-button>
+                    </template>
+               </el-table-column>
+            </el-table>
+        </el-drawer>
+        <div class="container-fluid topBar " style="height: 6%;"></div>
+        <div class="container-fluid" style="height: 92%;margin-top: 3px;"><!-- 中间区域的开始 -->
           <div class="row h-100  border">
             <div class="col-3"><!-- 侧边状态显示区域的开始 -->
               <div class="row border" style="height: 40%;"><!-- 仿真机械臂显示区域 -->
@@ -61,10 +71,10 @@
                         </el-button>
                     </el-tooltip>
                 </div>
-                <el-tabs class="col-12" type="border-card">
+                <el-tabs class="col-12 h-100" type="border-card">
                   <el-tab-pane  label="生成JS代码" style="font-size: 20px;">
                     <span slot="label"><i class="bi bi-code-slash"></i> 生成JS代码</span>
-                    <pre v-html="code"></pre>
+                    <el-input type="textarea" v-model="code" :autosize="{ minRows: 13, maxRows: 14}"></el-input>
                   </el-tab-pane>
                   <el-tab-pane  label="位置预览" style="font-size: 20px;">
                     <span slot="label"><i class="bi bi-eye-fill"></i> 位置预览</span>
@@ -106,13 +116,21 @@
                          icon="el-icon-folder-add" circle class="blocklyControlButton notext" alet="12">
                          </el-button>
                      </el-tooltip>
-                     <el-tooltip class="item" effect="dark" content="打开文件" placement="bottom">
-                         <el-button type="primary"
-                         @click="runJS()"
-                         title="保存" id="runButton"
-                         icon="el-icon-folder-opened" circle class="blocklyControlButton notext" alet="12">
-                         </el-button>
+                     <el-upload action="/"
+                         ref="upload"
+                         accept=".txt" 
+                         style="display: inline-block;margin-left: 9px;"                          
+                         :before-upload="beforeUploadBlocklyFile"                            
+                         :default-file-list="this.fileList">
+                         <el-tooltip class="item" effect="dark" content="打开文件" placement="bottom">
+                             <el-button type="primary"
+                             @click="openFile()"
+                             title="保存" id="runButton"
+                             icon="el-icon-folder-opened" circle class="blocklyControlButton notext" alet="12">
+                             </el-button>
                      </el-tooltip>
+                      </el-upload>
+
                   </div>
                   <div class="col-12 h-100">
                     <BlocklyComponent id="blockly2" :options="options" ref="foo"></BlocklyComponent>
@@ -396,23 +414,111 @@ Vue.config.ignoredElements.push('xml');
     //引入的各个轴的位置数据positionOfAxis
     ...mapState(['positionOfAxisInSimulate','positionOfAxisInBlockly','positionOfAxisInReal','positionOfXYZRPYInReal',
     'enableRobot','moveVecReal','kindOfEndTool','stateOfEndSuck','posOfEndJaw','realRobotControlMode',
-    'outExeclDataSimulate','outExeclDataBlockly','outExeclDataHandMode','theRunInformation','runInformationDataBuff']),
+    'outExeclDataSimulate','outExeclDataBlockly','outExeclDataHandMode','theRunInformation','runErrorCount','runInformationDataBuff']),
     },
+    beforeCreate() {
+            // 读取文件
+            FileReader.prototype.reading = function ({encode} = pms) {
+              let bytes = new Uint8Array(this.result);    //无符号整型数组
+              let text = new TextDecoder(encode ||'UTF-8').decode(bytes);
+              return text;
+            };
+            /* 重写readAsBinaryString函数 */
+            FileReader.prototype.readAsBinaryString = function (f) {
+              if (!this.onload)       //如果this未重写onload函数，则创建一个公共处理方式
+                this.onload = e => {  //在this.onload函数中，完成公共处理
+                  let rs = this.reading();
+                  console.log(rs);
+                };
+              this.readAsArrayBuffer(f);  //内部会回调this.onload方法
+            };
+      },
   methods:{
     //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
-    ...mapMutations(['mutationOutExeclDataSimulate','mutationOutExeclDataBlockly','mutationEnableRobot','mutationMoveVecReal',
+    ...mapMutations(['mutationRunErrorCount','mutationOutExeclDataSimulate','mutationOutExeclDataBlockly','mutationEnableRobot','mutationMoveVecReal',
     'mutationKindOfEndTool','mutationStateOfEndSuck','mutationPosOfEndJaw','mutationRealRobotControlMode'
     ]),
+    sumTheErrorCount(){
+       this.mutationRunErrorCount(0);
+      for(let i in this.runInformationDataBuff){
+        if(this.runInformationDataBuff[i].grade=="error"){
+          this.mutationRunErrorCount(this.runErrorCount+1);
+        }
+       }
+    },
+    tableRowClassName({row, rowIndex}) {
+      console.log(19898989898);
+      console.log(this.runErrorCount);
+      console.log(rowIndex);
+      console.log(this.runInformationDataBuff);
+      if(this.runInformationDataBuff.length==0){
+        return '';
+      }
+      else{
+        return{
+          'success-row':this.runInformationDataBuff[rowIndex].grade === 'success',
+          'warning-row':this.runInformationDataBuff[rowIndex].grade === 'warning',
+          'error-row':this.runInformationDataBuff[rowIndex].grade === 'error'
+        }
+      }
+    },
+    handleDeleteRunInformation(index, row){
+      console.log(index, row);
+      this.runInformationDataBuff.splice(index,1);
+      for(let i in this.runInformationDataBuff){
+          this.runInformationDataBuff[i].number=parseInt(i)+1
+       }
+      console.log(this.runInformationDataBuff);
+      this.sumTheErrorCount();
+    },
     backToHome(){
       this.$router.push('/home');
     },
     scramButtonClicked(){
       console.log(12235555);
     },
+    beforeUploadBlocklyFile(file){
+          this.fileList = [file]
+          //console.log('选择了文件beforeUpload')
+          // 读取数据
+          this.read(file);
+          return true
+        },
+        read(f) {
+          let rd = new FileReader();
+          var that=this;
+          rd.onload = e => {  
+            let cont = rd.reading({encode: 'UTF-8'});
+            cont=cont.slice(1,length-1);
+            console.log(cont);
+            console.log(cont.length);
+            cont=cont.replace(/\\/g,"");
+            this.discard();
+            var xml1 = Blockly.Xml.textToDom(cont);
+            Blockly.Xml.domToWorkspace(xml1, this.$refs["foo"].workspace);  
+          };
+          rd.readAsBinaryString(f);   
+      },
     saveFile(){
-      console.log(12222222);
       this.positionOfAxisInBlockly[0]=50;
-      this.oneRotateGroup.rotation.y=this.positionOfAxisInBlockly[0]*Math.PI/180;
+            this.oneRotateGroup.rotation.y=this.positionOfAxisInBlockly[0]*Math.PI/180;
+            //定义文件内容，类型必须为Blob 否则createObjectURL会报错
+            var xml = Blockly.Xml.workspaceToDom(this.$refs["foo"].workspace);
+            var xmlText = Blockly.Xml.domToText(xml);
+            let content = new Blob([JSON.stringify(xmlText)])
+            //content=xmlText;
+            //生成url对象
+            let  urlObject = window.URL || window.webkitURL || window 
+            let url = urlObject.createObjectURL(content)  
+            //生成<a></ a>DOM元素
+            let el = document.createElement('a')
+            //链接赋值
+            el.href = url
+            el.download ="blockly.txt"
+            //必须点击否则不会下载
+            el.click()    
+            //移除链接释放资源    
+            urlObject.revokeObjectURL(url)
     },
     controlAxisRotateInBlockly(index){
       // console.log(index)
@@ -1081,6 +1187,27 @@ Vue.config.ignoredElements.push('xml');
 </script>
 
 <style scoped>
+  .el-table .warning-row {
+      background-color: yellow;
+      color: #000000;
+      font-size: 15px;
+      font-family: "微软雅黑";
+      font-weight: bold;
+    }
+  .el-table .success-row {
+    background-color: greenyellow;
+    color: #000000;
+    font-size: 15px;
+    font-family: "微软雅黑";
+    font-weight: bold;
+  }
+  .el-table .error-row {
+    background-color: red;
+    color: #000000;
+    font-size: 15px;
+    font-family: "微软雅黑";
+    font-weight: bold;
+  }
 /* button {
   padding: 10px;
   border-radius: 4px;
@@ -1292,13 +1419,10 @@ td {
   }
   .blocklyControlButton{
     font-size: 1rem;
-     border: 2px solid red;
-     border: 2px solid #0DB7F0;
      box-shadow: 3px 6px 8px 0 rgba(0, 0, 0, 0.5)
   }
   .blocklyControlButton:hover{
     font-size: 1.2rem;
-     border: 2px solid red;
      border: 2px solid #0DB7F0;
      box-shadow: 1px 4px 6px 0 rgba(0, 0, 0, 0.5)
   }
@@ -1314,13 +1438,13 @@ td {
 /* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
 @media only screen and (min-height:480px) and (max-height:800px){
 .wholeWrap{
-	  height: 650px;
+	  height: 760px;
 	}
 }
 /* 高度最小像素901像素 即高度大于900时*/
 @media only screen and (min-height:801px) {
 	.wholeWrap{
-	  height: 830px;
+	  height: 1000px;
 	}
 }
 </style>

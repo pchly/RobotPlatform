@@ -32,6 +32,15 @@ const mutations={
   mutationTheRunInformationfunction(state,payload){
     state.theRunInformation=payload;
   },
+  mutationRunErrorCount:function(state,payload){
+    state.runErrorCount=payload;
+  },
+  mutationJawControlDisEnable:function(state,payload){
+    state.jawControlDisEnable=payload;
+  },
+  mutationSuckControlDisEnable:function(state,payload){
+    state.suckControlDisEnable=payload;
+  },
     // 用法示例
     // mutationIsShowMoreMenus:function(state,payload){
     //     //state表示当前的状态数据
