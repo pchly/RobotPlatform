@@ -429,7 +429,7 @@
                       <div class="text-left "
                         style="height: 50px;"
                         v-for="(item,index) in controlPosButtonText" :key=index>
-                        <el-tag class="col-4 controlButtonTag XYZRPYPosTag">{{item.name}}</el-tag>
+                        <el-tag class="col-4 controlButtonTag XYZRPYPosTag" style="font-size: 18px;">{{item.name}}</el-tag>
                         <el-input-number  class="col-8" @change="controlPOsXYZRPYReal(index)"
                           v-model="positionOfXYZRPYInReal[index]"
                           style="width: 80%;"
@@ -910,6 +910,12 @@
     },
     updated(){
       console.log('update');
+      this.$refs.XPoseLable.innerHTML=this.positionOfXYZRPYInReal[0];
+      this.$refs.YPoseLable.innerHTML=this.positionOfXYZRPYInReal[1];
+      this.$refs.ZPoseLable.innerHTML=this.positionOfXYZRPYInReal[2];
+      this.$refs.RPoseLable.innerHTML=this.positionOfXYZRPYInReal[5];
+      this.$refs.PPoseLable.innerHTML=this.positionOfXYZRPYInReal[3];
+      this.$refs.YawPoseLable.innerHTML=this.positionOfXYZRPYInReal[4];
     },
     beforeDestroy(){
       console.log("destroy");
@@ -966,62 +972,50 @@
       zControlPosAdd(){
         console.log('ZAdd');
         this.positionOfXYZRPYInReal[2]+=1;
-        this.$refs.ZPoseLable.innerHTML=this.positionOfXYZRPYInReal[2];
       },
       zControlPosSub(){
         console.log('ZSub');
         this.positionOfXYZRPYInReal[2]-=1;
-        this.$refs.ZPoseLable.innerHTML=this.positionOfXYZRPYInReal[2];
       },
       xControlPosAdd(){
         console.log('XAdd');
         this.positionOfXYZRPYInReal[0]+=1;
-        this.$refs.XPoseLable.innerHTML=this.positionOfXYZRPYInReal[0];
       },
       xControlPosSub(){
         console.log('XSub');
         this.positionOfXYZRPYInReal[0]-=1;
-        this.$refs.XPoseLable.innerHTML=this.positionOfXYZRPYInReal[0];
       },
       yControlPosAdd(){
         console.log('YAdd');
         this.positionOfXYZRPYInReal[1]+=1;
-        this.$refs.YPoseLable.innerHTML=this.positionOfXYZRPYInReal[1];
       },
       yControlPosSub(){
         console.log('YSub');
         this.positionOfXYZRPYInReal[1]-=1;
-        this.$refs.YPoseLable.innerHTML=this.positionOfXYZRPYInReal[1];
       },
       rControlPosAdd(){
         console.log('RAdd');
         this.positionOfXYZRPYInReal[5]+=1;
-        this.$refs.RPoseLable.innerHTML=this.positionOfXYZRPYInReal[3];
       },
       rControlPosSub(){
         console.log('RSub');
         this.positionOfXYZRPYInReal[5]-=1;
-        this.$refs.RPoseLable.innerHTML=this.positionOfXYZRPYInReal[3];
       },
       pControlPosAdd(){
         console.log('PAdd');
         this.positionOfXYZRPYInReal[3]+=1;
-        this.$refs.PPoseLable.innerHTML=this.positionOfXYZRPYInReal[4];
       },
       pControlPosSub(){
         console.log('PSub');
         this.positionOfXYZRPYInReal[3]-=1;
-        this.$refs.PPoseLable.innerHTML=this.positionOfXYZRPYInReal[4];
       },
       yawControlPosAdd(){
         console.log('YawAdd');
         this.positionOfXYZRPYInReal[4]+=1;
-        this.$refs.YawPoseLable.innerHTML=this.positionOfXYZRPYInReal[5];
       },
       yawControlPosSub(){
         console.log('YawSub');
         this.positionOfXYZRPYInReal[4]-=1;
-        this.$refs.YawPoseLable.innerHTML=this.positionOfXYZRPYInReal[5];
       },
       savePosReal(){
 
