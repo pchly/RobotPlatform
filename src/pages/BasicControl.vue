@@ -1,33 +1,42 @@
 <template>
     <div class="wholeWrap">
-      <div class="container-fluid topBar " style="height: 6%;"><!-- //顶部返回，状态和急停的开始 -->
+      <div class="container-fluid topBar " style="height: 6%;position: fixed;z-index: 20;background-color: white;"><!-- //顶部返回，状态和急停的开始 -->
         <div class="row h-100">
            <el-button class="col-2 " style="font-size: 20px;" @click="backToHome" type="primary" icon="el-icon-arrow-left">
              返回</el-button>
            <!-- <el-link class="col-8" type="primary">主要链接</el-link> -->
-           <div class="col-8 border text-center align-item-middle" style="padding-top: 11px;">
-             <el-badge :value="12" class="item">
+           <div class="col-8 border text-center align-item-middle" style="padding-top: 11px;background-color: white;">
+             <el-badge :value="runErrorCount" class="item">
                <el-button size="medium" style="font-size: 1.3rem;"
-               @click="showInformationTable = true"
+               @click="showInformationTable=true"
                type="text">{{theRunInformation}}</el-button>
              </el-badge>
            </div>
-           <el-drawer
-             title="运行日志信息"
-             :visible.sync="showInformationTable"
-             direction="rtl"
-             size="50%">
-              <el-table :data="runInformationDataBuff">
-                 <el-table-column property="number" label="编号" ></el-table-column>
-                 <el-table-column property="type" label="错误类型"></el-table-column>
-                 <el-table-column property="content" label="内容"></el-table-column>
-                  <el-table-column property="time" label="时间"></el-table-column>
-               </el-table>
-           </el-drawer>
            <el-button class="col-2" style="font-size: 20px;" @click="scramButtonClicked" type="danger" icon="el-icon-refresh">急停</el-button>
         </div><!-- //顶部的结束 -->
       </div>
-      <div class="container-fluid" style="height: 92%;"><!-- 中间区域的开始 -->
+      <el-drawer
+        title="运行日志信息"
+        :visible.sync="showInformationTable"
+        direction="rtl"
+        size="60%">
+         <el-table :data="runInformationDataBuff" :row-class-name="tableRowClassName">
+            <el-table-column property="number" label="编号" width="90px"></el-table-column>
+            <el-table-column property="type" label="错误类型"></el-table-column>
+            <el-table-column property="content" label="内容"></el-table-column>
+            <el-table-column property="time" label="时间"></el-table-column>
+            <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button
+                      size="mini"
+                      type="danger"
+                      @click="handleDeleteRunInformation(scope.$index, scope.row)">删除</el-button>
+                  </template>
+                </el-table-column>
+          </el-table>
+      </el-drawer>
+      <div class="container-fluid topBar " style="height: 6%;"></div>
+      <div class="container-fluid" style="height: 92%;margin-top: 3px;"><!-- 中间区域的开始 -->
         <div class="row h-100  border">
           <div class="col-3"><!-- 侧边状态显示区域的开始 -->
             <div class="row border" style="height: 40%;"><!-- 仿真机械臂显示区域 -->
@@ -54,9 +63,9 @@
                       <span class="col cardTitle ">末端机构类型</span>
                     </div>
                     <div >
-                        <img v-if="kindOfEndTool==0" src="../assets/basicControlImge/endJaw.png" style="width: 60%;" />
-                        <img v-else-if="kindOfEndTool==1" src="../assets/basicControlImge/endSuck.png" style="width: 60%;" />
-                        <img v-else-if="kindOfEndTool==2" src="../assets/basicControlImge/endNone.png" style="width: 60%;" />
+                        <img v-if="kindOfEndTool==0" src="../assets/basicControlImge/endJaw.png" style="width: 50%;margin-top: 2px;" />
+                        <img v-else-if="kindOfEndTool==1" src="../assets/basicControlImge/endSuck.png" style="width: 50%;margin-top: 2px;" />
+                        <img v-else-if="kindOfEndTool==2" src="../assets/basicControlImge/endNone.png" style="width: 50%;margin-top: 2px;" />
                     </div>
                 </div><!-- 末端机构类型卡片结束 -->
               </div>
@@ -80,11 +89,11 @@
                       <span class="col cardTitle">末端机构状态</span>
                     </div>
                     <div class="align-middle"><!-- 姿态角数据显示 -->
-                        <img v-if="kindOfEndTool==0&&modePosOfEndJaw==0" src="../assets/basicControlImge/jawOpen.png" style="width: 60%;" />
-                        <img v-else-if="kindOfEndTool==0&&modePosOfEndJaw!=0" src="../assets/basicControlImge/jawClose.png" style="width: 60%;" />
-                        <img v-if="kindOfEndTool==1&&stateOfEndSuck==false" src="../assets/basicControlImge/suckOff.png" style="width: 60%;" />
-                        <img v-else-if="kindOfEndTool==1&&stateOfEndSuck==true" src="../assets/basicControlImge/suckOn.png" style="width: 60%;" />
-                        <img v-else-if="kindOfEndTool==2" src="../assets/basicControlImge/endNone.png" style="width: 60%;" />
+                        <img v-if="kindOfEndTool==0&&modePosOfEndJaw==0" src="../assets/basicControlImge/jawOpen.png" style="width: 50%;margin-top: 2px;" />
+                        <img v-else-if="kindOfEndTool==0&&modePosOfEndJaw!=0" src="../assets/basicControlImge/jawClose.png" style="width: 50%;margin-top: 2px;" />
+                        <img v-if="kindOfEndTool==1&&stateOfEndSuck==false" src="../assets/basicControlImge/suckOff.png" style="width: 50%;margin-top: 2px;" />
+                        <img v-else-if="kindOfEndTool==1&&stateOfEndSuck==true" src="../assets/basicControlImge/suckOn.png" style="width: 50%;margin-top: 2px;" />
+                        <img v-else-if="kindOfEndTool==2" src="../assets/basicControlImge/endNone.png" style="width: 50%;" />
                     </div><!-- 姿态角数据显示 -->
                 </div><!-- 末端机构状态卡片结束 -->
               </div>
@@ -482,18 +491,18 @@
                     <div class="col-3 controlCardCenter text-center">
                       <div class="CardContent text-center w-100 m-0"><!-- 末端机构状态卡片开始 -->
                           <div>
-                            <span class="cardTitle">末端控制</span>
+                            <span class="cardTitle">夹爪控制</span>
                           </div>
                           <div class=" row align-item-middle justify-content-center p-0 "><!-- 姿态角数据显示 -->
-                              <el-button  type="primary"
+                              <el-button  type="primary" :disabled="jawControlDisEnable"
                               @click="subPosOfEndJaw"
                               icon="el-icon-minus"  class=" col-1 p-0 m-0" alet="12">
                               </el-button>
-                              <el-slider @input="controlPosOfEndJaw"
+                              <el-slider @input="controlPosOfEndJaw" :disabled="jawControlDisEnable"
                               class=" col-9 positionSlider "
                               :min="0" :max="100" v-model="modePosOfEndJaw"></el-slider>
                               <el-button  type="primary"
-                              @click="addPosOfEndJaw"
+                              @click="addPosOfEndJaw" :disabled="jawControlDisEnable"
                               icon="el-icon-plus"  class="col-1 p-0 m-0" alet="12">
                               </el-button>
                           </div><!-- 姿态角数据显示 -->
@@ -505,7 +514,7 @@
                             <span class="cardTitle">吸盘控制</span>
                           </div>
                           <div class="align-middle"><!-- 姿态角数据显示 -->
-                              <el-switch
+                              <el-switch  :disabled="suckControlDisEnable"
                               @change="controlStateOfEndSuck"
                                 v-model="modeStateOfEndSuck"
                                 active-color="#13ce66"
@@ -552,7 +561,7 @@
                   <div class="col text-left">
                       <el-divider content-position="left">手动操作</el-divider>
                       <!-- 回到原点 -->
-                      <el-tooltip v-if="realRobotControlMode==1"class="item" effect="dark" content="开启手动" placement="bottom">
+                      <el-tooltip v-if="realRobotControlMode==1" class="item" effect="dark" content="开启手动" placement="bottom">
                           <el-button type="primary"
                           @click="startHandMode"
                           icon="el-icon-thumb"  class="runModeAndDataSaveAboutButtonHandMode" alet="12">
@@ -839,15 +848,18 @@
         showInformationTable:false,
         threeViewWidth:450,
         threeVieHeight:350,
-        endMechanismValue:true
+        endMechanismValue:true,
+
+        runInformationGrade:'success-row'
       }
     },
     computed:{
       //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
       //引入的各个轴的位置数据positionOfAxis
       ...mapState(['positionOfAxisInSimulate','positionOfAxisInReal','positionOfXYZRPYInReal',
-      'enableRobot','moveVecReal','kindOfEndTool','stateOfEndSuck','posOfEndJaw','realRobotControlMode',
-      'outExeclDataSimulate','outExeclDataHandMode','theRunInformation','runInformationDataBuff']),
+      'enableRobot','moveVecReal','kindOfEndTool','suckControlDisEnable','jawControlDisEnable','stateOfEndSuck','posOfEndJaw','realRobotControlMode',
+      'outExeclDataSimulate','outExeclDataHandMode','theRunInformation','runErrorCount','runInformationDataBuff']),
+
       // v-mode双向绑定VUEX中的数据的正确方法
       modeEnableRobot:{
         get(){
@@ -894,6 +906,7 @@
           this.readExcel(e);
           });
       this.setOriginPosXYZRPY();
+      this.sumTheErrorCount();
     },
     updated(){
       console.log('update');
@@ -904,9 +917,42 @@
     },
     methods:{
       //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
-      ...mapMutations(['mutationOutExeclDataSimulate','mutationEnableRobot','mutationMoveVecReal',
-      'mutationKindOfEndTool','mutationStateOfEndSuck','mutationPosOfEndJaw','mutationRealRobotControlMode'
+      ...mapMutations(['mutationRunErrorCount','mutationOutExeclDataSimulate','mutationEnableRobot','mutationMoveVecReal',
+      'mutationKindOfEndTool','mutationJawControlDisEnable','mutationSuckControlDisEnable','mutationStateOfEndSuck','mutationPosOfEndJaw','mutationRealRobotControlMode'
       ]),
+      sumTheErrorCount(){
+         this.mutationRunErrorCount(0);
+        for(let i in this.runInformationDataBuff){
+          if(this.runInformationDataBuff[i].grade=="error"){
+            this.mutationRunErrorCount(this.runErrorCount+1);
+          }
+         }
+      },
+      tableRowClassName({row, rowIndex}) {
+        console.log(19898989898);
+        console.log(this.runErrorCount);
+        console.log(rowIndex);
+        console.log(this.runInformationDataBuff);
+        if(this.runInformationDataBuff.length==0){
+          return '';
+        }
+        else{
+          return{
+            'success-row':this.runInformationDataBuff[rowIndex].grade === 'success',
+            'warning-row':this.runInformationDataBuff[rowIndex].grade === 'warning',
+            'error-row':this.runInformationDataBuff[rowIndex].grade === 'error'
+          }
+        }
+      },
+      handleDeleteRunInformation(index, row){
+        console.log(index, row);
+        this.runInformationDataBuff.splice(index,1);
+        for(let i in this.runInformationDataBuff){
+            this.runInformationDataBuff[i].number=parseInt(i)+1
+         }
+        console.log(this.runInformationDataBuff);
+        this.sumTheErrorCount();
+      },
       //返回主页
       backToHome(){
         this.$router.push('/home');
@@ -1782,9 +1828,31 @@
 </script>
 <style>
   .wholeWrap{
+
   }
   .topBar{
 
+  }
+  .el-table .warning-row {
+      background-color: yellow;
+      color: #000000;
+      font-size: 15px;
+      font-family: "微软雅黑";
+      font-weight: bold;
+    }
+  .el-table .success-row {
+    background-color: greenyellow;
+    color: #000000;
+    font-size: 15px;
+    font-family: "微软雅黑";
+    font-weight: bold;
+  }
+  .el-table .error-row {
+    background-color: red;
+    color: #000000;
+    font-size: 15px;
+    font-family: "微软雅黑";
+    font-weight: bold;
   }
   .stateCardLeft{
     margin: 10px;
@@ -2015,15 +2083,14 @@
   }
 
 /* 媒体查询功能 */
-/* 高度最大像素1000像素 最小像素480像素 即高度在480-1000之间时 */
-@media only screen and (min-height:480px) and (max-height:1000px){
+/* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
+@media only screen and (min-height:480px) and (max-height:800px){
 .wholeWrap{
 	  height: 960px;
 	}
-
 }
-/* 高度最小像素1001像素 即高度大于1000时*/
-@media only screen and (min-height:1001px) {
+/* 高度最小像素901像素 即高度大于900时*/
+@media only screen and (min-height:801px) {
 	.wholeWrap{
 	  height: 1000px;
 	}

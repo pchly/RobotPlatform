@@ -1,17 +1,14 @@
 <template>
-  <div class="rootContain border">
+  <div class="rootContain">
         <!-- 顶部内容开始 -->
         <div class="container-fluid" style="height: 10%;">
-          <div class="row mt-4 border-bottom align-items-end pb-2 " >
+          <div class="row  border-bottom align-items-end pb-2 " >
             <div class="col-6 text-left">
               <img class="img-fluid" style="height: 40px;" src="../assets/Link-img/logo.png" />
             </div>
             <div class="col-6 text-right ">
-              <div class="row">
-                <div class="col-3 offset-6 text-right">
-                   <span  class="font-weight-bolder" style="font-size: 16px;">设置</span>
-                </div>
-                <div class="col-3 text-center">
+              <div class="row justify-content-end">
+                <div class="col-2 text-center ">
                   <el-dropdown @command="handleCommand">
                     <span class="el-dropdown-link font-weight-bolder" style="font-size: 16px;">
                       帮助<i class="el-icon-caret-bottom el-icon--right"></i>
@@ -19,7 +16,7 @@
                     <el-dropdown-menu slot="dropdown">
                       <el-dropdown-item command="a">版本信息</el-dropdown-item>
                       <el-dropdown-item command="b">语言设置</el-dropdown-item>
-                      <el-dropdown-item command="c">待定..</el-dropdown-item>
+                      <el-dropdown-item command="c">帮助文档</el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
                 </div>
@@ -33,7 +30,9 @@
               <!-- 第一步 -->
               <div class="col-3 " :class="isOneStep">
                 <figure class="figure" id="1" @click="clickedStepCb">
-                  <img src="../assets/Link-img/link_01.gif" class="figure-img img-fluid " alt="1">
+                  <img src="../assets/Link-img/link_01.gif"
+                  style="border-radius: 10%;"
+                  class="figure-img img-fluid " alt="1">
                   <figcaption class="figure-caption text-center font-weight-bolder">1.开机</figcaption>
                 </figure>
               </div>
@@ -46,7 +45,9 @@
               <!-- 第二步 -->
               <div class="col-3 " :class="isTwoStep">
                 <figure class="figure" id="2" @click="clickedStepCb">
-                  <img src="../assets/Link-img/link_02.gif" class="figure-img img-fluid  " alt="2">
+                  <img src="../assets/Link-img/link_02.gif"
+                  style="border-radius: 10%;"
+                  class="figure-img img-fluid  " alt="2">
                   <figcaption class="figure-caption text-center font-weight-bolder">2.连接网线</figcaption>
                 </figure>
               </div>
@@ -59,7 +60,9 @@
               <!-- 第三步 -->
               <div class="col-3 " :class="isThreeStep">
                 <figure class="figure" id="3" @click="clickedStepCb">
-                  <img src="../assets/Link-img/link_03.gif" class="figure-img img-fluid  " alt="3">
+                  <img src="../assets/Link-img/link_03.gif"
+                  style="border-radius: 10%;"
+                  class="figure-img img-fluid  " alt="3">
                   <figcaption class="figure-caption text-center font-weight-bolder">3.输入IP地址</figcaption>
                 </figure>
               </div>
@@ -80,13 +83,15 @@
             </div>
           </div><!-- 输入ip部分的结束 -->
         </div><!-- 中间部分的主内容结束 -->
-        <div class="container-fluid pb-0 " style="height: 10%;"><!-- 底端的内容 -->
-            <div class="row justify-content-between align-items-end ">
+        <div class="container-fluid pt-4  align-items-end" style="height: 10%;"><!-- 底端的内容 -->
+            <div class="row justify-content-between  align-items-end">
               <div class="col-6 text-left">
                 <i title="进入主页"class="bi bi-box-arrow-in-right pr-1 py-0 " style="font-size: 1.6rem; color: cornflowerblue;"
                 @click="openHomePage"></i>
                 <i class="bi bi-grip-vertical" style="font-size: 1.6rem; color: cornflowerblue;"></i>
-                <i title="联系我们" class="footEmail bi bi-envelope pl-1 py-0 " style="font-size: 1.6rem; color: cornflowerblue;"></i>
+                <i title="联系我们" class="footEmail bi bi-envelope pl-1 py-0 "
+                @click="commucationWithUs"
+                style="font-size: 1.6rem; color: cornflowerblue;"></i>
 
               </div>
               <div class="col-6  text-right" style="color:#7B7B84; font-size: 15px;">版本v1.0.0</div>
@@ -115,7 +120,7 @@
    computed:{
      //使用map方法引用state的变量时，需要在computed属性里利用...map语法引入具体使用的变量
      //引入了headers页面跳转按钮文本数据、serverAndLinkInfo连接服务器相关参数、positionOfAxis各个轴的位置数据
-     ...mapState(['serverAndLinkInfo','runInformationDataBuff',,'positionOfAxis']),
+     ...mapState(['runErrorCount','serverAndLinkInfo','runInformationDataBuff',,'positionOfAxis']),
      // v-mode双向绑定VUEX中的数据的正确方法
      modeServerIp:{
        get(){
@@ -143,7 +148,7 @@
    },
    methods:{
      //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
-     ...mapMutations(['mutationServerIp','mutationPositionOfXAxis','mutationTheRunInformationfunction']),
+     ...mapMutations(['mutationRunErrorCount','mutationServerIp','mutationPositionOfXAxis','mutationTheRunInformationfunction']),
      clickedStepCb(event){
        this.clickedStep=event.target.alt;
        this.currentStep=this.clickedStep;
@@ -151,6 +156,27 @@
      // 点击link页面右上角的菜单项的槽函数
      handleCommand(command) {
        this.$message('click on item ' + command);
+       if(command=='a'){
+         this.$message('版本V1.0.0');
+       }
+       if(command=='b'){
+         this.$message('目前仅支持简体中文');
+       }
+       if(command=='c'){
+         this.$message('即将跳转到官方页面');
+         window.open('https:\\www.baidu.com', '_blank')
+       }
+      },
+      commucationWithUs(){
+         this.$alert('了解更多请访问官网www.ezcobot.com', '联系我们', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+                    // this.$message({
+                    //   type: 'info',
+                    //   message: `action: ${ action }`
+                    // });
+                  }
+                });
       },
      //连接到服务器函数，进行webSocket的实例初始化
      linkToServer(){
@@ -168,7 +194,7 @@
                         //openevent为回调参数，里面包含各种连接信息
                         // console.log(openevent);
                         this.mutationTheRunInformationfunction('机械臂连接成功');
-                        addRunInf.addRunInformation('连接信息','成功连接机械臂',this.runInformationDataBuff);
+                        addRunInf.addRunInformation('success','连接信息','成功连接机械臂',this.runInformationDataBuff);
                         console.log(this.runInformationDataBuff);
                         console.log('opened');
                         this.serverAndLinkInfo.linkButtonType="danger";
@@ -197,7 +223,7 @@
                         console.log(error);
                         console.log('have error');
                         this.mutationTheRunInformationfunction('机械臂连接出错');
-                        addRunInf.addRunInformation('连接信息','服务器连接失败',this.runInformationDataBuff);
+                        addRunInf.addRunInformation('error','连接信息','服务器连接失败',this.runInformationDataBuff);
                         this.$alert('服务器连接失败', '错误信息', {
                                 confirmButtonText: '确定',
                                 callback: () => {
@@ -210,7 +236,7 @@
                         console.log(closeevent);
                         console.log('closed');
                         this.mutationTheRunInformationfunction('未连接机械臂');
-                        addRunInf.addRunInformation('连接信息','连接机械臂断开',this.runInformationDataBuff);
+                        addRunInf.addRunInformation('warning','连接信息','连接机械臂断开',this.runInformationDataBuff);
                         if(this.serverAndLinkInfo.haveEverLink){
                             this.$alert('服务器关闭', '信息提示', {
                                 confirmButtonText: '确定',
@@ -253,6 +279,7 @@
                         //出现错误的回调函数，具体错误信息在error参数里
                         error=>{
                           console.log(error);
+                          addRunInf.addRunInformation('error','连接信息','连接相机断开',this.runInformationDataBuff);
                           console.log('自动上报数据WS出现错误');
                         },
                         //断开连接的回调函数，具体信息在closeevent中
@@ -275,18 +302,20 @@
 <style>
 .rootContain{
   height: 720px;
+  border: 2px solid  white;
+  background-color: white;
 }
 /* 媒体查询功能 */
 /* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
 @media only screen and (min-height:480px) and (max-height:800px){
 .rootContain{
-	  height: 650px;
+	  height: 700px;
 	}
 }
 /* 高度最小像素901像素 即高度大于900时*/
 @media only screen and (min-height:801px) {
 	.rootContain{
-	  height: 830px;
+	  height: 880px;
 	}
 }
 </style>

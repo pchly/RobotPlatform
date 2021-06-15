@@ -1,6 +1,6 @@
 //添加日志信息的函数
 export default{
-  addRunInformation(type,content,outPutBuff){
+  addRunInformation(grade,type,content,outPutBuff){
       let myDate = new Date();
       let yy = String(myDate.getYear()).slice(1);
           yy='20'+yy;
@@ -14,7 +14,8 @@ export default{
        		"number":'',
        		"type":type,
        		"content":content,
-       		"time":allTimeContent
+       		"time":allTimeContent,
+          "grade":grade
        	}
       // this.theCountOfDataSimulate+=1;
       outPutBuff.push(obj);
