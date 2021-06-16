@@ -1,39 +1,36 @@
 <template>
-    <div>
-        <div class="wrap">
-          <el-container>
-            <!-- 头部 -->
-            <el-header> <i @click="routeToLinkPage" class="el-icon-sort" style="float: left;line-height: 60px;color: white;"></i>EZCobot</el-header>
-            <el-container>
-              <!-- 侧边 -->
-              <el-aside width="200px">
-                 <el-button type="success" class="routeButton"
-                 v-for="(item,index) in headers" :key=index
-                 @click="routeTo(index)">
-                   {{item.desc}}</el-button>
-              </el-aside>
-              <el-container>
-                <!-- 主内容区域 -->
-                <el-main>
-                  <div class="IPInput">
-                    <el-input  placeholder="请输入ip地址" v-model="serverAndLinkInfo.ip" class="input-with-select">
-                        <el-select v-model="serverAndLinkInfo.ip" slot="prepend" placeholder="请选择">
-                        <el-option label="本地ip" value="127.0.0.1"></el-option>
-                        <el-option label="服务器ip" value="192.168.0.1"></el-option>
-                        </el-select>
-                        <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
-                    </el-input>
-                  </div>
-                  <el-button  class="linkButton" @click="linkToServer"
-                  :type=serverAndLinkInfo.linkButtonType>{{serverAndLinkInfo.linkButtonText}}</el-button>
-                  <!-- <img src="../assets/zw-robot-img.png" style="width:1000px" alt="图标"> -->
-                </el-main>
-                <!-- 底部区域 -->
-                <el-footer>www.ezcobot.com</el-footer>
-              </el-container>
-            </el-container>
-          </el-container>
-        </div>
+    <div class="wrap">
+       <!-- 顶部内容开始 -->
+       <div class="container-fluid" style="height: 8%;">
+         <div class="row  border-bottom align-items-center justify-content-between">
+           <div class="col-3 text-left">
+             <img class="img-fluid" style="height: 40px;margin-top: 10px;" src="../assets/Link-img/logo.png" />
+           </div>
+           <div class="col-1 text-center"><i @click="routeToLinkPage()" class="bi bi-arrow-left-right"
+           style="font-size: 30px;margin-top: 10px;"></i></div>
+         </div>
+       </div>
+          <div class="container-fluid imgContain" style="height: 92%;">
+              <div class="row  justify-content-center imgRow1">
+                <div class="col-6  backImgInHomeVision  visionImg">
+                   <img @click="routeToVision()" src=../assets/../assets/home-img/空白占位.png />
+                </div>
+                <div class="col-6  backImgInHomeBasicControl basicImg">
+                   <img @click="routeToBasic()" src=../assets/../assets/../assets/home-img/空白占位.png />
+                </div>
+                <div class=" backImgInHomeSetting settingImg">
+                   <img @click="routeToSetting()" src=../assets/../assets/../assets/home-img/空白占位小.png />
+                </div>
+              </div>
+              <div class="row  justify-content-center imgRow2">
+                <div class="col-6  backImgInHomePython  pythonImg">
+                   <img @click="routeToPython()" src=../assets/../assets/home-img/空白占位.png />
+                </div>
+                <div class="col-6  backImgInHomeBlockly blocklyImg">
+                   <img @click="routeToBlockly()" src=../assets/../assets/../assets/home-img/空白占位.png />
+                </div>
+              </div>
+          </div>
         <!-- div.wrap--end -->
     </div>
 </template>
@@ -64,9 +61,25 @@ export default {
   },
   methods: {
     //页面跳转函数
-    routeTo(index){
-      this.$router.push('/'+this.headers[index].name);
+    routeToVision(){
+      this.$router.push('/vision');
     },
+    routeToBasic(){
+      this.$router.push('/basicControl');
+    },
+    routeToSetting(){
+      this.$router.push('/setting');
+    },
+    routeToPython(){
+       this.$router.push('/python');
+    },
+    routeToBlockly(){
+      this.$router.push('/blockly');
+    },
+    // routeTo(index){
+
+    //   this.$router.push('/'+this.headers[index].name);
+    // },
     routeToLinkPage(){
       console.log("1233")
       this.$router.push('/link');
@@ -203,55 +216,127 @@ export default {
 </script>
 
 <style>
-  .el-header, .el-footer {
-    background-color: #B3C0D1;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-    font-size: 40px;
+  .imgRow1{
+    position: relative;
   }
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 100px;
+  .imgRow2{
+    position: relative;
   }
-  .routeButton{
-    margin: 10px 10px 10px 10px;
-    display: block;
-    width: 180px;
-    height: 90px;
+  .visionImg{
+    position: absolute;
+    top:5px;
+    left:50px;
+    z-index: 10;
+  }
+  .basicImg{
+    position: absolute;
+    top: 5px;
+    left:922px;
+     z-index: 10;
+  }
+  .settingImg{
+    width: 370px;
+    height: 370px;
+    border-radius: 50%;
+    position: absolute;
+    top: 250px;
+    left:761px;
+    z-index: 11;
+  }
+  .pythonImg{
+    position: absolute;
+    top: 437px;
+    left: -8px;
+     z-index: 10;
+  }
+  .blocklyImg{
+    position: absolute;
+    top: 437px;
+    left:867px;
+     z-index: 10;
+  }
+  .backImgInHomeBasicControl{
+    background-image: url(../assets/home-img/实时操控.png);
+    background-repeat: round;
+  }
+  .backImgInHomeVision{
+    background-image: url(../assets/home-img/视觉识别.png);
+    background-repeat: round;
+  }
+  .backImgInHomeSetting{
+    background-image: url(../assets/home-img/设置.png);
+    background-repeat: round;
+  }
+  .backImgInHomePython{
+    background-image: url(../assets/home-img/PYYHON.png);
+    background-repeat: round;
+  }
+  .backImgInHomeBlockly{
+    background-image: url(../assets/home-img/BLOCKLY.png);
+    background-repeat: round;
+  }
+ .backImgInHomeBasicControl:hover{
+    background-image: url(../assets/home-img/实时操控大.png);
+    background-repeat: round;
+  }
+  .backImgInHomeVision:hover{
+    background-image: url(../assets/home-img/视觉识别大.png);
+    background-repeat: round;
+  }
+  .backImgInHomeSetting:hover{
+    background-image: url(../assets/home-img/设置大.png);
+    background-repeat: round;
+  }
+  .backImgInHomePython:hover{
+    background-image: url(../assets/home-img/PYYHON大.png);
+    background-repeat: round;
+  }
+  .backImgInHomeBlockly:hover{
+    background-image: url(../assets/home-img/BLOCKLY大.png);
+    background-repeat: round;
   }
 
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: left;
-    line-height: 160px;
-    background-image: url(../assets/zw-robot-img.png);
-    background-repeat: no-repeat;
-     background-position: center;
-      background-attachment: fixed;
-      background-size: cover;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-  }
-  .IPInput{
-    display: inline-block;
-    margin: 10px 10px 10px 10px;
-  }
+  /* 媒体查询功能 */
+  /* 宽度最大像素1500像素 最小像素480像素 即宽度在480-1500之间时 */
+  @media only screen and (min-width:480px) and (max-width:1600px){
+    .imgRow1{
 
-  body > .el-container {
-    margin-bottom: 40px;
-  }
-
-  .el-container:nth-child(5) .el-aside,
-  .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-  }
-
-  .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-  }
+      position: relative;
+    }
+    .imgRow2{
+      position: relative;
+    }
+    .visionImg{
+      height: 325px;
+      position: absolute;
+      top:5px;
+      left:50px;
+      /* box-shadow: 1px 4px 6px 0 rgba(0, 0, 0, 0.5) */
+    }
+    .basicImg{
+      height: 325px;
+      position: absolute;
+      top: 5px;
+      left:747px
+    }
+    .settingImg{
+      width: 275px;
+      height: 275px;
+      position: absolute;
+      top: 197px;
+      left:625px
+    }
+    .pythonImg{
+      height: 325px;
+      position: absolute;
+      top: 335px;
+      left: 5px;
+    }
+    .blocklyImg{
+      height: 325px;
+      position: absolute;
+      top: 335px;
+      left:701px
+    }
+    }
 </style>
