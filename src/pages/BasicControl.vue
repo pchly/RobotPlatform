@@ -333,7 +333,7 @@
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img class="controlBtnUp" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
-                                <!-- <img class="controlBtnUpHover" src="../assets/basicControlImge/Z-.png" id="zPosImg" /> -->
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownZ+.png" id="zPosImg" />
                               </label>
                               <label class="ControlButton zNegBtn" for="zNegBtn">
                                    <el-button class="controlBtnDown" circle id="zNegBtn"
@@ -341,7 +341,7 @@
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img  class="controlBtnUp" src="../assets/basicControlImge/Z-.png" id="zNegImg" />
-                                <!-- <img class="controlBtnUpHover" src="../assets/basicControlImge/Z+.png" id="zPosImg" /> -->
+                                <img  class="controlBtnUpHover" src="../assets/basicControlImge/DownZ-.png" id="zNegImg" />
                               </label>
                               <label class="ControlButton xPosBtn" for="xPosBtn">
                                    <el-button class="controlBtnDown" circle id="xPosBtn"
@@ -349,6 +349,7 @@
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img  class="controlBtnUp" src="../assets/basicControlImge/X+.png" id="xPosImg" />
+                                <img  class="controlBtnUpHover" src="../assets/basicControlImge/DownX+.png" id="xPosImg" />
                               </label>
                               <label class="ControlButton xNegBtn" for="xNegBtn">
                                    <el-button class="controlBtnDown" circle id="xNegBtn"
@@ -356,6 +357,7 @@
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img class="controlBtnUp" src="../assets/basicControlImge/X-.png" id="xNegImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownX-.png" id="xNegImg" />
                               </label>
                               <label class="ControlButton yPosBtn" for="yPosBtn">
                                    <el-button class="controlBtnDown" circle id="yPosBtn"
@@ -363,6 +365,7 @@
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img class="controlBtnUp" src="../assets/basicControlImge/Y+.png" id="yPosImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownY+.png" id="yPosImg" />
                               </label>
                               <label class="ControlButton yNegBtn" for="yNegBtn">
                                    <el-button class="controlBtnDown" circle id="yNegBtn"
@@ -370,6 +373,7 @@
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img class="controlBtnUp"src="../assets/basicControlImge/Y-.png" id="yNegImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownY-.png" id="yNegImg" />
                               </label>
                           </div>
                           <div class="col-6 RPYButton " style="width: 50%;">
@@ -378,44 +382,48 @@
                                    @click="rControlPosAdd"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
-                                <img class="controlBtnUp" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
-                                <!-- <img class="controlBtnUpHover" src="../assets/basicControlImge/Z-.png" id="zPosImg" /> -->
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Roll+.png" id="zPosImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownRoll+.png" id="zPosImg" />
                               </label>
                               <label class="ControlButton rNegBtn" for="rNegBtn">
                                    <el-button class="controlBtnDown" circle id="rNegBtn"
                                    @click="rControlPosSub"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
-                                <img  class="controlBtnUp" src="../assets/basicControlImge/Z-.png" id="zNegImg" />
-                                <!-- <img <class="controlBtnUpHover" src="../assets/basicControlImge/Z+.png" id="zPosImg" /> -->
+                                <img  class="controlBtnUp" src="../assets/basicControlImge/Roll-.png" id="zNegImg" />
+                                <img  class="controlBtnUpHover" src="../assets/basicControlImge/DownRoll-.png" id="zNegImg" />
                               </label>
                               <label class="ControlButton pPosBtn" for="pPosBtn">
                                    <el-button class="controlBtnDown" circle id="pPosBtn"
                                    @click="pControlPosAdd"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
-                                <img  class="controlBtnUp" src="../assets/basicControlImge/X+.png" id="xPosImg" />
+                                <img  class="controlBtnUp" src="../assets/basicControlImge/Pitch+.png" id="xPosImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownPitch+.png" id="zPosImg" />
                               </label>
                               <label class="ControlButton pNegBtn" for="pNegBtn">
                                    <el-button class="controlBtnDown" circle id="pNegBtn"
                                    @click="pControlPosSub"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
-                                <img class="controlBtnUp" src="../assets/basicControlImge/X-.png" id="xNegImg" />
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Pitch-.png" id="xNegImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownPitch-.png" id="zPosImg" />
                               </label>
                               <label class="ControlButton yawPosBtn" for="yawPosBtn">
                                    <el-button class="controlBtnDown" circle id="yawPosBtn"
                                    @click="yawControlPosAdd"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
-                                <img class="controlBtnUp" src="../assets/basicControlImge/Y+.png" id="yPosImg" />
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Yaw+.png" id="yPosImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownYaw+.png" id="yPosImg" />
                               </label>
                               <label class="ControlButton yawNegBtn" for="yawNegBtn">
                                    <el-button class="controlBtnDown" circle id="yawNegBtn"
                                    @click="yawControlPosSub"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
-                                <img class="controlBtnUp"src="../assets/basicControlImge/Y-.png" id="yNegImg" />
+                                <img class="controlBtnUp" src="../assets/basicControlImge/Yaw-.png" id="yNegImg" />
+                                <img class="controlBtnUpHover" src="../assets/basicControlImge/DownYaw-.png" id="yNegImg" />
                               </label>
                           </div>
                       </div>
@@ -964,6 +972,11 @@
         this.$router.push('/home');
       },
       enableControl(){
+        if(this.enableRobot==true){
+          RBC.xMove("02 51 43 6A 8B 26 58 99");
+        }else{
+          RBC.xMove("09 52 46 6B 9A 36 98 96");
+        }
 
       },
       backToZeroReal(){
@@ -1918,6 +1931,7 @@
     }
   .ControlButton{
           position: relative;
+           /* box-shadow: 6px 11px 14px 0 rgba(0, 0, 0, 0.5) */
       }
    .controlBtnDown{
           position: absolute;
@@ -1929,15 +1943,15 @@
           width: 60px;
           margin-right: 5px;
           z-index: 0;
-          box-shadow: 6px 11px 14px 0 rgba(0, 0, 0, 0.5)
+          /* box-shadow: 6px 11px 14px 0 rgba(0, 0, 0, 0.5) */
       }
     .controlBtnUp:hover{
              width: 60px;
              margin-right: 5px;
              z-index: 0;
-             box-shadow: 2px 6px 9px 0 rgba(0, 0, 0, 0.5)
+             /* box-shadow: 2px 6px 9px 0 rgba(0, 0, 0, 0.5) */
          }
-  /* .controlBtnUpHover{
+  .controlBtnUpHover{
         position: absolute;
         left: 0;
         top: 0;
@@ -1945,7 +1959,7 @@
         width: 60px;
         margin-right: 5px;
         z-index: 1;
-        box-shadow: 2px 5px 8px 0 rgba(0, 0, 0, 0.5)
+        /* box-shadow: 2px 5px 8px 0 rgba(0, 0, 0, 0.5) */
       }
     .controlBtnUpHover:hover{
          position: absolute;
@@ -1955,7 +1969,7 @@
          width: 60px;
          margin-right: 5px;
          z-index: 1;
-       } */
+       }
 
    .RealRobotControlButton{
      position: relative;
@@ -1993,8 +2007,8 @@
    }
    .xNegBtn{
      position: absolute;
-     top: 185px;
-     left: 115px;
+     top: 159px;
+     left: 114px;
    }
    #yPosImg{
      width: 80px;
@@ -2004,25 +2018,23 @@
    }
    .yPosBtn{
      position: absolute;
-     top: 130px;
-     left: 60px;
+     top: 135px;
+     left: 64px;
    }
    .yNegBtn{
      position: absolute;
-     top: 131px;
-     left: 140px;
+     top: 135px;
+     left: 145px;
    }
-
-
   .rPosBtn{
     position: absolute;
     top: 5px;
-    left: 45px;
+    left: 185px;
   }
   .rNegBtn{
     position: absolute;
     top: 5px;
-    left: 185px;
+    left: 45px;
   }
   .pPosBtn{
     position: absolute;
@@ -2031,7 +2043,7 @@
   }
   .pNegBtn{
     position: absolute;
-    top: 185px;
+    top: 158px;
     left: 115px;
   }
   #yPosImg{
@@ -2042,13 +2054,13 @@
   }
   .yawPosBtn{
     position: absolute;
-    top: 130px;
-    left: 60px;
+    top: 135px;
+    left: 64px;
   }
   .yawNegBtn{
     position: absolute;
-    top: 131px;
-    left: 140px;
+    top: 135px;
+    left: 146px;
   }
   .runModeAndDataSaveAboutButton{
     font-size: 1.2rem;
@@ -2080,7 +2092,7 @@
 /* 高度最大像素900像素 最小像素480像素 即高度在480-900之间时 */
 @media only screen and (min-height:480px) and (max-height:800px){
 .wholeWrap{
-	  height: 960px;
+	  height: 990px;
 	}
 }
 /* 高度最小像素901像素 即高度大于900时*/

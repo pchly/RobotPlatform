@@ -4,7 +4,7 @@
         <div class="container-fluid" style="height: 10%;">
           <div class="row  border-bottom align-items-end pb-2 " >
             <div class="col-6 text-left">
-              <img class="img-fluid" style="height: 40px;" src="../assets/Link-img/logo.png" />
+              <img class="img-fluid" style="height: 40px;margin-top: 10px;" src="../assets/Link-img/logo.png" />
             </div>
             <div class="col-6 text-right ">
               <div class="row justify-content-end">
