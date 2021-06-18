@@ -22,8 +22,8 @@ const store=new Vuex.Store({
           //主页连接服务器的相关参数
           serverAndLinkInfo:{
             ip:'',//服务器ip地址
-            port:'8888',//服务器交互通信端口号
-            portAuto:'8889',//服务器自动上报数据端口号
+            port:'8899',//服务器交互通信端口号
+            portAuto:'8899',//服务器自动上报数据端口号
             linkButtonType:'success',//连接服务器按钮的类型：danger和success对应红色和绿色
             linkButtonText:'连接服务器',//连接服务器按钮的文本
             haveEverLink:false//是否已经连接服务器的标志位

@@ -14,6 +14,8 @@
     @click="controlAxisRotate(index)">
       {{item.name}}</el-button>
      <img src='../assets/reserve.png' style="width:100%" alt="">
+     <button @mousedown="ijfi"></button>
+     <el-button @mousedown="ijfi"></el-button>
     </div>
 </template>
 <script>
@@ -71,6 +73,10 @@ export default {
     methods:{
       backToHome(){
         this.$router.push('/home');
+      },
+      ijfi(e){
+        console.log(e);
+        console.log(99966542202);
       },
       controlAxisRotate(index){
         console.log(index)
@@ -201,8 +207,8 @@ export default {
             //     AnimationAction.timeScale = 10;//默认1，可以调节播放速度
             //     AnimationAction.loop = Three.LoopOnce; //不循环播放
             //     AnimationAction.play();//开始播放
-           
-           
+
+
             //加载关节2
             loader.load('../../static/robotStl/Joint-2.stl',function (JointTwoGeometry) {
               JointTwoGeometry.center();

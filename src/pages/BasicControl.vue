@@ -319,6 +319,7 @@
                         v-for="(item,index) in controlAxisButtonText" :key=index>
                         <el-tag class="col-4 controlButtonTag" style="font-size: 20px;width: 20%;">{{item.name}}</el-tag>
                         <el-input-number class="col-8" @change="controlAxisReal(index)"
+                        @mousedown="testMouseDown"
                           v-model="positionOfAxisInReal[index]"
                           style="width: 80%;"
                           :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
@@ -327,25 +328,23 @@
                     <div class="col-6  RealRobotControlButton ">
                       <div class="row" style="width: 100%;">
                           <div class="col-6 XYZButton " style="width: 50%;">
-                              <label class="ControlButton zPosBtn" for="zPosBtn">
-                                   <el-button class="controlBtnDown" circle id="zPosBtn"
-                                   @click="zControlPosAdd"
+                              <label @mousedown="zControlPosAdd" @mouseup="ControlButtonUp" class="ControlButton zPosBtn" for="zPosBtn">
+                                  <el-button class="controlBtnDown" circle id="zPosBtn"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
+                                   <!-- <button  class="controlBtnDown" id="zPosBtn"></button> -->
                                 <img class="controlBtnUp" src="../assets/basicControlImge/Z+.png" id="zPosImg" />
                                 <img class="controlBtnUpHover" src="../assets/basicControlImge/DownZ+.png" id="zPosImg" />
                               </label>
-                              <label class="ControlButton zNegBtn" for="zNegBtn">
+                              <label @mousedown="zControlPosSub" @mouseup="ControlButtonUp" class="ControlButton zNegBtn" for="zNegBtn">
                                    <el-button class="controlBtnDown" circle id="zNegBtn"
-                                   @click="zControlPosSub"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img  class="controlBtnUp" src="../assets/basicControlImge/Z-.png" id="zNegImg" />
                                 <img  class="controlBtnUpHover" src="../assets/basicControlImge/DownZ-.png" id="zNegImg" />
                               </label>
-                              <label class="ControlButton xPosBtn" for="xPosBtn">
+                              <label @mousedown="xControlPosAdd" @mouseup="ControlButtonUp" class="ControlButton xPosBtn" for="xPosBtn">
                                    <el-button class="controlBtnDown" circle id="xPosBtn"
-                                   @click="xControlPosAdd"
                                    type="primary" style="font-size: 1rem;" icon="el-icon-notebook-1">
                                    </el-button>
                                 <img  class="controlBtnUp" src="../assets/basicControlImge/X+.png" id="xPosImg" />
@@ -934,6 +933,9 @@
       ...mapMutations(['mutationRunErrorCount','mutationOutExeclDataSimulate','mutationEnableRobot','mutationMoveVecReal',
       'mutationKindOfEndTool','mutationJawControlDisEnable','mutationSuckControlDisEnable','mutationStateOfEndSuck','mutationPosOfEndJaw','mutationRealRobotControlMode'
       ]),
+      // testMouseDown(){
+      //   console.log(12356988885455599999);
+      // },
       sumTheErrorCount(){
          this.mutationRunErrorCount(0);
         for(let i in this.runInformationDataBuff){
@@ -973,20 +975,27 @@
       },
       enableControl(){
         if(this.enableRobot==true){
-          RBC.xMove("02 51 43 6A 8B 26 58 99");
+          RBC.xMove("AA BB 00 03 1A 08 01");
         }else{
-          RBC.xMove("09 52 46 6B 9A 36 98 96");
+          RBC.xMove("AA BB 00 03 1A 08 00");
         }
 
       },
       backToZeroReal(){
 
       },
-      zControlPosAdd(){
+      ControlButtonUp(){
+        RBC.xMove("AA BB 00 03 29 02 00");//停止
+      },
+      zControlPosAdd(e){
+        RBC.xMove("AA BB 00 03 29 00 00");//正传
+        console.log(e);
         console.log('ZAdd');
         this.positionOfXYZRPYInReal[2]+=1;
       },
-      zControlPosSub(){
+      zControlPosSub(e){
+        RBC.xMove("AA BB 00 03 29 01 00");//反转
+        console.log(e);
         console.log('ZSub');
         this.positionOfXYZRPYInReal[2]-=1;
       },
@@ -1067,6 +1076,15 @@
           }
       },
       controlAxisReal(index){
+          if(index==0){
+            RBC.xMove("AA BB 00 03 29 00 05");//正传
+          }
+          else if(index==1){
+            RBC.xMove("AA BB 00 03 29 01 05");//反转
+          }else if(index==2){
+            RBC.xMove("AA BB 00 03 29 02 05");//停止
+          }
+        console.log(index);
         console.log(this.positionOfAxisInReal[index]);
       },
       controlPOsXYZRPYReal(index){
@@ -1454,7 +1472,7 @@
             var loader = new STLLoader();
             var that=this;
             //加载关节1
-            loader.load('../../static/robotStl/Joint-1.stl',function (JointOneGeometry) {
+            loader.load("../../static/robotStl/Joint-1.stl",function (JointOneGeometry) {
               // console.log(JointOneGeometry.boundingBox);
               // geometry.position.set(0,80,0);
               // // 缩放几何体

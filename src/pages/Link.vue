@@ -187,21 +187,21 @@
            WSocket.close();
           }else{
                //WebSocket自定义的初始化函数
-                 WSocket.init({ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port,portAuto:this.serverAndLinkInfo.portAuto},
+                 WSocket.wsInit({ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port,portAuto:this.serverAndLinkInfo.portAuto},
               //交互通信ws的事件函数
                     //服务器连接成功的生命周期函数
-                        openevent=>{
-                        //openevent为回调参数，里面包含各种连接信息
-                        // console.log(openevent);
-                        this.mutationTheRunInformationfunction('机械臂连接成功');
-                        addRunInf.addRunInformation('success','连接信息','成功连接机械臂',this.runInformationDataBuff);
-                        console.log(this.runInformationDataBuff);
-                        console.log('opened');
-                        this.serverAndLinkInfo.linkButtonType="danger";
-                        this.serverAndLinkInfo.linkButtonText='断开连接';
-                        this.serverAndLinkInfo.haveEverLink=true;
-                         this.$router.push('/home');
-                        },
+                          openevent=>{
+                          //openevent为回调参数，里面包含各种连接信息
+                          console.log(openevent);
+                          this.mutationTheRunInformationfunction('机械臂连接成功');
+                          addRunInf.addRunInformation('success','连接信息','成功连接机械臂',this.runInformationDataBuff);
+                          console.log(this.runInformationDataBuff);
+                          console.log('opened');
+                          this.serverAndLinkInfo.linkButtonType="danger";
+                          this.serverAndLinkInfo.linkButtonText='断开连接';
+                          this.serverAndLinkInfo.haveEverLink=true;
+                           this.$router.push('/home');
+                          },
                         //接收到消息的回调函数，消息的具体内容在message中
                         message=>{
                           if(message=="{have received}"){
@@ -237,58 +237,64 @@
                         console.log('closed');
                         this.mutationTheRunInformationfunction('未连接机械臂');
                         addRunInf.addRunInformation('warning','连接信息','连接机械臂断开',this.runInformationDataBuff);
-                        if(this.serverAndLinkInfo.haveEverLink){
-                            this.$alert('服务器关闭', '信息提示', {
-                                confirmButtonText: '确定',
-                                callback: () => {
-                                    this.serverAndLinkInfo.linkButtonText='连接服务器';
-                                    this.serverAndLinkInfo.linkButtonType="success"
-                                }
-                            });
-                        }
+                          if(this.serverAndLinkInfo.haveEverLink){
+                              this.$alert('服务器关闭', '信息提示', {
+                                  confirmButtonText: '确定',
+                                  callback: () => {
+                                      this.serverAndLinkInfo.linkButtonText='连接服务器';
+                                      this.serverAndLinkInfo.linkButtonType="success"
+                                  }
+                              });
+                          }
+                       }
+               );//webSocket初始化init函数的右括号
+              //WebSocket自定义的初始化函数
+                 WSocket.autoUpdateWsInit({ip:this.serverAndLinkInfo.ip,port:this.serverAndLinkInfo.port,portAuto:this.serverAndLinkInfo.portAuto},
+              //交互通信ws的事件函数
                   //自动上报数据ws的事件函数
                         //服务器连接成功的生命周期函数
                         openevent=>{
                           //openevent为回调参数，里面包含各种连接信息
+                          addRunInf.addRunInformation('success','连接信息','自动上报成功连接',this.runInformationDataBuff);
                           console.log('自动上报数据ws连接成功');
                         },
                         //接收到消息的回调函数，消息的具体内容在message中
                         message=>{
-                          // 解析二进制数据需要通过FileReader读取数据
-                          let imgReader = new FileReader();
-                          let robotStateReader = new FileReader();
-                          // FileReader读取数据后将数据传出
-                          imgReader.onload = function(event){
-                            // 多层嵌套无法识别this变量，图像数据传递给中间变量
-                            imgTextData = imgReader.result;
-                          };
-                          robotStateReader.onload = function(event){
-                            // 将ArrayBuffer对象解析为8位无符号整型数组
-                            robotStateData = new Uint8Array(robotStateReader.result);
-                          };
-                          // 以文本方式读取图像的二进制数据，按照utf-8解码得到base64编码的字符串
-                          imgReader.readAsText(message.slice(243,message.length),'utf8');
-                          // 读取机器人状态的二进制数据，保存为ArrayBuffer对象
-                          robotStateReader.readAsArrayBuffer(message.slice(0,243));
-                          //接收到的数据传递给全局变量，供其他页面使用
-                          this.autoUpdateMessage.robotStateData = robotStateData;
-                          this.autoUpdateMessage.imgData = imgTextData;
-                          // console.log("自动上报的数据：");
-                          // console.log(this.autoUpdateMessage.robotStateData);
+                          // // 解析二进制数据需要通过FileReader读取数据
+                          // let imgReader = new FileReader();
+                          // let robotStateReader = new FileReader();
+                          // // FileReader读取数据后将数据传出
+                          // imgReader.onload = function(event){
+                          //   // 多层嵌套无法识别this变量，图像数据传递给中间变量
+                          //   imgTextData = imgReader.result;
+                          // };
+                          // robotStateReader.onload = function(event){
+                          //   // 将ArrayBuffer对象解析为8位无符号整型数组
+                          //   robotStateData = new Uint8Array(robotStateReader.result);
+                          // };
+                          // // 以文本方式读取图像的二进制数据，按照utf-8解码得到base64编码的字符串
+                          // imgReader.readAsText(message.slice(243,message.length),'utf8');
+                          // // 读取机器人状态的二进制数据，保存为ArrayBuffer对象
+                          // robotStateReader.readAsArrayBuffer(message.slice(0,243));
+                          // //接收到的数据传递给全局变量，供其他页面使用
+                          // this.autoUpdateMessage.robotStateData = robotStateData;
+                          // this.autoUpdateMessage.imgData = imgTextData;
+                          console.log("自动上报的数据：");
+                          console.log(message);
                         },
                         //出现错误的回调函数，具体错误信息在error参数里
                         error=>{
                           console.log(error);
-                          addRunInf.addRunInformation('error','连接信息','连接相机断开',this.runInformationDataBuff);
+                          addRunInf.addRunInformation('error','连接信息','自动上报连接错误',this.runInformationDataBuff);
                           console.log('自动上报数据WS出现错误');
                         },
                         //断开连接的回调函数，具体信息在closeevent中
                         closeevent=>{
+                          addRunInf.addRunInformation('warning','连接信息','自动上报连接断开',this.runInformationDataBuff);
                           console.log(closeevent);
                           console.log('自动上报数据WS已关闭');
                         }
-               });//webSocket初始化init函数的右括号
-
+               );//webSocket初始化init函数的右括号
           }//else的结束括号
       },//linkToServer点击槽函数的结束括号
 
