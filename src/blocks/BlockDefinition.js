@@ -253,8 +253,6 @@ Blockly.Blocks['endoffset'] = {
 
 
 
-
-
 Blockly.JavaScript['jogmove'] = function(block) {
   var number_jog1input = block.getFieldValue('jog1Input');
   var number_jog2input = block.getFieldValue('jog2Input');
@@ -285,14 +283,14 @@ Blockly.JavaScript['cartmove'] = function(block) {
 
 Blockly.JavaScript['zero'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
-  var code = "this.test2();\n";
+  var code = "this.zero();\n";
   return code;
 };
 
 Blockly.JavaScript['motionstate'] = function(block) {
   var dropdown_statename = block.getFieldValue('StateNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.motionStates('+dropdown_statename+')\n';
   return code;
 };
 
@@ -305,7 +303,7 @@ Blockly.JavaScript['jogincre'] = function(block) {
   var number_j6inputname = block.getFieldValue('J6InputNAME');
   var number_j7inputname = block.getFieldValue('J7InputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.jogIncreMove('+number_j1inputname+','+number_j2inputname+','+number_j3inputname+','+number_j4inputname+','+number_j5inputname+','+number_j6inputname+','+number_j7inputname+')\n';
   return code;
 };
 
@@ -318,42 +316,42 @@ Blockly.JavaScript['cartincre'] = function(block) {
   var number_cinputname = block.getFieldValue('CInputNAME');
   var number_posinputname = block.getFieldValue('PosInputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.cartIncreMove('+number_xinputname+','+number_yinputname+','+number_zinputname+','+number_ainputname+','+number_binputname+','+number_cinputname+','+number_posinputname+')\n';
   return code;
 };
 
 Blockly.JavaScript['stay'] = function(block) {
   var number_stayinputname = block.getFieldValue('stayInputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.stay('+number_stayinputname+');\n';
   return code;
 };
 
 Blockly.JavaScript['jogspeed'] = function(block) {
   var number_jogspeedinputname = block.getFieldValue('jogSpeedInputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.jogSpeed('+number_jogspeedinputname+');\n';
   return code;
 };
 
 Blockly.JavaScript['jogacceleration'] = function(block) {
   var number_jogaccelerationinputname = block.getFieldValue('jogAccelerationinputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.jogAcceleration('+number_jogaccelerationinputname+');\n';
   return code;
 };
 
 Blockly.JavaScript['cartspeed'] = function(block) {
   var number_cartspeedinputname = block.getFieldValue('cartSpeedInputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.cartSpeed('+number_cartspeedinputname+');\n';
   return code;
 };
 
 Blockly.JavaScript['cartacceleration'] = function(block) {
   var number_cartaccelerationinputname = block.getFieldValue('cartAccelerationInputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.cartAcceleration('+number_cartaccelerationinputname+');\n';
   return code;
 };
 
@@ -365,6 +363,6 @@ Blockly.JavaScript['endoffset'] = function(block) {
   var text_binputname = block.getFieldValue('BInputNAME');
   var text_cinputname = block.getFieldValue('CInputNAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = 'this.endoffset('+text_xinputname+','+text_yinputname+','+text_zinputname+','+text_ainputname+','+text_binputname+','+number_cinputname+','+text_cinputname+');\n';
   return code;
 };
