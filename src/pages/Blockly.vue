@@ -158,6 +158,7 @@ import {mapState,mapGetters,mapMutations} from 'vuex';
 import * as Three from "three";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader'
+//为了防止弹出xml警告 加入忽略元素
 Vue.config.ignoredElements.push('xml');
   export default {
       name:'blockly',
@@ -237,6 +238,7 @@ Vue.config.ignoredElements.push('xml');
 
       code: '拖拽模块后自动生成代码.....',
       options: {
+        //blockly页面布局显示设置  垃圾桶  缩放控件等
         media: '../../../node_modules/blockly/media/',
         trashcan: true,
         grid:
@@ -249,6 +251,7 @@ Vue.config.ignoredElements.push('xml');
           zoom:
            {controls: true,
             wheel: true},
+          //工具栏布局  直接从导出的工具栏定义文件中拷出来粘贴在这就可以
           toolbox:
         `<xml>
           <category name="参数设置" colour="#a5745b">
@@ -395,8 +398,9 @@ Vue.config.ignoredElements.push('xml');
       }
     }
   },
-  //
+  
   mounted() {
+    //设置定时器 隔固定时间检查更新blockly转换为js代码
     this.timer = setInterval(()=>{
     this.showCode()},1000);
     this.threeViewWidth=this.$refs.piuuu.offsetWidth;
@@ -407,6 +411,7 @@ Vue.config.ignoredElements.push('xml');
     console.log(99999999999);
   },
   beforeDestroy() {
+    //销毁定时器
       clearInterval(this.timer);
   },
   computed:{
@@ -477,6 +482,7 @@ Vue.config.ignoredElements.push('xml');
     scramButtonClicked(){
       console.log(12235555);
     },
+    //打开文件执行函数
     beforeUploadBlocklyFile(file){
           this.fileList = [file]
           //console.log('选择了文件beforeUpload')
@@ -484,7 +490,8 @@ Vue.config.ignoredElements.push('xml');
           this.read(file);
           return true
         },
-        read(f) {
+    //读取文件内容
+    read(f) {
           let rd = new FileReader();
           var that=this;
           rd.onload = e => {  
@@ -499,6 +506,7 @@ Vue.config.ignoredElements.push('xml');
           };
           rd.readAsBinaryString(f);   
       },
+    //保存文件到本地
     saveFile(){
       this.positionOfAxisInBlockly[0]=50;
             this.oneRotateGroup.rotation.y=this.positionOfAxisInBlockly[0]*Math.PI/180;
@@ -913,6 +921,7 @@ Vue.config.ignoredElements.push('xml');
     this.value ++;
     console.log(1);
   },
+  //显示JS代码
     showCode() {
        this.code = BlocklyJS.workspaceToCode(this.$refs["foo"].workspace);
     },
@@ -922,6 +931,7 @@ Vue.config.ignoredElements.push('xml');
      test3(){
       console.log("test2222");
     },
+  //清空工作区
     discard(){
         var count = this.$refs["foo"].workspace.getAllBlocks(false).length;
         if (count < 2 ||
@@ -932,6 +942,7 @@ Vue.config.ignoredElements.push('xml');
           }
         }
     },
+  //执行代码
     runJS(){
       Blockly.JavaScript.INFINITE_LOOP_TRAP = 'checkTimeout();\n';
       var timeouts = 0;
@@ -981,6 +992,7 @@ Vue.config.ignoredElements.push('xml');
           this.outExeclDataBlockly[i].type=parseInt(i)+1
        }
     },
+    //以下一些指令函数是用于写blockly块对应地执行函数
     jogMove(jog1,jog2,jog3,jog4,jog5,jog6,jog7){
       this.addExeclDataBlockly(jog1,jog2,jog3,jog4,jog5,jog6,jog7);
       console.log(this.outExeclDataBlockly);
@@ -994,6 +1006,37 @@ Vue.config.ignoredElements.push('xml');
     cartMove(x,y,z,a,b,c,pos){
       console.log(x);
     },
+    jogIncreMove(jog1,jog2,jog3,jog4,jog5,jog6,jog7){
+      
+    },
+    cartIncreMove(x,y,z,a,b,c,pos){
+
+    },
+    stay(stay){
+
+    },
+    motionStates(motionStates){
+
+    },
+    zero(){
+
+    },
+    jogSpeed(speed){
+
+    },
+    jogAcceleration(jogAcceleration){
+
+    },
+    cartSpeed(speed){
+
+    },
+    cartAcceleration(jogAcceleration){
+
+    },
+    endoffset(x,y,z,a,b,c,pos){
+
+    },
+
     startMultipleRunSimulate(){
       this.pauseDisabled=false;
       this.stopDisabled=false;

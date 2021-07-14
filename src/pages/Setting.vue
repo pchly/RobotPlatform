@@ -1,5 +1,7 @@
 <template>
+  
     <div class="wholeWrap">
+      <!-- 顶部状态栏，包含返回按键、机器人运行日志、急停按键 -->
       <div class="container-fluid topBar " style="height: 6%;position:fixed;z-index: 20;background-color: white;"><!-- //顶部返回，状态和急停的开始 -->
         <div class="row h-100">
            <el-button class="col-2 " style="font-size: 20px;" @click="backToHome" type="primary" icon="el-icon-arrow-left">返回</el-button>
@@ -14,6 +16,8 @@
            <el-button class="col-2" style="font-size: 20px;" @click="scramButtonClicked" type="danger" icon="el-icon-refresh">急停</el-button>
         </div><!-- //顶部的结束 -->
       </div>
+
+      <!-- 运行日志相关信息栏，该部分会在点击日志信息链接后，显示与网页右侧，包含日志编号、日志内容、时间等信息 -->
       <el-drawer
         title="运行日志信息"
         :visible.sync="showInformationTable"
@@ -34,6 +38,8 @@
              </el-table-column>
           </el-table>
       </el-drawer>
+
+      <!-- 该部分用于设置关节运动参数和笛卡尔运动参数，包含运动限位、速度限位、加速度限位、加加速度限位等 -->
       <div class="container-fluid topBar " style="height: 6%;"></div>
       <div class="container-fluid" style="height: 92%; margin-top: 3px;"><!-- 中间区域的开始 -->
           <el-tabs type="border-card">
@@ -232,6 +238,8 @@
                   </el-tab-pane>
               </el-tabs>
             </el-tab-pane>
+
+            <!-- 该部分用于设置机械臂末端工具的类型，目前末端工具只预留了吸盘和夹爪两类工具 -->
             <el-tab-pane label="工具参数">
               <span slot="label"><i class="bi bi-tools"></i> 工具参数</span>
               <el-tabs :tab-position="tabPosition" style="height: 200px;">
@@ -245,11 +253,14 @@
                   </el-tab-pane>
                   <!-- <el-tab-pane label="配置管理">IO</el-tab-pane> -->
                 </el-tabs>
-
             </el-tab-pane>
+
+            <!-- 该部分为相机参数设置模块，目前处于与保留阶段 -->
             <el-tab-pane label="相机参数">
               <span slot="label"><i class="bi bi-camera-video-fill"></i> 相机参数</span>
             </el-tab-pane>
+
+            <!-- 该部分用于设置其它运动参数，目前包括两部分，第一部分：设置各关节的初始位置，第二部分：设置直线运动的运动参数 -->
             <el-tab-pane label="其他参数">
               <span slot="label"><i class="bi bi-patch-plus-fill"></i> 其他参数</span>
               <el-tabs :tab-position="tabPosition" style="height: 400px;">
@@ -295,10 +306,17 @@
 import {mapState,mapGetters,mapMutations} from 'vuex';
 export default {
     name:'setting',
+
+    //设置相关数据信息
      data(){
         return{
+          //是否显示日志信息标记位
           showInformationTable:false,
+          
+          //el-tab标签显示位置，居左显示
           tabPosition: 'left',
+
+          //关节数
           AxisOriginSettingText:[
             {name:'1轴'},
             {name:'2轴'},
@@ -308,11 +326,15 @@ export default {
             {name:'6轴'},
             {name:'7轴'}
           ],
+
+          //直线运动相关参数
           lineMoveSettingText:[
             {name:'最大速度'},
             {name:'最大加速度'},
             {name:'最大加加速度'}
           ],
+
+          //限位参数
           controlAxisButtonText:[
             {name:'负限位'},
             {name:'正限位'},
@@ -333,7 +355,9 @@ export default {
             'XAxisSettingData','YAxisSettingData','ZAxisSettingData',
             'RollAxisSettingData','PitchAxisSettingData','YawAxisSettingData',
             'moveVecReal','kindOfEndTool','suckControlDisEnable','jawControlDisEnable','theRunInformation','runErrorCount','runInformationDataBuff']),
-       modeKindOfEndTool:{
+      
+      //获取当前末端工具的类型，以用于基础控制界面的工具状态显示部分
+      modeKindOfEndTool:{
          get(){
            return this.kindOfEndTool
          },
@@ -346,7 +370,9 @@ export default {
        //使用map方法引入mutation时，需要在methods方法中使用...map的语法引入具体的mutation
        ...mapMutations(['mutationRunErrorCount','mutationMoveVecReal',
        'mutationKindOfEndTool','mutationJawControlDisEnable','mutationSuckControlDisEnable']),
-       sumTheErrorCount(){
+      
+      //获取当前的错误数量
+      sumTheErrorCount(){
           this.mutationRunErrorCount(0);
          for(let i in this.runInformationDataBuff){
            if(this.runInformationDataBuff[i].grade=="error"){
@@ -354,6 +380,8 @@ export default {
            }
           }
        },
+
+        //显示当前运行日志信息
        tableRowClassName({row, rowIndex}) {
          console.log(19898989898);
          console.log(this.runErrorCount);
@@ -370,6 +398,8 @@ export default {
            }
          }
        },
+
+       //删除相应的运行日志信息
        handleDeleteRunInformation(index, row){
          console.log(index, row);
          this.runInformationDataBuff.splice(index,1);
@@ -379,18 +409,28 @@ export default {
          console.log(this.runInformationDataBuff);
          this.sumTheErrorCount();
        },
+
+       //回零函数
         backToHome(){
           this.$router.push('/home');
         },
+
+        //急停开关
         scramButtonClicked(){
           console.log(12235555);
         },
+
+        //关节限位参数设置函数
         settingAxisParameter(){
 
         },
+
+        //笛卡尔限位设置函数
         settingXYZPYRParameter(){
 
         },
+
+        //机械臂末端工具选择函数，0代表夹爪，1代表洗盘，2表示无工具
         kindOfToolChange(){
           console.log("toolChange");
           if(this.kindOfEndTool==2){
