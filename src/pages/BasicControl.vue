@@ -319,7 +319,6 @@
                         v-for="(item,index) in controlAxisButtonText" :key=index>
                         <el-tag class="col-4 controlButtonTag" style="font-size: 20px;width: 20%;">{{item.name}}</el-tag>
                         <el-input-number class="col-8" @change="controlAxisReal(index)"
-                        @mousedown="testMouseDown"
                           v-model="positionOfAxisInReal[index]"
                           style="width: 80%;"
                           :precision="2" :step="1" :min="-180" :max="180"></el-input-number>
