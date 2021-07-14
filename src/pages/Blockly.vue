@@ -187,6 +187,7 @@ Vue.config.ignoredElements.push('xml');
       fiveRotateGroup:null,
       sixRotateGroup:null,
       senveRotateGroup:null,
+      fileList:[],
       theOldPos:{
        		"type":'',
        		"oneAxis":0.0,
